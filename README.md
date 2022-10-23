@@ -2,6 +2,10 @@
 
 This docs website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
+### FYI
+
+Every push to `main` triggers a deployment to [https://marian13.github.io/convenient_service_docs/](https://marian13.github.io/convenient_service_docs/).
+
 ### Installation
 
 ```
