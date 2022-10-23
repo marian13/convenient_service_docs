@@ -33,17 +33,17 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          /**
+           * NOTE: How to set docs as homepage for Docusaurus
+           * https://ricard.dev/how-to-set-docs-as-homepage-for-docusaurus/
+           */
+          routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/marian13/convenient_service_docs/blob/main',
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/marian13/convenient_service_docs/blob/main',
-        },
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -63,11 +63,10 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'intro',
+            docId: 'home',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Home',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/marian13/convenient_service',
             label: 'GitHub',
@@ -82,8 +81,8 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
-                to: '/docs/intro',
+                label: 'Home',
+                to: '/docs/home',
               },
             ],
           },
@@ -99,10 +98,6 @@ const config = {
           {
             title: 'More',
             items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
               {
                 label: 'GitHub',
                 href: 'https://github.com/marian13/convenient_service',
