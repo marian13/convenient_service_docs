@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Convenient Service',
-  tagline: 'Dinosaurs are cool',
+  tagline: 'Yet another approach to revisit the service object pattern, but this time focusing on the unique, opinionated features',
   url: 'https://marian13.github.io',
   baseUrl: '/convenient_service_docs/',
   onBrokenLinks: 'throw',
