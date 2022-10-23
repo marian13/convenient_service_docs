@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
+  title: 'Convenient Service',
   tagline: 'Dinosaurs are cool',
   url: 'https://marian13.github.io',
   baseUrl: '/convenient_service_docs/',
@@ -57,10 +57,10 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'My Site',
+        title: 'Convenient Service',
         logo: {
-          alt: 'My Site Logo',
-          src: 'img/logo.svg',
+          alt: 'Convenient Service Logo',
+          src: 'img/logo.png',
         },
         items: [
           {
