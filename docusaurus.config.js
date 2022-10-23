@@ -94,7 +94,7 @@ const config = {
             items: [
               {
                 label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                href: 'https://stackoverflow.com/tags/convenient-service',
               },
               {
                 label: 'Discord',
