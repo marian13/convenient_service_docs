@@ -1,0 +1,49 @@
+##
+# CD using GitHub Actions.
+#
+# NOTE: GitHub Actions DSL.
+# - https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#understanding-the-workflow-file
+# - https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+#
+# NOTE: How to deploy to GitHub Pages using GitHub Actions?
+# - https://github.com/marketplace/actions/github-pages-action
+#
+# NOTE: How to deploy Docusaurus to GitHub Pages using GitHub Actions?
+# https://docusaurus.io/docs/deployment#deploying-to-github-pages
+#
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+##
+# NOTE: Copied with almost no modifications from:
+# https://docusaurus.io/docs/deployment#deploying-to-github-pages
+#
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.0
+          cache: yarn
+      - name: Install dependencies
+        ##
+        # https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-frozen-lockfile
+        #
+        run: yarn install --frozen-lockfile
+      - name: Build website
+        run: yarn build
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          ##
+          # NOTE: Build output to publish to the `gh-pages` branch.
+          #
+          publish_dir: ./build
