@@ -63,9 +63,15 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'home',
+            docId: 'installation',
             position: 'left',
-            label: 'Home',
+            label: 'Installation',
+          },
+          {
+            type: 'doc',
+            docId: 'usage/tldr',
+            position: 'left',
+            label: 'Usage',
           },
           {
             href: 'https://github.com/marian13/convenient_service',
@@ -81,8 +87,12 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Home',
-                to: '/',
+                label: 'Installation',
+                to: '/installation',
+              },
+              {
+                label: 'Usage',
+                to: 'usage/tldr',
               },
             ],
           },
