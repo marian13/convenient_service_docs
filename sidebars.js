@@ -26,6 +26,7 @@ const sidebars = {
       collapsed: true,
       items: [
         'usage/tldr',
+        'usage/foreword',
       ],
     },
   ],

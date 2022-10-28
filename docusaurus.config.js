@@ -69,7 +69,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'usage/tldr',
+            docId: '/category/usage',
             position: 'left',
             label: 'Usage',
           },
@@ -92,7 +92,7 @@ const config = {
               },
               {
                 label: 'Usage',
-                to: 'usage/tldr',
+                to: '/category/usage',
               },
             ],
           },
