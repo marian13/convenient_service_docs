@@ -19,14 +19,15 @@ const sidebars = {
     'installation',
     {
       type: 'category',
-      label: 'Usage',
+      label: 'Basics',
       link: {
         type: 'generated-index',
       },
       collapsed: true,
       items: [
-        'usage/tldr',
-        'usage/foreword',
+        'basics/tldr',
+        'basics/services',
+        'basics/results',
       ],
     },
   ],

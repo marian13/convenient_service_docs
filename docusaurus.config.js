@@ -69,9 +69,9 @@ const config = {
           },
           {
             type: 'doc',
-            docId: '/category/usage',
+            docId: '/category/basics',
             position: 'left',
-            label: 'Usage',
+            label: 'Basics',
           },
           {
             href: 'https://github.com/marian13/convenient_service',
@@ -91,8 +91,8 @@ const config = {
                 to: '/installation',
               },
               {
-                label: 'Usage',
-                to: '/category/usage',
+                label: 'Basics',
+                to: '/category/basics',
               },
             ],
           },

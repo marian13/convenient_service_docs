@@ -1,0 +1,72 @@
+---
+slug: /basics/results
+sidebar_position: 7
+title: Results
+---
+
+## Motivation behind results
+
+Usually, the service exposes a single public method, let it be `call` for this case.
+
+```ruby
+class Service
+  def call
+    # ...
+  end
+end
+```
+
+Since Ruby is a dynamic language, `call` may return any type of value.
+
+[Sometimes it is advantageous](https://en.wikipedia.org/wiki/Duck_typing), but sometimes it may become problematic.
+
+As a consequence, you can not have a unified way to check whether the value was calculated correctly.
+
+```ruby
+value = service.call
+
+if value.any? # When an array.
+if value.cover?(0...100) # Range.
+if value.match(/^[0-9]*$/) # Regexp.
+if value.dig(:user, :address) # Hash.
+if value.nozero? # Integer....
+```
+
+Also it is common to forget to verify if the returned value is actually what you need:
+
+```ruby
+hash = service.call
+
+hash.merge(other_hash)
+# Expected a merge, but it raises since hash is nil...
+```
+
+Convenient Service suggests utilizing Results objects as a way to overcome the problems listed above.
+
+Let's create a different public method instead of `call` and name it `result`.
+
+```ruby
+class Service
+  def result
+    # ...
+  end
+end
+```
+
+Now, we have the following invocation:
+
+```ruby
+result = service.result
+
+if result.success?
+  result.data
+else
+  result.message
+end
+```
+
+How is it beneficial compared to the previous approach?
+
+- Firstly, it is predictable that all services return results, so there is a consolidated way to detect their state.
+
+- Secondly, when the result is successful, you can be 100% sure that its data is valid.
