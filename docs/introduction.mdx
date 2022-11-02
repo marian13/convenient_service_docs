@@ -8,6 +8,8 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
 
+import ReactTooltip from 'react-tooltip';
+
 <h1 align="center">
   #StandWithUkraine
 </h1>
@@ -27,7 +29,7 @@ import CodeBlock from '@theme/CodeBlock';
   <img src="https://raw.githubusercontent.com/marian13/convenient_service/main/logo.png" width="300" />
 </p>
 
-Yet another approach to revisit the [service object](https://www.toptal.com/ruby-on-rails/decoupling-rails-components) pattern in [Ruby](https://www.ruby-lang.org/en/), but this time focusing on the unique, [opinionated](https://rubyonrails.org/doctrine#omakase) features.
+Yet another approach to revisit the [service object](https://www.toptal.com/ruby-on-rails/decoupling-rails-components) pattern in [Ruby](https://www.ruby-lang.org/en/), but this time focusing on the <span data-tip="Unique features have special care and the highest priority">unique</span>, <span data-tip="The initial stack of features is completely predefined">opinionated</span>, <span data-tip="It is assumed that you agree with the most of the choices">moderately obtrusive</span>, but <span data-tip="But you still have a way to customize almost everything to your own preferences">not mandatory</span> features.
 
 \* Logo is downloaded from [CuteWallpaper.org](https://cutewallpaper.org/24/cartoon-diamond-png/2703010921.html). It will be replaced later.
 
@@ -53,7 +55,11 @@ Common features (with slight variations) compared to existing [alternatives](htt
 
 Features specific to this gem.
 
-- Almost full customization.
+- [The menu is omakase](https://rubyonrails.org/doctrine#omakase).
+
+- Simple, predictable, and powerful at the same time [plugin-based customization](https://roda.jeremyevans.net/documentation.html).
+
+- [One-time delayed](https://manny.codes/3-practical-uses-of-ruby-method-missing/#building-dsls-and-libraries-with-method_missing) [Concerns](https://api.rubyonrails.org/classes/ActiveSupport/Concern.html) and [Middlewares](https://github.com/Ibsciss/ruby-middleware) in the core.
 
 ## Basics
 
@@ -62,3 +68,5 @@ Features specific to this gem.
 ---
 
 Copyright (c) 2022 [Marian Kostyk](http://mariankostyk.com).
+
+<ReactTooltip />
