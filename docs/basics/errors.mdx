@@ -1,0 +1,59 @@
+---
+slug: /basics/errors
+sidebar_position: 9
+title: Errors
+---
+
+Error is a problem that happens during the actual execution of a service.
+
+It can be something usual as HTTP connection issues, database inconsistencies, timeouts, etc.
+
+But the main point to realize - an error prevents the achievement of the service goal.
+
+That is why is so vital to use meaningful names for services.
+
+For instance, when the aim is to schedule a delayed job, call it - `ScheduleDelayedJob`.
+
+When a job was not registered into the queue for whatever reason (except validation, since it is a failure), it should be treated as an error.
+
+Please, read the following code snippet carefully:
+
+```ruby
+class ScheduleDelayedJob
+  # ...
+  def result
+    return failure(data: {id: "User id is NOT alphanumeric"}) unless user_id.alphanumeric?
+
+    return error(message: "Queue has no space") if queue.full?
+    return error(message: "Job is NOT unique") if job.duplicated?
+
+    job_tracker = ApplicationScheduler.delay(job)
+
+    success(data: {tracker: job_tracker})
+  end
+end
+```
+
+On the contrary, when your objective is just to try to schedule a job, but it does not really important whether it was scheduled or not, the service name should reflect such desire explicitly.
+
+```ruby
+class TryToScheduleDelayedJob
+  # ...
+  def result
+    return failure(data: {id: "User id is NOT alphanumeric"}) unless user_id.alphanumeric?
+
+    job_tracker =
+      if job.unique? && !queue.full? && !queue.stuck?
+        ApplicationScheduler.delay(job)
+      else
+        ""
+      end
+
+    ##
+    # Even if `tracker` is empty, service still is considered successful.
+    # Since the trial is the target, but not the guarantee.
+    #
+    success(data: {tracker: job_tracker})
+  end
+end
+```
