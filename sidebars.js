@@ -28,6 +28,8 @@ const sidebars = {
         'basics/tldr',
         'basics/services',
         'basics/results',
+        'basics/failures',
+        'basics/errors',
       ],
     },
   ],

@@ -1,0 +1,37 @@
+---
+slug: /basics/failures
+sidebar_position: 8
+title: Failures
+---
+
+Failure is a problem caused by the wrong input data.
+
+It may be a validation error or an unmet precondition based on service arguments.
+
+It is a responsibility of a developer/service user to provide correct inputs.
+
+Otherwise, there is no sense in even starting any service processing.
+
+Check out the folloiwng example:
+
+```ruby
+class EnsureFeatureActive
+  # ...
+  def initialize(name:)
+    @name = name
+  end
+
+  def result
+    return failure(data: {name: "Feature name can not be `nil`"}) if name.nil?
+    return failure(data: {name: "Unknown feature - `#{name}`"}) unless Feature.exist?(name: name)
+
+    # ... Tricky and non trivial logic to ensure that feature is active...
+  end
+end
+```
+
+There is no point to involve all the heavy machinery when the feature name is `nil`.
+
+Why do we need to waste any expensive resources if the feature name is unknown?
+
+The purpose of failure is to say that the callers need to adjust their code, not the service authors.
