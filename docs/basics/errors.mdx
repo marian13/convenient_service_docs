@@ -50,8 +50,9 @@ class TryToScheduleDelayedJob
       end
 
     ##
-    # Even if `tracker` is empty, service still is considered successful.
+    # Even if the `tracker` is empty, the service still is considered successful.
     # Since the trial is the target, but not the guarantee.
+    # `tracker` is more like a metadata here.
     #
     success(data: {tracker: job_tracker})
   end
