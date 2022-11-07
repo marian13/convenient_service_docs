@@ -30,6 +30,7 @@ const sidebars = {
         'basics/results',
         'basics/failures',
         'basics/errors',
+        'basics/success',
       ],
     },
     {
