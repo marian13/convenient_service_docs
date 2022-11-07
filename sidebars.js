@@ -32,6 +32,29 @@ const sidebars = {
         'basics/errors',
       ],
     },
+    {
+      type: 'category',
+      label: 'Plugins',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        {
+          type: 'category',
+          label: 'Service',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'plugins/service/caches_repeated_results',
+            'plugins/service/can_adjust_foreign_result',
+          ],
+        },
+      ],
+    },
+    'glossary',
   ],
 };
 
