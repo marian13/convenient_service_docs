@@ -57,6 +57,18 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Advanced',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'advanced/concern',
+        'advanced/middleware',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Tests',
       link: {
         type: 'generated-index',
@@ -86,6 +98,8 @@ const sidebars = {
         },
       ],
     },
+    'motivation',
+    'limitations',
     'glossary',
   ],
 };
