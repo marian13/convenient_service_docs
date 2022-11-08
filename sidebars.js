@@ -31,6 +31,8 @@ const sidebars = {
         'basics/failures',
         'basics/errors',
         'basics/success',
+        'basics/steps',
+        'basics/internals',
       ],
     },
     {
@@ -49,6 +51,7 @@ const sidebars = {
           },
           collapsed: true,
           items: [
+            'plugins/common/overview',
             {
               type: 'category',
               label: 'Assigns attributes in constructor',
@@ -80,6 +83,7 @@ const sidebars = {
           },
           collapsed: true,
           items: [
+            'plugins/service/overview',
             'plugins/service/can_recalculate_result',
             'plugins/service/has_result',
             'plugins/service/has_result_method_steps',
@@ -98,10 +102,33 @@ const sidebars = {
           },
           collapsed: true,
           items: [
+            'plugins/result/overview',
             'plugins/result/can_recalculate_result',
             'plugins/result/has_result_short_syntax',
             'plugins/result/marks_result_status_as_checked',
             'plugins/result/raises_on_not_checked_result_status',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Step',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'plugins/step/overview',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Step',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'plugins/internals/overview',
           ],
         },
       ],
