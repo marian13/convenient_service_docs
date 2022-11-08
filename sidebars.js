@@ -43,6 +43,37 @@ const sidebars = {
       items: [
         {
           type: 'category',
+          label: 'Common',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            {
+              type: 'category',
+              label: 'Assigns attributes in constructor',
+              link: {
+                type: 'generated-index',
+              },
+              collapsed: true,
+              items: [
+                'plugins/common/assigns_attributes_in_constructor/using_active_model_attribute_assignment',
+                'plugins/common/assigns_attributes_in_constructor/using_dry_initializer',
+              ],
+            },
+            'plugins/common/caches_constructor_params',
+            'plugins/common/caches_return_value',
+            'plugins/common/can_be_copied',
+            'plugins/common/has_around_callbacks',
+            'plugins/common/has_attributes',
+            'plugins/common/has_callbacks',
+            'plugins/common/has_constructor',
+            'plugins/common/has_internals',
+            'plugins/common/normalizes_env',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Service',
           link: {
             type: 'generated-index',
