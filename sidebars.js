@@ -55,6 +55,37 @@ const sidebars = {
         },
       ],
     },
+    {
+      type: 'category',
+      label: 'Tests',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        {
+          type: 'category',
+          label: 'RSpec',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            {
+              type: 'category',
+              label: 'Helpers',
+              link: {
+                type: 'generated-index',
+              },
+              collapsed: true,
+              items: [
+                'tests/rspec/helpers/wrap_method',
+              ],
+            },
+          ],
+        },
+      ],
+    },
     'glossary',
   ],
 };
