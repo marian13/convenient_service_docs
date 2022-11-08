@@ -90,6 +90,20 @@ const sidebars = {
             'plugins/service/wraps_result_in_db_transaction',
           ],
         },
+        {
+          type: 'category',
+          label: 'Result',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'plugins/result/can_recalculate_result',
+            'plugins/result/has_result_short_syntax',
+            'plugins/result/marks_result_status_as_checked',
+            'plugins/result/raises_on_not_checked_result_status',
+          ],
+        },
       ],
     },
     {
