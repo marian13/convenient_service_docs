@@ -44,7 +44,7 @@ class FetchPopularVideos
     success(data: {
       own_channel_videos: own_channel_videos,
       followers_videos: followers_videos,
-      all_videos: own_channel_videos.concact(followers_videos)
+      all_videos: own_channel_videos.concat(followers_videos)
     })
   end
 end

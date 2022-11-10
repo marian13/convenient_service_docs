@@ -31,6 +31,7 @@ const sidebars = {
         'basics/failures',
         'basics/errors',
         'basics/success',
+        'basics/results_are_ducks',
         'basics/steps',
         'basics/internals',
       ],

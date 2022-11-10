@@ -1,0 +1,83 @@
+---
+slug: /basics/results_are_ducks
+sidebar_position: 7
+title: Results are Ducks
+---
+
+## Why Results are Ducks?
+
+> If it looks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck.
+>
+> — Duck test
+
+Results are Ducks in the sense that no matter whether you have `success`, `failure`, or `error` - all of them have the same interface with reasonable defaults.
+
+Here is a comparison table:
+
+| | data | message | code |
+| - | - | - | - |
+| success | *data or `{}` | `""` | `:default_success` |
+| failure | *data or `{}` | first value from *data or `""` | `:default_failure` |
+| error | `{}` | *message or `""` | *code or `:default_error` |
+
+Where \* means _user-provided_.
+
+:::info
+
+As a user, you have the ability to pass custom values for everything, e.g: extraordinary code for failures.
+
+We (as library designers) left such a possibility to avoid the [Incomplete Library Class](https://refactoring.guru/smells/incomplete-library-class) code smell.
+
+But to be honest, we don't see any valuable use cases for now.
+
+:::
+
+:::note
+
+Actually, [Convenient Service](/) utilizes [look-alike wrappers](https://www.justinweiss.com/articles/a-decorator-vs-a-subclass/) for data, message, and code.
+
+`{}`, `""` and `:symbol` notations are used to not overcomplicate the table with too low-level details.
+
+:::
+
+As a consequence, you can be confident that any (adequate) status check (like `success?`) is enough to proceed:
+
+```ruby
+def show
+  # ...
+
+  # Status is logically checked somewhere.
+  result.success?
+
+  # n lines of code later...
+
+  # Won't crash since all `success`, `failure` and `error` respond to `data` and have reasonable defaults.
+  result.data
+
+  # Won't crash since all `success`, `failure` and `error` respond to `message` and have reasonable defaults.
+  result.message
+
+  # Won't crash since all `success`, `failure` and `error` respond to `code` and have reasonable defaults.
+  result.code
+
+  # ...
+end
+```
+
+:::danger
+
+When you forget to check the result status before accessing any of its attributes - an exception is raised.
+
+That is intentional in order to motivate a user to think not only about a happy path but about negative cases as well.
+
+For example:
+
+```ruby
+delivery_result = OrderFoodDelivery.result
+
+# Oh, raises `... Result::Errors::StatusIsNotChecked` since (as its name states) status is not checked.
+# How can you eat something if you don't even know whether it is already delivered or not 🙂?
+client.eat(delivery_result.data[:food])
+```
+
+:::
