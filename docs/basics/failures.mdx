@@ -4,7 +4,9 @@ sidebar_position: 4
 title: Failures
 ---
 
-Failure is a problem caused by the wrong input data.
+## What is a failure?
+
+_Failure_ is a problem caused by the wrong input data.
 
 It may be a validation error or an unmet precondition based on service arguments.
 
@@ -12,7 +14,7 @@ It is a responsibility of a developer/service user to provide correct inputs.
 
 Otherwise, there is no sense in even starting any service processing.
 
-Check out the folloiwng example:
+Check out the following example:
 
 ```ruby
 class EnsureFeatureActive
@@ -27,6 +29,17 @@ class EnsureFeatureActive
 
     # ... Tricky and non trivial logic to ensure that feature is active...
   end
+end
+```
+
+And this is how it can be triggerred:
+
+```ruby
+result = EnsureFeatureActive.result(name: "Fancy feature")
+
+if result.failure?
+  # `result.data` is a hash-like object with failure reasons grouped by parameters.
+  result.data[:name]
 end
 ```
 

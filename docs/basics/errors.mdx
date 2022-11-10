@@ -4,7 +4,9 @@ sidebar_position: 5
 title: Errors
 ---
 
-Error is a problem that happens during the actual execution of a service.
+## What is an error?
+
+_Error_ is a problem that happens during the actual execution of a service.
 
 It can be something usual as HTTP connection issues, database inconsistencies, timeouts, etc.
 
@@ -12,7 +14,7 @@ But the main point to realize - an error prevents the achievement of the service
 
 That is why is so vital to use meaningful names for services.
 
-For instance, when the aim is to schedule a delayed job, call it - `ScheduleDelayedJob`.
+For instance, when the aim is <u>to schedule a delayed job</u>, call it - `ScheduleDelayedJob`.
 
 When a job was not registered into the queue for whatever reason (except validation, since it is a failure), it should be treated as an error.
 
@@ -34,7 +36,7 @@ class ScheduleDelayedJob
 end
 ```
 
-On the contrary, when your objective is just to try to schedule a job, but it does not really important whether it was scheduled or not, the service name should reflect such desire explicitly.
+In contrast, when your objective is just <u>to try to schedule a job</u>, but it does not really important whether it was scheduled or not, the service name should reflect such desire explicitly.
 
 ```ruby
 class TryToScheduleDelayedJob
@@ -56,5 +58,39 @@ class TryToScheduleDelayedJob
     #
     success(data: {tracker: job_tracker})
   end
+end
+```
+
+## How to process errors?
+
+Most of the time, handling is the same for all kinds of errors, just like this:
+
+```ruby
+result = ScheduleDelayedJob.result
+
+if result.error?
+  # `result.message` is a string-like object with error reason.
+  send_alert(result.message)
+end
+```
+
+But when you need to treat them differently, do NOT parse strings, please.
+
+There is the second option `code`, exactly for this purpose, that can be passed to any error calls.
+
+```ruby
+# ...
+return error(message: "Queue has no space", code: :full_queue) if queue.full?
+return error(message: "Job is NOT unique", code: :duplicated_job) if job.duplicated?
+# ...
+
+if result.error?
+  case result.code # symbol-like object
+  when :full_queue
+    notify_devops
+  when :duplicated_job
+    notify_devs
+  else
+  # ...
 end
 ```

@@ -4,12 +4,60 @@ sidebar_position: 6
 title: Success
 ---
 
-Service must have one and only one reason to return success.
+## What is a success?
 
-If you feel that you need to have two success cases, prefer to create two services instead.
+_Success_ is a kind of result when the service objective is fully satisfied.
 
-:::info
+All the preconditions are met.
 
-❗ This page is still a work in progress. More info is yet to come ❗
+Every validation check is passed.
+
+There is no obstacle that prohibits achieving the service goal.
+
+In general, a service must have one and only one reason to return `success`.
+
+:::note
+
+No sense to hide the truth, sometimes it is really necessary to return multiple success cases from a single service (For example, fake HTTP responses for external testing systems).
+
+As a rule of thumb, if you start to feel that you have such a scenario, always prefer to think about how to create multiple services instead.
+
+If not, be ready to strongly argue why your situation is truly exceptional and unavoidable.
 
 :::
+
+## Success data
+
+Success results may have some data (So-called Boolean Services are often without success data).
+
+_Data_ is a hash-like structure with values received by service processing.
+
+Example:
+
+```ruby
+class FetchPopularVideos
+  # ...
+  def result
+    # ...
+    # Actual logic to fetch videos.
+    # ...
+    success(data: {
+      own_channel_videos: own_channel_videos,
+      followers_videos: followers_videos,
+      all_videos: own_channel_videos.concact(followers_videos)
+    })
+  end
+end
+```
+
+With invocation:
+
+```ruby
+result = FetchPopularVideos.result
+
+if result.success?
+  # No `data` checks here, since `result.success?` guarantees that `result.data[:all_videos]` are 100% valid.
+  markup = result.data[:all_videos].map { |video| generate_markup(video) }.join
+  # ...
+end
+```
