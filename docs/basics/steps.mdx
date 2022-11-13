@@ -4,8 +4,86 @@ sidebar_position: 7
 title: Steps
 ---
 
-:::info
+# What is a Step?
 
-❗ This page is still a work in progress. More info is yet to come ❗
+After a while service logic may grow into more complicated and less straightforward.
 
-:::
+Therefore, a future developer spends more time trying to figure out what is going on.
+
+That is probably an inevitable process since:
+
+> Complex problem can not have non-complex solution in a global sense.
+>
+> But a particular step (piece) from that solution can be simple.
+>
+> — Own savvy
+
+That is what steps are all about.
+
+As soon as you start to see that service logic becomes too difficult to digest for a minute or two.
+
+It is a clear sign that you need to split it into multiple sub-services and combine them back into a step sequence.
+
+This is how it looks in practice:
+
+```ruby
+class PurchaseBook
+  # ...
+  step AuthenticateUser, in: :user_id, out: :user
+  step SearchBooks, in: [:title, :author_id], out: [:book, :count]
+  step VerifyPaymentMethod, in: :user
+  step CalculatePrice in: :book, out: {price: :price_without_discount}
+  step ApplyDiscounts, in: [:book, {price: :price_without_discount}], out: {price: :price_with_discount}
+  # ...
+end
+```
+
+For the sake of completeness, here is the same service, but without steps:
+
+```ruby
+class PurchaseBook
+  # ...
+  def result
+    authenticate_user_result = AuthenticateUser.result(user_id: user_id)
+
+    return authenticate_user_result unless authenticate_user_result.success?
+
+    user = authenticate_user_result.data[:user]
+
+    search_book_result = SearchBook.result(title: title, author_id: author_id)
+
+    return search_book_result if search_book_result.not_success?
+
+    # NOTE: One service may return multiple values if needed.
+    book = search_book_result.data[:book]
+    count = search_book_result.data[:count]
+
+    verify_payment_method = VerifyPaymentMethod.result(user: user)
+
+    return verify_payment_method unless verify_payment_method.success?
+
+    calculate_price_result = CalculatePrice.result(book: book)
+
+    return calculate_price_result if calculate_price_result.not_success?
+
+    # NOTE: Aliasing `data[:price]` to `price_without_discount`.
+    price_without_discount = calculate_price_result.data[:price]
+
+    apply_discounts_result = ApplyDiscounts.result(book: book, price: :price_without_discount)
+
+    return apply_discounts_result unless apply_discounts_result.success?
+
+    # NOTE: Aliasing `data[:price]` to `price_with_discount`.
+    price_with_discount = apply_discounts_result.data[:price]
+    # ...
+  end
+end
+```
+
+Looks pretty impressive, isn't it?
+
+So steps are just regular services, but their [declarative interface](https://en.wikipedia.org/wiki/Declarative_programming) hides the [boilerplate code](https://en.wikipedia.org/wiki/Boilerplate_code).
+
+They are executed in the same order as they are defined.
+
+If any intermediate step service result is not successful, the step sequence is stopped, and that unsuccessful result is returned (similar to [Railway Oriented Programming](https://vimeo.com/97344498)).
