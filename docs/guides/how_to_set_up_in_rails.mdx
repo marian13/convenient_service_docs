@@ -1,0 +1,195 @@
+---
+slug: /guides/how_to_set_up_in_rails
+sidebar_position: 5
+title: Setup in a Rails project
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+- As always, add a new entry to your [Gemfile](https://bundler.io/guides/gemfile.html) as the first step.
+
+  ```ruby
+  gem "convenient_service", "~> 0.1.0"
+  ```
+
+- Then run [bundle](https://bundler.io/man/bundle-install.1.html) to install the gem.
+
+  ```bash
+  bundle install
+  ```
+
+- When you are following the [classic Rails folder structure](https://tutorialspoint.com/ruby-on-rails/rails-directory-structure.htm), we recommend creating `app/services` directory like so:
+
+  ```bash
+  mkdir -p app/services
+  ```
+
+  Feel free to select any folder you like.
+
+  `app/services` was chosen for a demonstration since it is [autoloaded](https://guides.rubyonrails.org/autoloading_and_reloading_constants.html#config-autoload-paths) by Rails.
+
+- Place a configuration file into it.
+
+  A common name may be `application_service/config.rb`.
+
+  ```bash
+  mkdir -p app/services/application_service && touch app/services/application_service/config.rb
+  ```
+
+  This example utilizes `Standard` or `Rails` config, but you can also pick any other [predefined configuration](./basics/tldr), [create customization](./guides/how_to_create_custom_config), or even [have multiple configs](./basics/tldr).
+
+  <Tabs groupId="config">
+    <TabItem value="standard" label="Standard" default>
+      <CodeBlock language="ruby" title="app/services/application_service/config.rb">
+        {`
+          module ApplicationService
+            module Config
+              def self.included(service_class)
+                service_class.include ConvenientService::Standard::Config
+              end
+            end
+          end
+        `}
+      </CodeBlock>
+    </TabItem>
+    <TabItem value="rails" label="Rails">
+      <CodeBlock language="ruby" title="app/services/application_service/config.rb">
+        {`
+          ConvenientService::Dependencies.require_assigns_attributes_in_constructor_using_active_model_attribute_assignment
+          ConvenientService::Dependencies.require_has_attributes_using_active_model_attributes
+          ConvenientService::Dependencies.require_has_result_params_validations_using_active_model_validations
+          -
+          module ApplicationService
+            module Config
+              def self.included(service_class)
+                service_class.class_exec do
+                  include ConvenientService::Standard::Config
+                  -
+                  concerns do
+                    use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Concern
+                    use ConvenientService::Plugins::Common::HasAttributes::UsingActiveModelAttributes::Concern
+                    use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Concern
+                  end
+                  -
+                  middlewares :initialize do
+                    use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Middleware
+                  end
+                  -
+                  middlewares :result do
+                    use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+                  end
+                end
+              end
+            end
+          end
+        `}
+      </CodeBlock>
+    </TabItem>
+  </Tabs>
+
+- Now you have everything ready to create fancy services for your application.
+
+  (Do not forget to include config into them 🙂)
+
+  <Tabs groupId="config">
+    <TabItem value="standard" label="Standard" default>
+      <CodeBlock language="ruby" title="app/services/print_what_cow_says.rb">
+        {`
+          class PrintWhatCowSays
+            include ApplicationService::Config
+            -
+            attr_reader :text
+            -
+            def initialize(text: "Hello World!")
+              @text = text
+            end
+            -
+            def result
+              puts template(text)
+              -
+              success
+            end
+            -
+            private
+            -
+            ##
+            # Copied with ❤️ from https://github.com/gaborbata/rosetta-cow
+            #
+            def template(text)
+              cloud =
+                <<~HEREDOC
+                   #{border(text, "_")}
+                  < #{text} >
+                   #{border(text, "-")}
+                HEREDOC
+              -
+              cow =
+                <<~'HEREDOC'.split("\\n").map { |line| " " * 10 + line }.join("\\n")
+                          \\   ^__^
+                           \\  (oo)\\_______
+                              (__)\\       )\\/\\
+                                  ||----w |
+                                  ||     ||
+                HEREDOC
+              -
+              cloud + cow
+            end
+            -
+            def border(text, char)
+              char * (text.length + 2)
+            end
+          end
+        `}
+      </CodeBlock>
+    </TabItem>
+    <TabItem value="rails" label="Rails">
+      <CodeBlock language="ruby" title="app/services/print_what_cow_says.rb">
+        {`
+          class PrintWhatCowSays
+            include ApplicationService::Config
+            -
+            attribute :text, :string, default: "Hello World!"
+            -
+            def result
+              puts template(text)
+              -
+              success
+            end
+            -
+            private
+            -
+            ##
+            # Copied with ❤️ from https://github.com/gaborbata/rosetta-cow
+            #
+            def template(text)
+              cloud =
+                <<~HEREDOC
+                   #{border(text, "_")}
+                  < #{text} >
+                   #{border(text, "-")}
+                HEREDOC
+              -
+              cow =
+                <<~'HEREDOC'.split("\\n").map { |line| " " * 10 + line }.join("\\n")
+                          \\   ^__^
+                           \\  (oo)\\_______
+                              (__)\\       )\\/\\
+                                  ||----w |
+                                  ||     ||
+                HEREDOC
+              -
+              cloud + cow
+            end
+            -
+            def border(text, char)
+              char * (text.length + 2)
+            end
+          end
+        `}
+      </CodeBlock>
+    </TabItem>
+  </Tabs>
+
+- That's it. Happy coding!

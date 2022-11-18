@@ -38,6 +38,18 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Guides',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'guides/how_to_set_up_in_rails',
+        'guides/how_to_create_custom_config',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Plugins',
       link: {
         type: 'generated-index',
@@ -132,6 +144,17 @@ const sidebars = {
             'plugins/internals/overview',
           ],
         },
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Configs',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'configs/standard',
       ],
     },
     {

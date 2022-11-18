@@ -65,7 +65,7 @@ import CodeBlock from '@theme/CodeBlock';
   <TabItem value="standard" label="Standard" default>
     <CodeBlock language="ruby">
       {`
-        class ApplicationService
+        module ApplicationService
           module Config
             def self.included(service_class)
               service_class.include ConvenientService::Standard::Config
@@ -78,7 +78,7 @@ import CodeBlock from '@theme/CodeBlock';
   <TabItem value="rails" label="Rails">
     <CodeBlock language="ruby">
       {`
-        class RailsService
+        module RailsService
           module Config
             def self.included(service_class)
               service_class.class_exec do
@@ -107,7 +107,7 @@ import CodeBlock from '@theme/CodeBlock';
   <TabItem value="dry" label="Dry">
     <CodeBlock language="ruby">
       {`
-        class DryService
+        module DryService
           module Config
             def self.included(service_class)
               service_class.class_exec do
