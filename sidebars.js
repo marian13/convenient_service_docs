@@ -50,6 +50,18 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Advanced Guides',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'advanced_guides/concern',
+        'advanced_guides/middleware',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Plugins',
       link: {
         type: 'generated-index',
@@ -155,18 +167,6 @@ const sidebars = {
       collapsed: true,
       items: [
         'configs/standard',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Advanced',
-      link: {
-        type: 'generated-index',
-      },
-      collapsed: true,
-      items: [
-        'advanced/concern',
-        'advanced/middleware',
       ],
     },
     {
