@@ -221,6 +221,8 @@ const sidebars = {
         'best_practices/avoid_error_shadowing',
         'best_practices/prefer_memoized_instance_variables_over_arguments_passing',
         'best_practices/avoid_mixing_private_methods_for_independent_operations',
+        'best_practices/do_not_use_direct_puts_in_services',
+        'best_practices/write_specs_not_only_for_conditionals',
       ],
     },
     'motivation',
