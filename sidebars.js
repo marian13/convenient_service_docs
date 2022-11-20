@@ -200,6 +200,18 @@ const sidebars = {
         },
       ],
     },
+    {
+      type: 'category',
+      label: 'Best Practices',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'best_practices/avoid_error_shadowing',
+        'best_practices/prefer_memoized_instance_variables_over_arguments_passing',
+      ],
+    },
     'motivation',
     'limitations',
     'glossary',
