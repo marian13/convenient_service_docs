@@ -1,0 +1,239 @@
+---
+slug: /api/tests/rspec/matchers/delegate_to
+sidebar_position: 1
+title: delegate_to
+---
+
+## What is `delegate_to`?
+
+`delegate_to` is a [custom RSpec matcher](https://relishapp.com/rspec/rspec-expectations/docs/custom-matchers/define-a-custom-matcher) that provides a neat way to check whether a [delegation](https://en.wikipedia.org/wiki/Delegation_(computing)) was performed as expected.
+
+For example, consider the following code snippet:
+
+```ruby
+class FirstService
+  attr_reader :params
+
+  def initialize(params:)
+    @params = params
+  end
+
+  def result
+    # ...
+    SecondService.result(params: params)
+  end
+end
+```
+
+As you can see, the first service asks the second one to do some "interesting" stuff and returns its value.
+
+This behavior can be easily tested in [RSpec](https://rspec.info/) like so:
+
+```ruby
+RSpec.describe FirstService do
+  describe ".result" do
+    let(:params) { {foo: :bar} }
+
+    it "delegates to `SecondService.result`" do
+      # Creates a spy.
+      allow(SecondService).to receive(:result).and_call_orginal
+
+      FirstService.result(params: params)
+
+      # Confirms delegation.
+      expect(SecondService).to have_received(:result)
+    end
+
+    it "returns `SecondService.result`" do
+      # Confirms return value equality.
+      expect(FirstService.result(params: params)).to eq(SecondService.result(params: params))
+    end
+  end
+end
+```
+
+Since it is so common to write specs as above when working with services, the `delegate_to` matcher is provided to hide the repeatable noise.
+
+```ruby
+RSpec.describe FirstService do
+  describe ".result" do
+    # highlight-start
+    include ConvenientService::RSpec::Matchers::DelegateTo
+    # highlight-end
+
+    let(:params) { {foo: :bar} }
+
+    # highlight-start
+    it "delegates to `SecondService.result`" do
+      expect { FirstService.result(params: params) }.to delegate_to(SecondService, :result)
+    end
+    # highlight-end
+
+    it "returns `SecondService.result`" do
+      # Confirms return value equality.
+      expect(FirstService.result(params: params)).to eq(SecondService.result(params: params))
+    end
+  end
+end
+```
+
+`delegate_to` has a self-explanatory `and_return_its_value` [chaining](https://relishapp.com/rspec/rspec-expectations/docs/compound-expectations), so we can [refactor out](https://en.wikipedia.org/wiki/Code_refactoring) the second spec as well.
+
+```ruby
+RSpec.describe FirstService do
+  describe ".result" do
+    include ConvenientService::RSpec::Matchers::DelegateTo
+
+    let(:kwargs) { {foo: :bar} }
+
+    # highlight-start
+    it "delegates to and returns `SecondService.result`" do
+      expect { FirstService.result(params: params) }
+        .to delegate_to(SecondService, :result)
+        .and_return_its_value
+    end
+    # highlight-end
+  end
+end
+```
+
+:::danger
+
+`and_return_its_value` uses [RSpec `eq`](https://relishapp.com/rspec/rspec-expectations/docs/built-in-matchers/equality-matchers) to compare values, therefore ensure your return values define meaningful [`==` operator](https://stackoverflow.com/a/7157051/12201472).
+
+:::
+
+Also `delegate_to` supports `with_arguments` chaining to make sure that delegation happened with certain arguments.
+
+```ruby
+RSpec.describe FirstService do
+  describe ".result" do
+    include ConvenientService::RSpec::Matchers::DelegateTo
+
+    let(:params) { {foo: :bar} }
+
+    it "delegates to and returns `SecondService.result`" do
+      expect { FirstService.result(params: params) }
+        .to delegate_to(SecondService, :result)
+        # highlight-start
+        .with_arguments(params: params)
+        # highlight-end
+        .and_return_its_value
+    end
+  end
+end
+```
+
+This spec can be simplified even further.
+
+```ruby
+RSpec.describe FirstService do
+  describe ".result" do
+    include ConvenientService::RSpec::Matchers::DelegateTo
+
+    let(:params) { {foo: :bar} }
+
+    # highlight-start
+    specify do
+      # highlight-end
+      expect { FirstService.result(params: params) }
+        .to delegate_to(SecondService, :result)
+        .with_arguments(params: params)
+        .and_return_its_value
+    end
+  end
+end
+```
+
+When [specify](https://rspec.info/documentation/3.12/rspec-core/RSpec/Core/ExampleGroup.html#specify-class_method) is utilized, [RSpec infers spec description](https://relishapp.com/rspec/rspec-expectations/v/3-12/docs/implicit-docstrings) from `delegate_to` arguments and chainings.
+
+## `delegate_to` is context-independent
+
+In other words, `delegate_to` is applicable for any classes, not only for services, e.g:
+
+```ruby
+class Notifier
+  # ...
+  def broadcast_event(*args, **kwargs, &block)
+    Event.create(*args, **kwargs, &block)
+  end
+end
+```
+
+With specs:
+
+```ruby
+RSpec.describe Notifier do
+  describe "#broadcast_event" do
+    include ConvenientService::RSpec::Matchers::DelegateTo
+
+    let(:notifier) { create(:notifier) }
+
+    let(:args) { :foo }
+    let(:kwargs) { {foo: :bar} }
+    let(:block) { proc { :foo } }
+
+    specify do
+      expect { notifier.broadcast_event(*args, **kwargs, &block) }
+        .to delegate_to(Event, :create)
+        .with_arguments(*args, **kwargs, &block)
+        .and_return_its_value
+    end
+  end
+end
+```
+
+Please, note that `delegate_to` is able to verify block argument (`&block`) [that is not possible with raw `allow` `to` `receive`](https://relishapp.com/rspec/rspec-mocks/v/3-12/docs/setting-constraints/matching-arguments).
+
+:::danger
+
+[Blocks (procs, lambdas](https://ruby-doc.org/core-3.1.0/Proc.html)) are compared by [RSpec `eq`](https://relishapp.com/rspec/rspec-expectations/docs/built-in-matchers/equality-matchers) under the hood.
+
+Please, remember their semantics in order to not be overly surprised.
+
+The two [Proc](https://ruby-doc.org/core-3.1.0/Proc.html) instances may look the same from the [syntax](https://en.wikipedia.org/wiki/Syntax) point of view.
+
+But they are different from the Proc [semantics](https://en.wikipedia.org/wiki/Semantics) point of view.
+
+```ruby
+first = proc { :foo }
+second = proc { :foo }
+
+first == second # => false
+first == first # => true
+second == second # => true
+:::
+
+## Pitfalls
+
+Currently, `delegate_to` expects that delegation is executed only once inside the `expect` block.
+
+For example, the next spec won't work:
+
+```ruby
+it "fails since delegation was done twice" do
+  expect {
+    File.exist?("Gemfile")
+
+    !File.exist?("Gemfile")
+  }
+    .to delegate_to(File, :exist?)
+    .with_arguments("Gemfile")
+end
+```
+
+[Receive Counts](https://relishapp.com/rspec/rspec-mocks/docs/setting-constraints/receive-counts) feature is planned for the future releases of the [Convenient Service](/).
+
+For now, please stick with plain [RSpec](https://rspec.info/) for such cases.
+
+```ruby
+it "passes with multiple delegations" do
+  allow(File).to receive(:exist?).with("Gemfile").and_call_original
+
+  File.exist?("Gemfile")
+
+  !File.exist?("Gemfile")
+
+  expect(File).to have_received(:exist?).with("Gemfile").twice
+end
+```

@@ -204,6 +204,17 @@ const sidebars = {
                     'api/tests/rspec/helpers/wrap_method',
                   ],
                 },
+                {
+                  type: 'category',
+                  label: 'Matchers',
+                  link: {
+                    type: 'generated-index',
+                  },
+                  collapsed: true,
+                  items: [
+                    'api/tests/rspec/matchers/delegate_to',
+                  ],
+                },
               ],
             },
           ],
