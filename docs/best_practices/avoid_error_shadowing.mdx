@@ -1,12 +1,142 @@
 ---
 slug: /best_practices/avoid_error_shadowing
-sidebar_position: 2
+sidebar_position: 1
 title: Avoid error shadowing
 ---
 
-:::info
+## What is an error shadowing?
 
-❗ This page is still a work in progress. More info is yet to come ❗
+_Error shadowing_ is a hiding of the original cause of the problem.
+
+A common use case may be [always returning a 404 HTTP error code in production](https://guides.rubyonrails.org/action_controller_overview.html#rescue), even when the real code is different.
+
+This way you make it a little bit harder for a possible attacker to find security holes in your web application.
+
+:::danger
+
+A professional [web attacker](https://owasp.org/www-community/attacks/) may [easily exploit any kind of security vulnerabilities](https://www.kali.org/).
+
+That is why it is so important to be extremely careful.
+
+Please, constantly impove your security skills.
+
+[Securing Rails Applications](https://guides.rubyonrails.org/security.html) and [OWASP: Ruby on Rails Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Ruby_on_Rails_Cheat_Sheet.html) are good places to revisit from time to time.
 
 :::
 
+Also it is popular to [rescue low-level exceptions](https://www.exceptionalcreatures.com/guides/advanced-rescue-and-raise#changing-exceptions) to encapsulate internal details from the end-user.
+
+The following example is taken directly from [the Rails codebase](https://github.com/rails/rails/blob/v7.0.0/activestorage/lib/active_storage/service/gcs_service.rb#L56):
+
+```ruby
+def download_chunk(key, range)
+  instrument :download_chunk, key: key, range: range do
+    file_for(key).download(range: range).string
+  rescue Google::Cloud::NotFoundError
+    raise ActiveStorage::FileNotFoundError
+  end
+end
+```
+
+As you can see, the original exception message is dropped and not reused anywhere.
+
+## When does error shadowing happen with services?
+
+Using [Convenient Service](/), you may encounter an error shadowing as well.
+
+But as always, any approach may have advantages and disadvantages.
+
+[To illustrate](https://blog.hubspot.com/sales/for-example-synonym) that, check the service below:
+
+```ruby
+class MainService
+  # ...
+  def result
+    return error(message: "Something went wrong") unless sub_service_result.success?
+    # ...
+    success
+  end
+
+  private
+
+  def sub_service_result
+    @sub_service_result ||= SubService.result
+  end
+  # ...
+end
+```
+
+`MainService` looks innocent, but the problem starts to appear when you execute it.
+
+```ruby
+result = MainService.result
+
+result.success?
+# => false
+
+result.message
+# => "Something went wrong"
+```
+
+`result.message` does NOT help to figure out what is actually wrong.
+
+`SubService` is failing in reality, but it is NOT reflected in the outside world in any way.
+
+If you don't want to intentionally confuse the service users or hide the internals from them, prefer to forward the original message.
+
+```ruby
+class MainService
+  # ...
+  def result
+    # highlight-start
+    return error(message: "Something went wrong (#{sub_service_result.message})") unless sub_service_result.success?
+    # highlight-end
+    # ...
+    success
+  end
+  # ...
+end
+```
+
+It is also OK to immediately return `SubService` result when you don't need to provide any additional text to its message, since it also avoids error shadowing.
+
+```ruby
+class MainService
+  # ...
+  def result
+    # highlight-start
+    return sub_service_result.message unless sub_service_result.success?
+    # highlight-end
+    # ...
+    success
+  end
+  # ...
+end
+```
+
+But the best option is to utilize the `step` macro.
+
+It works as the previous example under the hood and when used frequently - helps to forget about error shadowing in the context of services completely.
+
+```ruby
+class MainService
+  # highlight-start
+  step SubService
+  # highlight-end
+  # ...
+  def result
+    # highlight-start
+    # This line is removed...
+    # highlight-end
+    # ...
+    success
+  end
+  # ...
+end
+```
+
+:::note
+
+If you are not safisfied how `step` automatically prevents error shadowing - consider to create a plugin to extend/modify it.
+
+:::
