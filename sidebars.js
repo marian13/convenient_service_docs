@@ -213,6 +213,17 @@ const sidebars = {
                   collapsed: true,
                   items: [
                     'api/tests/rspec/matchers/delegate_to',
+                    {
+                      type: 'category',
+                      label: 'Results',
+                      link: {
+                        type: 'generated-index',
+                      },
+                      collapsed: true,
+                      items: [
+                        'api/tests/rspec/matchers/results/be_success',
+                      ],
+                    },
                   ],
                 },
               ],
