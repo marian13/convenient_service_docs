@@ -1,0 +1,13 @@
+---
+slug: /guides/how_to_set_up_in_rspec
+sidebar_position: 2
+title: Setup in RSpec
+---
+
+- Add the following line to your [spec_helper.rb](https://relishapp.com/rspec/rspec-core/docs) or [rails_helper.rb](https://relishapp.com/rspec/rspec-rails/docs).
+
+  ```ruby
+  ConvenientService::Dependencies.require_rspec_extentions
+  ```
+
+- That's it. Happy testing!

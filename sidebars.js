@@ -45,6 +45,7 @@ const sidebars = {
       collapsed: true,
       items: [
         'guides/how_to_set_up_in_rails',
+        'guides/how_to_set_up_in_rspec',
         'guides/how_to_create_custom_config',
       ],
     },
