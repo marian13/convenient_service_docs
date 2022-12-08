@@ -1,0 +1,83 @@
+---
+slug: /api/tests/rspec/matchers/results/be_error
+sidebar_position: 2
+title: be_error
+---
+
+**Base Matcher:**
+
+```ruby
+be_error
+```
+
+**Chainings:**
+
+```ruby
+with_message(message)
+and_message(message)
+with_code(code)
+and_code(code)
+```
+
+**Example:**
+
+```ruby
+# frozen_string_literal: true
+
+class ValidateUncastedParams
+  include ConvenientService::Standard::Config
+
+  attr_reader :params
+
+  step :validate_id
+
+  def initialize(params:)
+    @params = params[:id]
+  end
+
+  private
+
+  def validate_id
+    return error("ID `#{params[:id]}` is not a valid integer") unless Integer(params[:id], exception: false)
+
+    success
+  end
+end
+```
+
+```ruby
+# frozen_string_literal: true
+
+RSpec.describe ValidateUncastedParams do
+  example_group "class methods" do
+    describe ".result" do
+      include ConvenientService::RSpec::Matchers::Results
+
+      subject(:result) { described_class.result(params: params) }
+
+      context "when `id` is NOT valid" do
+        let(:params) { {id: "42abc"} }
+
+        it "returns error with message" do
+          expect(result).to be_error.with_message("ID `#{params[:id]}` is not a valid integer")
+        end
+      end
+
+      context "when `id` is valid" do
+        let(:params) { {id: "42"} }
+
+        it "returns success without data" do
+          expect(result).to be_success.without_data
+        end
+      end
+    end
+  end
+end
+```
+
+:::info
+
+❗ This page is still a work in progress. More info is yet to come ❗
+
+:::
+
