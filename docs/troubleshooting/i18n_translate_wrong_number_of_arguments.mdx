@@ -1,0 +1,68 @@
+---
+slug: /troubleshooting/i18n_translate_wrong_number_of_arguments
+sidebar_position: 1
+title: I18n.translate wrong number of arguments
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+```
+Failure/Error: @errors ||= entity.tap(&:valid?).errors.messages.transform_values(&:first)
+
+ArgumentError:
+  wrong number of arguments (given 2, expected 0..1)
+# /usr/local/bundle/gems/i18n-1.12.0/lib/i18n.rb:210:in `translate'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/naming.rb:190:in `human'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/errors.rb:424:in `generate_message'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/errors.rb:454:in `normalize_message'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/errors.rb:298:in `add'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/validations/presence.rb:7:in `validate_each'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/validator.rb:152:in `block in validate'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/validator.rb:149:in `each'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/validator.rb:149:in `validate'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:426:in `block in make_lambda'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:198:in `block (2 levels) in halting'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:606:in `block (2 levels) in default_termi
+nator'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:605:in `catch'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:605:in `block in default_terminator'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:199:in `block in halting'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:513:in `block in invoke_before'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:513:in `each'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:513:in `invoke_before'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:131:in `run_callbacks'
+# /usr/local/bundle/gems/activesupport-5.2.8.1/lib/active_support/callbacks.rb:816:in `_run_validate_callbacks'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/validations.rb:409:in `run_validations!'
+# /usr/local/bundle/gems/activemodel-5.2.8.1/lib/active_model/validations.rb:339:in `valid?'
+# ./lib/convenient_service/service/plugins/has_result_params_validations/using_active_model_validations/middleware.rb:28
+:in `errors'
+# ./lib/convenient_service/service/plugins/has_result_params_validations/using_active_model_validations/middleware.rb:10
+:in `next'
+```
+
+This exception may happen when [HasResultParamsValidations::UsingActiveModelValidations](/api/plugins/service/has_result_params_validations/using_active_model_validations) plugin is used in an environemnt with [Ruby 3+](https://www.ruby-lang.org/en/news/2020/12/25/ruby-3-0-0-released/) and [Rails 5](https://api.rubyonrails.org/v5.0.0/).
+
+It is caused by [separation of positional and keyword arguments in Ruby 3.0](https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-keyword-arguments-in-ruby-3-0/).
+
+Check [correct Delegation with Ruby 2.6, 2.7 and 3.0](https://eregon.me/blog/2021/02/13/correct-delegation-in-ruby-2-27-3.html) and [I18n.translate](https://github.com/ruby-i18n/i18n/blob/v1.12.0/lib/i18n.rb#L195) for more details.
+
+<img src={useBaseUrl('/img/troubleshooting/i18n_translate_wrong_number_of_arguments/i18n_translate.png')} />
+
+Currenty, there is no a simple workaround for it.
+
+Actually, you may choose any of the following two options:
+
+1. [Upgrade to Rails 6 or higher](https://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html).
+
+2. Or remove [HasResultParamsValidations::UsingActiveModelValidations](/api/plugins/service/has_result_params_validations/using_active_model_validations) plugin from [config](/basics/configs) <br />
+  (do not forget to remove [validates](https://edgeguides.rubyonrails.org/active_record_validations.html) calls as well).
+
+  ```ruby
+  concerns do
+    delete Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Concern
+  end
+
+  middlewares :result do
+    delete Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+  end
+  ```

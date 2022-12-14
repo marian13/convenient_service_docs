@@ -33,6 +33,7 @@ const sidebars = {
         'basics/success',
         'basics/results_are_ducks',
         'basics/steps',
+        'basics/configs',
       ],
     },
     {
@@ -121,7 +122,18 @@ const sidebars = {
                 'api/plugins/service/can_recalculate_result',
                 'api/plugins/service/has_result',
                 'api/plugins/service/has_result_method_steps',
-                'api/plugins/service/has_result_params_validations',
+                {
+                  type: 'category',
+                  label: 'Has result params validations',
+                  link: {
+                    type: 'generated-index',
+                  },
+                  collapsed: true,
+                  items: [
+                    'api/plugins/service/has_result_params_validations/using_active_model_validations',
+                    'api/plugins/service/has_result_params_validations/using_dry_validation',
+                  ],
+                },
                 'api/plugins/service/has_result_short_syntax',
                 'api/plugins/service/has_result_steps',
                 'api/plugins/service/raises_on_double_result',
@@ -232,6 +244,17 @@ const sidebars = {
             },
           ],
         },
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Troubleshooting',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'troubleshooting/i18n_translate_wrong_number_of_arguments',
       ],
     },
     {
