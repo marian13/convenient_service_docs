@@ -33,7 +33,6 @@ const sidebars = {
         'basics/success',
         'basics/results_are_ducks',
         'basics/steps',
-        'basics/internals',
       ],
     },
     {
@@ -59,6 +58,7 @@ const sidebars = {
       items: [
         'advanced_guides/concern',
         'advanced_guides/middleware',
+        'advanced_guides/internals',
       ],
     },
     {
