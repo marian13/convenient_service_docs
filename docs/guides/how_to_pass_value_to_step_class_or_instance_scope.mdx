@@ -1,0 +1,68 @@
+---
+slug: /guides/how_to_pass_value_to_step_class_or_instance_scope
+sidebar_position: 3
+title: How to pass a value to step from class/instance scope?
+---
+
+Let's consider the following service:
+
+```ruby
+class Service
+  # ...
+
+  step CompileRegexp, \
+    in: {pattern: ???}, # `???` is just a placeholder here, it is not a valid Ruby syntax.
+    out: :escaped
+
+  # ...
+end
+```
+
+We need to pass `ENV["PATH_PATTERN"]` to the `CompileRegexp` step as the `pattern` param.
+
+How that can be achievable?
+
+There are multiple ways:
+
+- Using [raw](/api/plugins/service/has_result_steps).
+
+  ```ruby
+  step CompileRegexp, \
+    in: {pattern: raw(ENV["PATH_PATTERN"])},
+    out: :escaped
+  ```
+
+  This is how `step` call is "translated" to regular service invocation under the hood:
+
+  ```ruby
+  step[0].result = CompileRegexp.result(pattern: ENV["PATH_PATTERN"])
+  ```
+
+  Since [raw](/api/plugins/service/has_result_steps) is a [class method](https://rubyreferences.github.io/rubyref/language/methods-def.html#scope) you can pass it anything from the enclosing class scope.
+
+  The value is forwarded without any intermediate processing.
+
+  ```ruby
+  step CompileRegexp, \
+    in: {pattern: raw(any_class_method)},
+    out: :escaped
+  ```
+
+- Using [proc form](/api/plugins/service/has_result_steps).
+
+  ```ruby
+  step CompileRegexp, \
+    in: {pattern: -> { ENV["PATH_PATTERN"] },
+    out: :escaped
+  ```
+
+  The [proc form](/api/plugins/service/has_result_steps) does not additionally process the passed value as well, but it is evaluated in the instance scope.
+
+  So you can access any service instance methods in it.
+
+  ```ruby
+  step CompileRegexp, \
+    in: {pattern: -> { any_instance_method },
+    out: :escaped
+  ```
+
