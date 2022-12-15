@@ -170,7 +170,7 @@ const sidebars = {
             },
             {
               type: 'category',
-              label: 'Step',
+              label: 'Internals',
               link: {
                 type: 'generated-index',
               },
