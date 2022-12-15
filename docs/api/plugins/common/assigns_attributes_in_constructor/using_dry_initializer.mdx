@@ -1,11 +1,111 @@
 ---
-slug: /api/plugins/common/assigns_attributes_in_constructor/using_active_model_attribute_assignment
+slug: /api/plugins/common/assigns_attributes_in_constructor/using_dry_initializer
 sidebar_position: 2
-title: Assigns attributes in constructor using ActiveModel::AttributeAssignment
+title: Assigns attributes in constructor using Dry::Initializer
 ---
 
-:::info
+It is so common to write [constructors](https://ruby-doc.org/docs/ruby-doc-bundle/UsersGuide/rg/objinitialization.html) and [attributes](https://ruby-doc.com/docs/ProgrammingRuby/html/tut_classes.html) in [Ruby](https://www.ruby-lang.org/en/) like so:
 
-❗ This page is still a work in progress. More info is yet to come ❗
+```ruby
+class FormatHeader
+  include ApplicationService::Config
+
+  attr_reader :parsed_content, :skip_frozen_string_literal
+
+  def initialize(parsed_content:, skip_frozen_string_literal: false)
+    @parsed_content = parsed_content
+    @skip_frozen_string_literal = skip_frozen_string_literal
+  end
+  # ...
+end
+```
+
+If [Ruby](https://www.ruby-lang.org/en/) is your [day-to-day language](https://survey.stackoverflow.co/2022/#section-most-popular-technologies-programming-scripting-and-markup-languages), such code probably seems too [routine](https://www.collinsdictionary.com/dictionary/english/routine) for you.
+
+```ruby
+class RunShell
+  include ApplicationService::Config
+
+  attr_reader :command, :debug
+
+  def initialize(command:, debug: false)
+    @command = command
+    @debug = debug
+  end
+  # ...
+end
+```
+
+Also, it is [so annoying to make accidental typos](https://github.com/aemkei/jsfuck), when you are already tired, but you still have some stuff to complete.
+
+For example, the word `command` is typed 4 times in the example above, so it is 4 opportunities to make an automatic mistake.
+
+Please, don't even tell that [your IDE handles that for you](https://www.reddit.com/r/software/comments/xeepud/dont_always_trust_what_your_ide_tells_you/).
+
+When the whole team is feeling the same annoyance.
+
+All of the members really believe in the benefits of the removal of such repeatable code.
+
+You may consider to utilizing the [Dry::Initializer](https://dry-rb.org/gems/dry-initializer/3.0/params-and-options/) integration that the [AssignsAttributesInConstructor::UsingDryInitalizer](/api/plugins/common/assigns_attributes_in_constructor/using_dry_initializer) plugin provides.
+
+```ruby
+module ApplicationService
+  module Config
+    def self.included(service_class)
+      service_class.class_exec do
+        include ConvenientService::Standard::Config
+        # ...
+        concerns do
+          use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingDryInitalizer::Concern
+        end
+      end
+    end
+  end
+end
+```
+
+Thus, `FormatHeader` and `RunShell` can be reduced in the following way:
+
+```ruby
+class FormatHeader
+  include ApplicationService::Config
+
+  option :parsed_content
+  option :skip_frozen_string_literal, default: -> { false }
+  # ...
+end
+```
+
+```ruby
+class RunShell
+  include ApplicationService::Config
+
+  option :command
+  option :debug, default: -> { false }
+  # ...
+end
+```
+
+:::caution
+
+[Dry::Initializer](https://dry-rb.org/gems/dry-initializer/3.0/params-and-options/) does NOT call `super` in its [initialize](https://github.com/dry-rb/dry-initializer/blob/v3.1.1/lib/dry/initializer/mixin/root.rb#L11) implementation.
+
+If it causes problems for you, try to place [AssignsAttributesInConstructor::UsingDryInitalizer](/api/plugins/common/assigns_attributes_in_constructor/using_dry_initializer) closer to the top in the concerns stack.
+
+See [insert_before](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#insert-before).
+
+:::
+
+:::danger
+
+Introduce new libraries to the projects only when you have strong arguments and complete ideas about why to do so.
+
+In fast-paced enterprise projects, with a poor onboarding process, simplicity is almost always a better choice.
+
+The simplicity in a sense, that the tech stack should be familiar to the people, who maintain the project for years.
+
+Since you probably won't have a chance to talk with the "one-task" developers while they remember the initial reasoning behind their code.
+
+Moreover, that code is frequently left without any diagrams, documentation, or even tests 😐.
 
 :::
