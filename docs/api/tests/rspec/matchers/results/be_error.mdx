@@ -24,21 +24,17 @@ and_code(code)
 ```ruby
 # frozen_string_literal: true
 
-class ValidateUncastedParams
+class AssertFileExists
   include ConvenientService::Standard::Config
 
-  attr_reader :params
+  attr_reader :path
 
-  step :validate_id
-
-  def initialize(params:)
-    @params = params[:id]
+  def initialize(path:)
+    @path = path
   end
 
-  private
-
-  def validate_id
-    return error("ID `#{params[:id]}` is not a valid integer") unless Integer(params[:id], exception: false)
+  def result
+    return error("File with path `#{path}` does NOT exist") unless ::File.exist?(path)
 
     success
   end
@@ -48,27 +44,28 @@ end
 ```ruby
 # frozen_string_literal: true
 
-RSpec.describe ValidateUncastedParams do
-  example_group "class methods" do
-    describe ".result" do
-      include ConvenientService::RSpec::Matchers::Results
+RSpec.describe AssertFileExists do
+  include ConvenientService::RSpec::Matchers::Results
 
-      subject(:result) { described_class.result(params: params) }
+  let(:service) { described_class.new(path: path) }
 
-      context "when `id` is NOT valid" do
-        let(:params) { {id: "42abc"} }
+  describe "#result" do
+    subject(:result) { service.result }
 
-        it "returns error with message" do
-          expect(result).to be_error.with_message("ID `#{params[:id]}` is not a valid integer")
-        end
+    context "when file with path does NOT exist" do
+      let(:path) { "non_existing_path" }
+
+      it "returns error with message" do
+        expect(result).to be_error.with_message("File with path `#{path}` does NOT exist")
       end
+    end
 
-      context "when `id` is valid" do
-        let(:params) { {id: "42"} }
+    context "when file with path exists" do
+      let(:tempfile) { Tempfile.new }
+      let(:path) { tempfile.path }
 
-        it "returns success without data" do
-          expect(result).to be_success.without_data
-        end
+      it "returns success" do
+        expect(result).to be_success.without_data
       end
     end
   end

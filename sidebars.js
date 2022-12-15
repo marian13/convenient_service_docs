@@ -236,8 +236,9 @@ const sidebars = {
                       },
                       collapsed: true,
                       items: [
-                        'api/tests/rspec/matchers/results/be_success',
+                        'api/tests/rspec/matchers/results/be_failure',
                         'api/tests/rspec/matchers/results/be_error',
+                        'api/tests/rspec/matchers/results/be_success',
                       ],
                     },
                   ],

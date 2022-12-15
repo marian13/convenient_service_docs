@@ -1,6 +1,6 @@
 ---
 slug: /api/tests/rspec/matchers/results/be_success
-sidebar_position: 1
+sidebar_position: 3
 title: be_success
 ---
 
@@ -42,27 +42,23 @@ end
 # frozen_string_literal: true
 
 RSpec.describe ApplyDefaultParamValues do
-  example_group "class methods" do
-    describe ".result" do
-      include ConvenientService::RSpec::Matchers::Results
+  describe ".result" do
+    include ConvenientService::RSpec::Matchers::Results
 
-      subject(:result) { described_class.result(params: params, defaults: defaults) }
+    subject(:result) { described_class.result(params: params, defaults: defaults) }
 
-      let(:params) { {title: ""} }
-      let(:defaults) { {tags: []} }
-      let(:params_with_defaults) { {title: "", tags: []} }
+    let(:params) { {title: ""} }
+    let(:defaults) { {tags: []} }
 
-      it "return success with merged params" do
-        expect(result).to be_success.with_data(params: params_with_defaults)
-      end
+    it "return success with merged params" do
+      expect(result).to be_success.with_data(params: {title: "", tags: []})
+    end
 
-      context "when both `params` and `defaults` have the same key" do
-        let(:params) { {title: "", tags: [:high_priority]} }
-        let(:params_with_defaults) { {title: "", tags: [:high_priority]} }
+    context "when both `params` and `defaults` have the same key" do
+      let(:params) { {title: "", tags: [:high_priority]} }
 
-        it "takes value from `params`" do
-          expect(result).to be_success.with_data(params: params_with_defaults)
-        end
+      it "takes value from `params`" do
+        expect(result).to be_success.with_data(params: {title: "", tags: [:high_priority]})
       end
     end
   end
