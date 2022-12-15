@@ -1,0 +1,44 @@
+---
+slug: /glossary/decorator_middleware
+sidebar_position: 1
+title: Decorator Middleware
+---
+
+A decorator middleware is a kind of middleware that always calls the next middleware in a chain.
+
+[HasCallbacks](/api/plugins/common/has_callbacks) is a good example.
+
+```ruby
+module ConvenientService
+  module Common
+    module Plugins
+      module HasCallbacks
+        class Middleware < Core::MethodChainMiddleware
+          # ...
+          # highlight-start
+          def next(...)
+            entity.callbacks.for([:before, method]).each { |callback| callback.call_in_context(entity) }
+
+            original_value = chain.next(...)
+
+            entity.callbacks.for([:after, method]).reverse_each { |callback| callback.call_in_context(entity, original_value) }
+
+            original_value
+          end
+          # highlight-end
+          # ...
+        end
+      end
+    end
+  end
+end
+```
+
+It triggers before callbacks, then `chain.next(...)`, and later after callbacks.
+
+There are no conditionals that may skip `chain.next(...)` invocation.
+
+That is why this middleware is considered [decorator](https://refactoring.guru/design-patterns/decorator) middleware.
+
+In contrast, [proxy middlewares](/glossary/proxy_middleware) may not call `chain.next` if needed.
+

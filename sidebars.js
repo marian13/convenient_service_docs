@@ -257,6 +257,7 @@ const sidebars = {
       },
       collapsed: true,
       items: [
+        'troubleshooting/i_am_a_convenient_service_debuggerer',
         'troubleshooting/i18n_translate_wrong_number_of_arguments',
       ],
     },
@@ -285,7 +286,18 @@ const sidebars = {
     },
     'motivation',
     'limitations',
-    'glossary',
+    {
+      type: 'category',
+      label: 'Glossary',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'glossary/decorator_middleware',
+        'glossary/proxy_middleware',
+      ],
+    },
   ],
 };
 

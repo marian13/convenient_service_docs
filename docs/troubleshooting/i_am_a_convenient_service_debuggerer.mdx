@@ -1,0 +1,105 @@
+---
+slug: /troubleshooting/i_am_a_convenient_service_debuggerer
+sidebar_position: 1
+title: I am a Convenient Service debuggerer
+---
+
+## My plugin is added to the config, but its middleware is never called
+
+Some plugins are order-dependent.
+
+For example, [HasResultSteps](/api/plugins/service/has_result_steps) has a middleware for the instance `result` method in [the Standard config](/api/configs/standard).
+
+```ruby
+middlewares :result do
+  # ...
+  use Plugins::Service::HasResult::Middleware
+  use Plugins::Service::HasResultSteps::Middleware
+  # ...
+  use Plugins::Common::CachesReturnValue::Middleware
+  # ...
+end
+```
+
+If your plugin enhances the instance `result` method as well, you may be affected by [HasResultSteps](/api/plugins/service/has_result_steps).
+
+How? Let's check its source.
+
+```ruby
+module ConvenientService
+  module Service
+    module Plugins
+      module HasResultSteps
+        class Middleware < Core::MethodChainMiddleware
+          # highlight-start
+          def next(...)
+            return chain.next(...) if entity.steps.none?
+
+            last_step.result.copy
+          end
+          # highlight-end
+          # ...
+        end
+      end
+    end
+  end
+end
+```
+
+It works as a [proxy middleware](/glossary/proxy_middleware).
+
+When a service has no steps, [HasResultSteps](/api/plugins/service/has_result_steps) just calls what is next in the middleware chain, by `chain.next(...)`.
+
+Otherwise, it returns the last step copy.
+
+Let's place, e.g. [HasResultParamsValidations::UsingActiveModelValidations](/api/plugins/service/has_result_params_validations/using_active_model_validations) plugin after [HasResultSteps](api/plugins/service/has_result_steps) in your [application service config](basics/tldr).
+
+```ruby
+module ApplicationService
+  module Config
+    def self.included(service_class)
+      service_class.class_exec do
+        # highlight-start
+        include ConvenientService::Standard::Config
+        # ...
+        middlewares :result do
+          use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+        end
+        # highlight-end
+      end
+    end
+  end
+end
+```
+
+This way [HasResultParamsValidations::UsingActiveModelValidations](/api/plugins/service/has_result_params_validations/using_active_model_validations) is never called for services with steps.
+
+To fix that, locate it before [HasResultSteps](/api/plugins/service/has_result_steps) like so:
+
+```ruby
+module ApplicationService
+  module Config
+    def self.included(service_class)
+      service_class.class_exec do
+        include ConvenientService::Standard::Config
+        # ...
+        middlewares :result do
+          # highlight-start
+          insert_before \
+            ConvenientService::Plugins::Service::HasResultSteps::Middleware,
+            ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+          # highlight-end
+        end
+      end
+    end
+  end
+end
+```
+
+Apart from [insert_before](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#insert-before), [insert_after](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#insert-after), [insert_after_each](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#insert-after-each), [insert_before_each](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#insert-before-each), [replace](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#replace), and [delete](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#delete) are also available.
+
+:::note
+
+This page is inspired by [I am a puts debuggerer](https://tenderlovemaking.com/2016/02/05/i-am-a-puts-debuggerer.html#) and [Ruby Debugging Magic Cheat Sheet](https://www.schneems.com/2016/01/25/ruby-debugging-magic-cheat-sheet.html).
+
+:::
