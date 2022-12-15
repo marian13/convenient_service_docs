@@ -61,6 +61,7 @@ const sidebars = {
         'advanced_guides/concern',
         'advanced_guides/middleware',
         'advanced_guides/internals',
+        'advanced_guides/how_to_debug_lib',
       ],
     },
     {

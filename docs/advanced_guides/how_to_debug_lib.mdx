@@ -1,0 +1,73 @@
+---
+slug: /advanced_guides/how_to_debug_lib
+sidebar_position: 5
+title: How to debug the lib?
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+[Convenient Service](/) has already more than [1500 unit and integration tests](https://github.com/marian13/convenient_service/tree/main/spec).
+
+That is not the end, more specs are constantly added to [cover](https://coveralls.io/github/marian13/convenient_service?branch=main) even the craziest cases.
+
+But since it is relatively a new library something unpredicatable may still happen.
+
+Prefer to [create a GitHub issue](https://github.com/marian13/convenient_service/issues), when you encounter unexpected behavior.
+
+However, if you are curious and enthusiastic enough, you can always try to dive deep and debug [the "nifty" inner parts](https://github.com/marian13/convenient_service) by yourself.
+
+- First of all, navigate to the directory with a project that uses [Convenient Service](/) as a dependency.
+
+  ```bash
+  cd your_project
+  ```
+
+  In other words, you have it in your project [Gemfile](https://bundler.io/guides/gemfile.html) like so:
+
+  ```ruby title="Gemfile"
+  gem "convenient_service", "~> 0.2.1"
+  ```
+
+- Make sure [Convenient Service](/) is [installed](/convenient_service_docs/installation).
+
+  ```ruby
+  bundle install
+  ```
+
+- Open the gem source. Set the [EDITOR env variable](https://bash.cyberciti.biz/guide/$EDITOR_variable) to your favorite code editing tool. The command below uses [VS Code](https://code.visualstudio.com/).
+
+  ```bash
+  EDITOR=code bundle open convenient_service
+  ```
+
+- Select any file you need and place a debugger call in it.
+
+  The following example utilizes [byebug](https://github.com/deivid-rodriguez/byebug).
+
+  <img src={useBaseUrl('img/advanced_guides/how_to_debug_lib/byebug.png')} />
+
+- Start your project ([irb console](https://github.com/ruby/irb), [Rails server](https://edgeguides.rubyonrails.org/command_line.html#bin-rails-server), [RSpec suite](https://manny.codes/7-ways-to-selectively-run-rspec-tests/), [Rake tasks](https://ruby.github.io/rake/)) to trigger the code that seems to be broken.
+
+- Happy debugging!
+
+  :::danger
+
+  Do not forget to erase the debugger call once finished debugging.
+
+  :::
+
+  :::caution
+
+  [binding.pry](https://github.com/pry/pry) is an amazing instrument, but is NOT a [debugger](https://en.wikipedia.org/wiki/Debugger), it is a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop).
+
+  [REPL](https://replit.com/languages/ruby) has a completely different purpose, it can enhance the debugger, but not replace it.
+
+  [A casual REPL does not support even half of the possibilities](https://ruby-doc.org/stdlib-2.7.0/libdoc/irb/rdoc/IRB.html) that a mature debugger provides.
+
+  Just to name some of them, [line-by-line debugging, up and down stack navigation, dynamic breakpoints](https://github.com/deivid-rodriguez/byebug/blob/master/GUIDE.md), etc.
+
+  Don't like [byebug](https://github.com/deivid-rodriguez/byebug) since it does not highlight the syntax 🤦? Then [this gist is for you](https://stackoverflow.com/a/66809857/12201472).
+
+  Still don't like [byebug](https://github.com/deivid-rodriguez/byebug)? Use [binding.break](https://stackoverflow.com/a/70104440/12201472) - a modern debugger developed by [the Ruby core team](https://github.com/ruby/debug).
+
+  :::
