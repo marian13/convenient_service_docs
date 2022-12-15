@@ -95,7 +95,7 @@ import CodeBlock from '@theme/CodeBlock';
                 end
                 -
                 middlewares :result do
-                  insert_before \
+                  insert_before \\
                     ConvenientService::Plugins::Service::HasResultSteps::Middleware,
                     ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
                 end
@@ -121,7 +121,7 @@ import CodeBlock from '@theme/CodeBlock';
                 end
                 -
                 middlewares :result do
-                  insert_before \
+                  insert_before \\
                     ConvenientService::Plugins::Service::HasResultSteps::Middleware,
                     ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Middleware
                 end
