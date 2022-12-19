@@ -7,12 +7,14 @@ title: Setup in a Rails project
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
+import version from '/src/constants/version';
 
 - As always, add a new entry to your [Gemfile](https://bundler.io/guides/gemfile.html) as the first step.
 
-  ```ruby
-  gem "convenient_service", "~> 0.2.1"
-  ```
+  <CodeBlock language="ruby">
+    {`gem "convenient_service", "~> ${version}"`}
+  </CodeBlock>
+
 
 - Then run [bundle](https://bundler.io/man/bundle-install.1.html) to install the gem.
 

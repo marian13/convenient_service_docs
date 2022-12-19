@@ -4,7 +4,10 @@ sidebar_position: 5
 title: How to debug the lib?
 ---
 
+import CodeBlock from '@theme/CodeBlock';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import version from '/src/constants/version';
+
 
 [Convenient Service](/) has already more than [1500 unit and integration tests](https://github.com/marian13/convenient_service/tree/main/spec).
 
@@ -24,9 +27,9 @@ However, if you are curious and enthusiastic enough, you can always try to dive 
 
   In other words, you have it in your project [Gemfile](https://bundler.io/guides/gemfile.html) like so:
 
-  ```ruby title="Gemfile"
-  gem "convenient_service", "~> 0.2.1"
-  ```
+  <CodeBlock language="ruby" title="Gemfile">
+    {`gem "convenient_service", "~> ${version}"`}
+  </CodeBlock>
 
 - Make sure [Convenient Service](/) is [installed](/convenient_service_docs/installation).
 

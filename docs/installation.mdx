@@ -4,15 +4,18 @@ sidebar_position: 1
 title: Installation
 ---
 
+import CodeBlock from '@theme/CodeBlock';
+import version from '/src/constants/version';
+
 There are multiple installation methods. Pick the one that best fits your needs.
 
 ## Bundler
 
 Add the following line to your Gemfile:
 
-```ruby
-gem "convenient_service", "~> 0.2.1"
-```
+<CodeBlock language="ruby">
+  {`gem "convenient_service", "~> ${version}"`}
+</CodeBlock>
 
 And then run:
 
@@ -24,9 +27,9 @@ bundle install
 
 Execute the command below:
 
-```bash
-gem install convenient_service -v 0.2.1
-```
+<CodeBlock language="bash">
+  {`gem install convenient_service -v ${version}`}
+</CodeBlock>
 
 :::info
 
