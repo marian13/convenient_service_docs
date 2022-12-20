@@ -1,0 +1,125 @@
+---
+slug: /basics/step_to_result_translation_table
+sidebar_position: 8
+title: Translation table
+---
+
+### No `in` methods
+
+**Definition:**
+
+```ruby
+step AssertNodeAvailable
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||= AssertNodeAvailable.result
+end
+```
+
+### One usual `in` method
+
+**Definitions (equivalent):**
+
+```ruby
+step ValidateUncastedParams,
+  in: :params
+```
+
+```ruby
+step ValidateUncastedParams,
+  in: [
+    :params
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    ValidateUncastedParams.result(
+      params: params
+    )
+end
+```
+
+### Multiple usual `in` methods
+
+**Definition:**
+
+```ruby
+step LogRequestParams, \
+  in: [
+    :request,
+    :params
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    LogRequestParams.result(
+      request: request,
+      params: params
+    )
+end
+```
+
+### One alias `in` method
+
+**Definitions (equivalent):**
+
+```ruby
+step ValidateCastedParams,
+  in: {casted_params: :params}
+```
+
+```ruby
+step ValidateCastedParams,
+  in: [
+    {casted_params: :params}
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    ValidateCastedParams.result(
+      casted_params: params
+    )
+end
+```
+
+### Multiple alias `in` method
+
+**Definitions:**
+
+```ruby
+step AuditContent,
+  in: [
+    {content: :content_without_comments},
+    {verbose: :debug}
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    AuditContent.result(
+      content: content_without_comments,
+      verbose: debug
+    )
+end
+```
+
+

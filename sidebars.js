@@ -33,6 +33,7 @@ const sidebars = {
         'basics/success',
         'basics/results_are_ducks',
         'basics/steps',
+        'basics/step_to_result_translation_table',
         'basics/configs',
       ],
     },
