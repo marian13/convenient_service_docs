@@ -10,7 +10,7 @@ Let's consider the following service:
 class Service
   # ...
 
-  step CompileRegexp, \
+  step EscapeRegexp, \
     in: {pattern: ???}, # `???` is just a placeholder here, it is not a valid Ruby syntax.
     out: :escaped
 
@@ -18,7 +18,7 @@ class Service
 end
 ```
 
-We need to pass `ENV["PATH_PATTERN"]` to the `CompileRegexp` step as the `pattern` param.
+We need to pass `ENV["PATH_PATTERN"]` to the `EscapeRegexp` step as the `pattern` param.
 
 How that can be achievable?
 
@@ -27,7 +27,7 @@ There are multiple ways:
 - Using [raw](/api/plugins/service/has_result_steps).
 
   ```ruby
-  step CompileRegexp, \
+  step EscapeRegexp, \
     in: {pattern: raw(ENV["PATH_PATTERN"])},
     out: :escaped
   ```
@@ -35,7 +35,9 @@ There are multiple ways:
   This is how `step` call is "translated" to regular service invocation under the hood:
 
   ```ruby
-  step[0].result = CompileRegexp.result(pattern: ENV["PATH_PATTERN"])
+  def step_result
+    @step_result ||= EscapeRegexp.result(pattern: ENV["PATH_PATTERN"])
+  end
   ```
 
   Since [raw](/api/plugins/service/has_result_steps) is a [class method](https://rubyreferences.github.io/rubyref/language/methods-def.html#scope) you can pass it anything from the enclosing class scope.
@@ -43,7 +45,7 @@ There are multiple ways:
   The value is forwarded without any intermediate processing.
 
   ```ruby
-  step CompileRegexp, \
+  step EscapeRegexp, \
     in: {pattern: raw(any_class_method)},
     out: :escaped
   ```
@@ -51,8 +53,8 @@ There are multiple ways:
 - Using [proc form](/api/plugins/service/has_result_steps).
 
   ```ruby
-  step CompileRegexp, \
-    in: {pattern: -> { ENV["PATH_PATTERN"] },
+  step EscapeRegexp, \
+    in: {pattern: ->{ ENV["PATH_PATTERN"] }},
     out: :escaped
   ```
 
@@ -61,8 +63,13 @@ There are multiple ways:
   So you can access any service instance methods in it.
 
   ```ruby
-  step CompileRegexp, \
-    in: {pattern: -> { any_instance_method },
+  step EscapeRegexp, \
+    in: {pattern: ->{ any_instance_method }},
     out: :escaped
   ```
 
+:::info
+
+Check [the Step to Result Translation table](/basics/step_to_result_translation_table) for more detailed reference.
+
+:::

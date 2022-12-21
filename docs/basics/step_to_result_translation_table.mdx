@@ -4,7 +4,17 @@ sidebar_position: 8
 title: Translation table
 ---
 
-### No `in` methods
+This page contains a table of demonstrative translations of step definitions into result invocations.
+
+It is especially useful for newcomers that are not familiar with the Convenient Service DSL yet.
+
+:::success
+
+Any combination of the `in` and `out` argument types described throughout this reference can be used together.
+
+:::
+
+### No `in` or `out`
 
 **Definition:**
 
@@ -20,7 +30,7 @@ def step_result
 end
 ```
 
-### One usual `in` method
+### One `in` usual method
 
 **Definitions (equivalent):**
 
@@ -47,12 +57,12 @@ def step_result
 end
 ```
 
-### Multiple usual `in` methods
+### Multiple `in` usual methods
 
 **Definition:**
 
 ```ruby
-step LogRequestParams, \
+step LogRequestParams,
   in: [
     :request,
     :params
@@ -71,7 +81,7 @@ def step_result
 end
 ```
 
-### One alias `in` method
+### One `in` alias method
 
 **Definitions (equivalent):**
 
@@ -98,7 +108,7 @@ def step_result
 end
 ```
 
-### Multiple alias `in` method
+### Multiple `in` alias method
 
 **Definitions:**
 
@@ -122,4 +132,394 @@ def step_result
 end
 ```
 
+### One `out` usual method
 
+**Definitions (equivalent):**
+
+```ruby
+step ReadFileContent,
+  in: :path,
+  out: :content
+```
+
+```ruby
+step ReadFileContent,
+  in: :path,
+  out: [
+    :content
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    ReadFileContent.result(
+      path: path
+    )
+end
+
+def content
+  step_result.data[:content]
+end
+```
+
+### Multiple `out` usual methods
+
+**Definition:**
+
+```ruby
+step CastParams,
+  in: :params,
+  out: [
+    :original_params,
+    :casted_params
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    CastParams.result(
+      params: params
+    )
+end
+
+def original_params
+  step_result.data[:original_params]
+end
+
+def casted_params
+  step_result.data[:casted_params]
+end
+```
+
+### One `out` alias method
+
+**Definitions (equivalent):**
+
+```ruby
+step FormatHeader,
+  in: :parsed_content,
+  out: {formatted_content: :formatted_header_content}
+```
+
+```ruby
+step FormatHeader,
+  in: :parsed_content,
+  out: [
+    {formatted_content: :formatted_header_content}
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    FormatHeader.result(
+      parsed_content: parsed_content
+    )
+end
+
+def formatted_header_content
+  step_result.data[:formatted_content]
+end
+```
+
+### Multiple `out` alias methods
+
+**Definition:**
+
+```ruby
+step ExtractParamsFromRequest,
+  in: :request,
+  out: [
+    {header_params: :request_params_from_header},
+    {body_params: :request_params_from_body}
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    ExtractParamsFromRequest.result(
+      request: request
+    )
+end
+
+def request_params_from_header
+  step_result.data[:header_params]
+end
+
+def request_params_from_body
+  step_result.data[:body_params]
+end
+```
+
+### One `in` raw value
+
+**Definitions (equivalent):**
+
+```ruby
+step AssertFeatureEnabled,
+  in: {name: raw(:chat_v2)}
+```
+
+```ruby
+step AssertFeatureEnabled,
+  in: [
+    {name: raw(:chat_v2)}
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    AssertFeatureEnabled.result(
+      name: :chat_v2
+    )
+end
+```
+
+### Multiple `in` raw values
+
+**Definitions (equivalent):**
+
+```ruby
+step PrintShellCommand,
+  in: [
+    {text: raw("ls -a")}
+    {stream: raw($stdout)}
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    PrintShellCommand.result(
+      text: "ls -a",
+      stream: $stdout
+    )
+end
+```
+
+:::info
+
+`in` raw values are useful for passing values, constants, methods, etc from the class scope.
+
+```ruby
+step PrintShellCommand,
+  in: [
+    {text: raw(display_directory_structure_command)}
+    {stream: raw($stdout)}
+  ]
+
+def self.display_directory_structure_command
+  "ls -a"
+end
+```
+:::
+
+
+### One `in` proc method
+
+**Definitions (equivalent):**
+
+```ruby
+step RemoveDirectoryRecursively,
+  in: {path: ->{ "/tmp" }}
+```
+
+```ruby
+step RemoveDirectoryRecursively,
+  in: [
+    {path: ->{ "/tmp" }}
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    RemoveDirectoryRecursively.result(
+      path: "/tmp"
+    )
+end
+```
+
+### Multiple `in` proc methods
+
+**Definition:**
+
+```ruby
+step CreateSoftLink,
+  in: [
+    {source: ->{ "~/.bash_profile" }},
+    {destination: ->{ "#{Dir.pwd}/bash_profile_link" }}
+  ]
+```
+
+**Translation:**
+
+```ruby
+def step_result
+  @step_result ||=
+    CreateSoftLink.result(
+      source: "~/.bash_profile",
+      destination: "#{Dir.pwd}/bash_profile_link"
+    )
+end
+```
+
+:::info
+
+`in` proc methods are useful for passing values, constants, methods, etc from the instance scope.
+
+```ruby
+step CreateSoftLink,
+  in: [
+    {source: ->{ "~/.bash_profile" }},
+    {destination: ->{ generate_destination_path }}
+  ]
+
+def generate_destination_path
+  "#{Dir.pwd}/bash_profile_link"
+end
+```
+
+:::
+
+### All-in-one example:
+
+**Definition:**
+
+```ruby
+ENV["API_ONLY"] = true
+
+class UpdatePost
+  include ConvenientService::Standard::Config
+
+  PERMITTED_PARAMS = [:id, :format, :title, :description, :tags, :sources]
+
+  attr_reader :http_string
+
+  # ...
+
+  # highlight-start
+  step PrepareRequestObject
+    in: [
+      :http_string,
+      {url_pattern: raw(url_pattern)},
+      {role: ->{ admin? }},
+      {permitted_keys: raw(PERMITTED_PARAMS)}
+      {defaults: ->{ resolve_defaults_values }}
+    ],
+    out: [
+      :params_from_path,
+      :params_from_body,
+      {headers: :request_headers}
+    ]
+  # highlight-end
+
+  # ...
+
+  def self.url_pattern
+    /^\/rules\/(?<id>\d+)\.(?<format>\w+)$/
+  end
+
+  def admin?
+    false
+  end
+
+  def resolve_defaults_values
+    defaults_values = {format: "html", tags: [], sources: []}
+
+    defaults_values[:format] = "json" if ENV["API_ONLY"]
+
+    defaults_values
+  end
+
+  # ...
+end
+```
+
+**Translation:**
+
+```ruby
+ENV["API_ONLY"] = true
+
+class UpdatePost
+  include ConvenientService::Standard::Config
+
+  PERMITTED_PARAMS = [:id, :format, :title, :description, :tags, :sources]
+
+  attr_reader :http_string
+
+  # ...
+
+  # highlight-start
+  def step_result
+    @step_result ||= PrepareRequestObject.result(
+      http_string: http_string,
+      url_pattern: /^\/rules\/(?<id>\d+)\.(?<format>\w+)$/,
+      role: admin?, # => false
+      permitted_keys: [:id, :format, :title, :description, :tags, :sources],
+      defaults: resolve_defaults_values # => {format: "json", tags: [], sources: []}
+    )
+  end
+
+  def params_from_path
+    step_result.data[:params_from_path]
+  end
+
+  def params_from_body
+    step_result.data[:params_from_body]
+  end
+
+  def request_headers
+    step_result.data[:headers]
+  end
+  # highlight-end
+
+  # ...
+
+  def self.url_pattern
+    /^\/rules\/(?<id>\d+)\.(?<format>\w+)$/
+  end
+
+  def admin?
+    false
+  end
+
+  def resolve_defaults_values
+    defaults_values = {format: "html", tags: [], sources: []}
+
+    defaults_values[:format] = "json" if ENV["API_ONLY"]
+
+    defaults_values
+  end
+
+  # ...
+end
+```
+
+:::note
+
+`def step_result` is used to express the concept.
+
+In reality, such a method is not generated by the [Convenient Service](/) under the hood.
+
+It utilizes [a lower-level toolset](https://github.com/marian13/convenient_service/blob/main/lib/convenient_service/service/plugins/has_result_steps/concern.rb) that is out of the scope of this guide.
+
+:::
