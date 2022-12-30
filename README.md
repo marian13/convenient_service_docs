@@ -17,3 +17,7 @@ $ yarn && yarn start
 ### Production
 
 Every push to `main` triggers a deployment to [https://marian13.github.io/convenient_service_docs](https://marian13.github.io/convenient_service_docs).
+
+### Source
+
+Convenient Service source code is located at [https://github.com/marian13/convenient_service](https://github.com/marian13/convenient_service).
