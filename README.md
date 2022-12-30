@@ -1,57 +1,17 @@
-# Convenient Service Docs
+# Convenient Service User Docs
 
-This docs website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+This docs website is built using [Docusaurus 2](https://docusaurus.io).
 
-### FYI
+### Development
 
-Every push to `main` triggers a deployment to [https://marian13.github.io/convenient_service_docs/](https://marian13.github.io/convenient_service_docs/).
+The following command starts a local development server and opens up a browser window.
 
-### Installation
-
-```
-$ yarn
-```
-
-### Local Development
+Most changes are reflected live without having to restart the server.
 
 ```
-$ yarn start
+$ yarn && yarn start
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+### Production
 
-### Build
-
-```
-$ yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-Using SSH:
-
-```
-$ USE_SSH=true yarn deploy
-```
-
-Not using SSH:
-
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
-
-### Tutorial
-
-```
-git checkout tutorial
-```
-
-This branch contains a default tutorial that helps to become efficient with Docusaurus almost immediately.
-
-```
-yarn && yarn start
-```
+Every push to `main` triggers a deployment to [https://marian13.github.io/convenient_service_docs](https://marian13.github.io/convenient_service_docs).
