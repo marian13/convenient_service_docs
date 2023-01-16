@@ -51,7 +51,9 @@ You may consider to utilizing the [Dry::Initializer](https://dry-rb.org/gems/dry
 ```ruby
 module ApplicationService
   module Config
-    def self.included(service_class)
+    include ConvenientService::Concern
+
+    included do |service_class|
       service_class.class_exec do
         include ConvenientService::Standard::Config
         # ...
