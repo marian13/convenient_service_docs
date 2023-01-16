@@ -57,7 +57,9 @@ Let's place, e.g. [HasResultParamsValidations::UsingActiveModelValidations](/api
 ```ruby
 module ApplicationService
   module Config
-    def self.included(service_class)
+    include ConvenientService::Concern
+    -
+    included do |service_class|
       service_class.class_exec do
         # highlight-start
         include ConvenientService::Standard::Config
@@ -79,7 +81,9 @@ To fix that, locate it before [HasResultSteps](/api/plugins/service/has_result_s
 ```ruby
 module ApplicationService
   module Config
-    def self.included(service_class)
+    include ConvenientService::Concern
+    -
+    included do |service_class|
       service_class.class_exec do
         include ConvenientService::Standard::Config
         # ...
