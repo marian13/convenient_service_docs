@@ -67,7 +67,9 @@ import CodeBlock from '@theme/CodeBlock';
       {`
         module ApplicationService
           module Config
-            def self.included(service_class)
+            include ConvenientService::Concern
+            -
+            included do |service_class|
               service_class.include ConvenientService::Standard::Config
             end
           end
@@ -80,7 +82,9 @@ import CodeBlock from '@theme/CodeBlock';
       {`
         module RailsService
           module Config
-            def self.included(service_class)
+            include ConvenientService::Concern
+            -
+            included do |service_class|
               service_class.class_exec do
                 include ConvenientService::Standard::Config
                 -
@@ -111,7 +115,9 @@ import CodeBlock from '@theme/CodeBlock';
       {`
         module DryService
           module Config
-            def self.included(service_class)
+            include ConvenientService::Concern
+            -
+            included do |service_class|
               service_class.class_exec do
                 include ConvenientService::Standard::Config
                 -
