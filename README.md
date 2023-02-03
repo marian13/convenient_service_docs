@@ -1,6 +1,9 @@
-# Convenient Service User Docs
+<p>
+  <a href="https://github.com/marian13/convenient_service"><img align="left" width="150"        src="https://raw.githubusercontent.com/marian13/convenient_service_docs/main/logo.png" alt="Convenient Service User Docs"></a>
+  <h1>Convenient Service User Docs</h1>
+</p><br>
 
-This docs website is built using [Docusaurus 2](https://docusaurus.io).
+<br>This docs website is built using [Docusaurus 2](https://docusaurus.io).
 
 ### Development
 
