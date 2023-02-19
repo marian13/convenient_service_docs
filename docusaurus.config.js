@@ -121,6 +121,43 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      /**
+       * NOTE: Algolia configuration template was copied from:
+       * - https://docusaurus.io/docs/search#using-algolia-docsearch
+       *
+       * NOTE: Credentials are taken from the Algolia registration email.
+       *
+       * NOTE: More Algolia configuration options can be found here:
+       * - https://docsearch.algolia.com/docs/templates/#docusaurus-v2-template
+       *
+       * NOTE: Docusaurus classic preset already contains Algolia. That is why NO new npm package is installed.
+       */
+      algolia: {
+        /**
+         * The application ID provided by Algolia.
+         */
+        appId: '6E1KEPD9NX',
+
+        /**
+         * Public API key: it is safe to commit it.
+         */
+        apiKey: 'ccff65e7a534d6b352979e76f1e3cd22',
+
+        /**
+         * Index name. Can be found in the Algolia Dashboard.
+         */
+        indexName: 'convenient-service-',
+
+        /**
+         * https://docusaurus.io/docs/search#contextual-search
+         */
+        contextualSearch: true,
+
+        /**
+         * Path for search page that enabled by default (`false` to disable it).
+         */
+        searchPagePath: 'search',
+      },
     }),
 };
 
