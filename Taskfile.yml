@@ -1,0 +1,41 @@
+version: '3'
+
+##
+# IMPORTANT: All tasks listed in this file should be executed from the root folder.
+# https://taskfile.dev/usage/#task-directory
+#
+# NOTE: Examples of multiline strings in YAML.
+# https://yaml-multiline.info/
+#
+# NOTE: Forwarding CLI arguments to commands ({{.CLI_ARGS}}).
+# https://taskfile.dev/usage/#forwarding-cli-arguments-to-commands
+#
+tasks:
+  ##
+  # NOTE: Dev only command.
+  #
+  editor:open:
+    cmds:
+      - code .
+
+  ##
+  # NOTE: Dev only command.
+  # NOTE: macOS specific command.
+  #
+  github:open:
+    cmds:
+      - open -na "Google Chrome" --args --new-window --incognito "https://github.com/marian13/convenient_service_docs"
+
+  ##
+  #
+  #
+  start:
+    cmds:
+      - yarn start
+
+  ##
+  # NOTE: Dev only command.
+  #
+  tmuxinator:start:
+    cmds:
+      - tmuxinator start convenient_service_docs --project-config=.dev/.tmuxinator.yml

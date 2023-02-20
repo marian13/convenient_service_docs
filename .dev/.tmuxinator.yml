@@ -1,0 +1,14 @@
+name: convenient_service_docs
+root: .
+
+on_project_start:
+  - task editor:open
+  - task github:open
+
+windows:
+  - main:
+      layout: even-vertical
+      root: .
+      panes:
+        - task start
+        - git status
