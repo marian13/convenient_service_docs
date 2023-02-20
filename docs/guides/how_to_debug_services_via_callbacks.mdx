@@ -1,0 +1,94 @@
+---
+slug: /guides/how_to_debug_services_via_callbacks
+sidebar_position: 4
+title: 'How to debug services via callbacks?'
+---
+
+## Use `after` result
+
+```ruby
+after :result do |result|
+  binding.pry
+end
+```
+
+## Use `after` step
+
+```ruby
+##
+# Step is Result-like duck.
+#
+after :step do |step|
+  byebug
+end
+```
+
+## Use `around` result
+
+```ruby
+after :result do |chain|
+  puts "before"
+
+  result = chain.yield
+
+  p "after"
+end
+```
+
+## Use `after` step
+
+```ruby
+##
+# Step is Result-like duck.
+#
+after :step do |step|
+  binding.break
+
+  step = chain.yield
+
+  print "after"
+end
+```
+
+## Real-world example
+
+```ruby
+# frozen_string_literal: true
+
+module Services
+  class AssertNpmPackageAvailable
+    include ConvenientService::Standard::Config
+
+    attr_reader :name
+
+    step :validate_name
+
+    step Services::AssertNodeAvailable
+
+    step Services::RunShell, in: {command: -> { "npm list #{name} --depth=0 > /dev/null 2>&1" }}
+
+    # highlight-start
+    after :result do |result|
+      binding.pry
+    end
+
+    after :step do |step|
+      byebug
+    end
+    # highlight-end
+
+    def initialize(name:)
+      @name = name
+    end
+
+    private
+
+    def validate_name
+      return failure(name: "Name is `nil`") if name.nil?
+      return failure(name: "Name is empty") if name.empty?
+
+      success
+    end
+  end
+end
+```
