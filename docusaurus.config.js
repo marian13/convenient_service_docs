@@ -140,6 +140,7 @@ const config = {
 
         /**
          * Public API key: it is safe to commit it.
+         * https://docsearch.algolia.com/docs/legacy/faq/#can-i-share-the-apikey-in-my-repo
          */
         apiKey: 'ccff65e7a534d6b352979e76f1e3cd22',
 
