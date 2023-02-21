@@ -49,6 +49,8 @@ const sidebars = {
         'guides/how_to_set_up_in_rspec',
         'guides/how_to_pass_value_to_step_class_or_instance_scope',
         'guides/how_to_debug_services_via_callbacks',
+        'guides/how_to_find_result_parents',
+        'guides/how_to_find_result_step',
         'guides/how_to_create_custom_config',
       ],
     },
