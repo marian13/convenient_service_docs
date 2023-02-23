@@ -51,6 +51,7 @@ const sidebars = {
         'guides/how_to_debug_services_via_callbacks',
         'guides/how_to_find_result_parents',
         'guides/how_to_find_result_step',
+        'guides/how_to_access_result_attributes_without_checking_its_status',
         'guides/how_to_create_custom_config',
       ],
     },

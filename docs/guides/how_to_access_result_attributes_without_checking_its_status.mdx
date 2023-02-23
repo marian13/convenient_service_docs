@@ -1,0 +1,25 @@
+---
+slug: /guides/how_to_access_result_attributes_without_checking_its_status
+sidebar_position: 7
+title: 'How to access result attributes without checking its status?'
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+:::danger
+
+**Unsafe methods** exist only to simplify the debugging process.
+
+❗❗❗ Never use them in production (or even in tests)❗❗❗
+
+There are NO possible excuses or justifications for doing so.
+
+:::
+
+## Use `Result#unsafe_data`, `Result#unsafe_message`, `Result#unsafe_code`
+
+<img src={useBaseUrl('img/guides/how_to_access_result_attributes_without_checking_its_status/unsafe_attributes.png')} />
+
+## Even better, use shorter aliases `Result#ud`, `Result#um`, `Result#uc`
+
+<img src={useBaseUrl('img/guides/how_to_access_result_attributes_without_checking_its_status/unsafe_attributes_shorter_form.png')} />
