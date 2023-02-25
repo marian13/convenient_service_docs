@@ -1,0 +1,164 @@
+---
+slug: /guides/how_to_rescue_all_result_unhandled_exceptions
+sidebar_position: 8
+title: How to rescue all result unhandled exceptions?
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+## Use **RescuesResultUnhandledExceptions** plugin
+
+:::danger
+
+**RescuesResultUnhandledExceptions** plugin intentionally [rescues only StandardErrors, not Exceptions](https://thoughtbot.com/blog/rescue-standarderror-not-exception).
+
+:::
+
+:::info
+
+**RescuesResultUnhandledExceptions** plugin is especially useful for the [Fault Tolerant](https://en.wikipedia.org/wiki/Fault_tolerance) production environments.
+
+:::
+
+:::caution
+
+**RescuesResultUnhandledExceptions** plugin is NOT included in the Standard config by default.
+
+It is up to the end-users to decide whether it is needed for thier applications or not.
+
+:::
+
+### Option 1: Modify config to rescue results in all services
+
+<img src={useBaseUrl('img/guides/how_to_rescue_all_result_unhandled_exceptions/all_services_setup.png')} />
+
+```ruby
+# highlight-start
+ConvenientService::Dependencies.require_rescues_result_unhandled_exceptions
+# highlight-end
+```
+
+```ruby
+module ApplicationService
+  module Config
+    include ConvenientService::Concern
+
+    included do |service_class|
+      service_class.class_exec do
+        include ConvenientService::Standard::Config
+
+        # highlight-start
+        middlewares :result, scope: :class do
+          use ConvenientService::Plugins::Service::RescuesResultUnhandledExceptions::Middleware
+        end
+        # highlight-end
+      end
+    end
+  end
+end
+```
+
+```ruby
+class Service
+  include ApplicationService::Config
+
+  def result
+    raise StandardError, "exception message"
+  end
+end
+```
+
+### Option 2: Modify service to rescue results in a single service
+
+<img src={useBaseUrl('img/guides/how_to_rescue_all_result_unhandled_exceptions/single_service_setup.png')} />
+
+```ruby
+# highlight-start
+ConvenientService::Dependencies.require_rescues_result_unhandled_exceptions
+# highlight-end
+```
+
+```ruby
+module ApplicationService
+  module Config
+    include ConvenientService::Concern
+
+    included do |service_class|
+      service_class.class_exec do
+        include ConvenientService::Standard::Config
+      end
+    end
+  end
+end
+```
+
+```ruby
+class Service
+  include ApplicationService::Config
+
+  # highlight-start
+  middlewares :result, scope: :class do
+    use ConvenientService::Plugins::Service::RescuesResultUnhandledExceptions::Middleware
+  end
+  # highlight-end
+
+  def result
+    raise StandardError, "exception message"
+  end
+end
+```
+
+## Result with exception becomes a failure
+
+<img src={useBaseUrl('img/guides/how_to_rescue_all_result_unhandled_exceptions/failure_example.png')} />
+
+:::info
+
+**Convenient Service** core team strongly believes that it is a responsibility of a developer to predict all possible exceptions reasonably.
+
+That is why the [result](/basics/results) is a [failure](/basics/failures), not an [error](/basics/errors).
+
+:::
+
+```ruby
+result = Service.result
+```
+
+```ruby
+result.success?
+```
+
+```ruby
+puts result.message
+```
+
+## Result has access to the original exception object
+
+:::info
+
+`result.data[:exception]` is Ruby's [StandardError](https://ruby-doc.org/core-2.7.0/StandardError.html) object that inherits from [Exception](https://ruby-doc.org/core-2.7.0/Exception.html).
+
+:::
+
+<img src={useBaseUrl('img/guides/how_to_rescue_all_result_unhandled_exceptions/original_exception.png')} />
+
+```ruby
+result.data[:exception]
+```
+
+```ruby
+result.data[:exception].class
+```
+
+```ruby
+result.data[:exception].message
+```
+
+```ruby
+result.data[:exception].backtrace.to_a.take(10)
+```
+
+```ruby
+result.data[:exception].cause
+```
+
