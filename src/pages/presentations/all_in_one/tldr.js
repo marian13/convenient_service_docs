@@ -572,13 +572,11 @@ export default function TLDR() {
                 example_group "class methods" do
                   describe ".result" do
                     context "when assertion that file is NOT empty is NOT successful" do
-                      if ConvenientService::Dependencies.support_has_result_params_validations_using_active_model_validations?
-                        context "when \`path\` is NOT present" do
-                          let(:path) { "" }
-                          -
-                          it "returns \`failure\` with \`data\`" do
-                            expect(result).to be_failure.with_data(path: "can't be blank").of_service(described_class).without_step
-                          end
+                      context "when \`path\` is NOT present" do
+                        let(:path) { "" }
+                        -
+                        it "returns \`failure\` with \`data\`" do
+                          expect(result).to be_failure.with_data(path: "can't be blank").of_service(described_class).without_step
                         end
                       end
                       -
@@ -870,13 +868,11 @@ export default function TLDR() {
                 example_group "class methods" do
                   describe ".result" do
                     context "when reading file content is NOT successful" do
-                      if ConvenientService::Dependencies.support_has_result_params_validations_using_active_model_validations?
-                        context "when path is NOT present" do
-                          let(:path) { "" }
-                          -
-                          it "returns failure with data" do
-                            expect(result).to be_failure.with_data(path: "can't be blank").without_step
-                          end
+                      context "when path is NOT present" do
+                        let(:path) { "" }
+                        -
+                        it "returns \`failure\` with \`data\`" do
+                          expect(result).to be_failure.with_data(path: "can't be blank").without_step
                         end
                       end
                     end
