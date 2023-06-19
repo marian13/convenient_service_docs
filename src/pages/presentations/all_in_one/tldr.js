@@ -71,8 +71,8 @@ export default function TLDR() {
                 module Config
                   include ConvenientService::Concern
                   -
-                  included do |service_class|
-                    service_class.include ConvenientService::Standard::Config
+                  included do
+                    include ConvenientService::Standard::Config
                   end
                 end
               end
@@ -87,25 +87,23 @@ export default function TLDR() {
                 module Config
                   include ConvenientService::Concern
                   -
-                  included do |service_class|
-                    service_class.class_exec do
-                      include ConvenientService::Standard::Config
-                      -
-                      concerns do
-                        use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Concern
-                        use ConvenientService::Plugins::Common::HasAttributes::UsingActiveModelAttributes::Concern
-                        use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Concern
-                      end
-                      -
-                      middlewares :initialize do
-                        use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Middleware
-                      end
-                      -
-                      middlewares :result do
-                        insert_before \\
-                          ConvenientService::Plugins::Service::HasResultSteps::Middleware,
-                          ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
-                      end
+                  included do
+                    include ConvenientService::Standard::Config
+                    -
+                    concerns do
+                      use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Concern
+                      use ConvenientService::Plugins::Common::HasAttributes::UsingActiveModelAttributes::Concern
+                      use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Concern
+                    end
+                    -
+                    middlewares :initialize do
+                      use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Middleware
+                    end
+                    -
+                    middlewares :result do
+                      insert_before \\
+                        ConvenientService::Plugins::Service::HasResultSteps::Middleware,
+                        ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
                     end
                   end
                 end
@@ -121,20 +119,18 @@ export default function TLDR() {
                 module Config
                   include ConvenientService::Concern
                   -
-                  included do |service_class|
-                    service_class.class_exec do
-                      include ConvenientService::Standard::Config
-                      -
-                      concerns do
-                        use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingDryInitializer::Concern
-                        use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Concern
-                      end
-                      -
-                      middlewares :result do
-                        insert_before \\
-                          ConvenientService::Plugins::Service::HasResultSteps::Middleware,
-                          ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Middleware
-                      end
+                  included do
+                    include ConvenientService::Standard::Config
+                    -
+                    concerns do
+                      use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingDryInitializer::Concern
+                      use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Concern
+                    end
+                    -
+                    middlewares :result do
+                      insert_before \\
+                        ConvenientService::Plugins::Service::HasResultSteps::Middleware,
+                        ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Middleware
                     end
                   end
                 end
