@@ -8,20 +8,20 @@ title: I am a Convenient Service debuggerer
 
 Some plugins are order-dependent.
 
-For example, [HasResultSteps](/api/plugins/service/has_result_steps) has a middleware for the instance `result` method in [the Standard config](/api/configs/standard).
+For example, `CanHaveSteps` has a middleware for the instance `result` method in the `Standard` config.
 
 ```ruby
 middlewares :result do
   # ...
   use Plugins::Service::HasResult::Middleware
-  use Plugins::Service::HasResultSteps::Middleware
+  use Plugins::Service::CanHaveSteps::Middleware
   # ...
   use Plugins::Common::CachesReturnValue::Middleware
   # ...
 end
 ```
 
-If your plugin enhances the instance `result` method as well, you may be affected by [HasResultSteps](/api/plugins/service/has_result_steps).
+If your plugin enhances the instance `result` method as well, you may be affected by `CanHaveSteps`.
 
 How? Let's check its source.
 
@@ -29,7 +29,7 @@ How? Let's check its source.
 module ConvenientService
   module Service
     module Plugins
-      module HasResultSteps
+      module CanHaveSteps
         class Middleware < Core::MethodChainMiddleware
           # highlight-start
           def next(...)
@@ -48,35 +48,33 @@ end
 
 It works as a [proxy middleware](/glossary/proxy_middleware).
 
-When a service has no steps, [HasResultSteps](/api/plugins/service/has_result_steps) just calls what is next in the middleware chain, by `chain.next(...)`.
+When a service has no steps, `CanHaveSteps` just calls what is next in the middleware chain, by `chain.next(...)`.
 
 Otherwise, it returns the last step copy.
 
-Let's place, e.g. [HasResultParamsValidations::UsingActiveModelValidations](/api/plugins/service/has_result_params_validations/using_active_model_validations) plugin after [HasResultSteps](api/plugins/service/has_result_steps) in your [application service config](basics/tldr).
+Let's place, e.g. `HasResultParamsValidations::UsingActiveModelValidations` plugin after `CanHaveSteps` in your [application service config](basics/tldr).
 
 ```ruby
 module ApplicationService
   module Config
     include ConvenientService::Concern
     -
-    included do |service_class|
-      service_class.class_exec do
-        # highlight-start
-        include ConvenientService::Standard::Config
-        # ...
-        middlewares :result do
-          use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
-        end
-        # highlight-end
+    included do
+      # highlight-start
+      include ConvenientService::Standard::Config
+      # ...
+      middlewares :result do
+        use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
       end
+      # highlight-end
     end
   end
 end
 ```
 
-This way [HasResultParamsValidations::UsingActiveModelValidations](/api/plugins/service/has_result_params_validations/using_active_model_validations) is never called for services with steps.
+This way `HasResultParamsValidations::UsingActiveModelValidations` is never called for services with steps.
 
-To fix that, locate it before [HasResultSteps](/api/plugins/service/has_result_steps) like so:
+To fix that, locate it before `CanHaveSteps` like so:
 
 ```ruby
 module ApplicationService
@@ -90,7 +88,7 @@ module ApplicationService
         middlewares :result do
           # highlight-start
           insert_before \
-            ConvenientService::Plugins::Service::HasResultSteps::Middleware,
+            ConvenientService::Plugins::Service::CanHaveSteps::Middleware,
             ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
           # highlight-end
         end

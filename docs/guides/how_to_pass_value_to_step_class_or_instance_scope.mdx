@@ -24,7 +24,7 @@ How that can be achievable?
 
 There are multiple ways:
 
-- Using [raw](/api/plugins/service/has_result_steps).
+- Using `raw`.
 
   ```ruby
   step EscapeRegexp, \
@@ -40,7 +40,7 @@ There are multiple ways:
   end
   ```
 
-  Since [raw](/api/plugins/service/has_result_steps) is a [class method](https://rubyreferences.github.io/rubyref/language/methods-def.html#scope) you can pass it anything from the enclosing class scope.
+  Since `raw` is a [class method](https://rubyreferences.github.io/rubyref/language/methods-def.html#scope) you can pass it anything from the enclosing class scope.
 
   The value is forwarded without any intermediate processing.
 
@@ -50,7 +50,7 @@ There are multiple ways:
     out: :escaped
   ```
 
-- Using [proc form](/api/plugins/service/has_result_steps).
+- Using `proc` form.
 
   ```ruby
   step EscapeRegexp, \
@@ -58,7 +58,7 @@ There are multiple ways:
     out: :escaped
   ```
 
-  The [proc form](/api/plugins/service/has_result_steps) does not additionally process the passed value as well, but it is evaluated in the instance scope.
+  The `proc` form does not additionally process the passed value as well, but it is evaluated in the instance scope.
 
   So you can access any service instance methods in it.
 

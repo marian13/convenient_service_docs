@@ -102,7 +102,7 @@ export default function TLDR() {
                     -
                     middlewares :result do
                       insert_before \\
-                        ConvenientService::Plugins::Service::HasResultSteps::Middleware,
+                        ConvenientService::Plugins::Service::CanHaveSteps::Middleware,
                         ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
                     end
                   end
@@ -129,7 +129,7 @@ export default function TLDR() {
                     -
                     middlewares :result do
                       insert_before \\
-                        ConvenientService::Plugins::Service::HasResultSteps::Middleware,
+                        ConvenientService::Plugins::Service::CanHaveSteps::Middleware,
                         ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Middleware
                     end
                   end

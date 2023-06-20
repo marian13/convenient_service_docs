@@ -6,7 +6,7 @@ title: Proxy Middleware
 
 A proxy middleware is a kind of middleware that may skip calling the next middleware in a chain.
 
-[CachesReturnValue](/api/plugins/common/caches_return_value) is a good example.
+`CachesReturnValue` is a good example.
 
 ```ruby
 module ConvenientService
@@ -41,6 +41,6 @@ In contrast, [decorator middlewares](/glossary/decorator_middleware) always call
 
 :::note
 
-`cache.fetch` in [CachesReturnValue](/api/plugins/common/caches_return_value) has the same semantics as Ruby's [Hash#fetch](https://ruby-doc.org/core-3.1.2/Hash.html#method-i-fetch).
+`cache.fetch` in `CachesReturnValue` has the same semantics as Ruby's [Hash#fetch](https://ruby-doc.org/core-3.1.2/Hash.html#method-i-fetch).
 
 :::
