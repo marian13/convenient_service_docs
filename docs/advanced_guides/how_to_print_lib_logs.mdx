@@ -1,0 +1,51 @@
+---
+slug: /advanced_guides/how_to_print_lib_logs
+sidebar_position: 2
+title: How to print library logs?
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+## Log levels
+
+It is possible to configure internal library logging by using the `CONVENIENT_SERVICE_LOGGER_LEVEL` env variable.
+
+It is defaulting to `info`, which is why the majority of the logs are skipped most of the time.
+
+But you can modify this behavior by setting a different [severity level](https://ruby-doc.org/stdlib-2.7.0/libdoc/logger/rdoc/Logger/Severity.html).
+
+Just place the env variable in front of the command that starts your Ruby process which utilizes [Convenient Service](/).
+
+For example:
+
+```bash
+CONVENIENT_SERVICE_LOGGER_LEVEL=debug bundle exec rails console
+```
+
+Since the [Convenient Service](/) logger is based on the [Ruby stdlib Logger](https://github.com/ruby/logger), it supports the same levels.
+
+Here is the screenshot straight from its official [docs](https://ruby-doc.org/stdlib-2.7.0/libdoc/logger/rdoc/Logger.html).
+
+<img src={useBaseUrl('img/advanced_guides/how_to_print_lib_logs/log_levels.png')} />
+
+:::warning
+
+When your project uses [Ruby stdlib Logger](https://github.com/ruby/logger/tree/v1.2.8.1) with a version older than `1.3.0`, then [log levels as words are not supported yet](https://github.com/ruby/logger/commit/74690b87b15244e19dd91cd06ae295251e1e5781).
+
+Pass numbers in such cases.
+
+```bash
+CONVENIENT_SERVICE_LOGGER_LEVEL=0 bundle exec rails console
+```
+
+<img src={useBaseUrl('img/advanced_guides/how_to_print_lib_logs/log_levels_as_numbers.png')} />
+
+:::
+
+## Colored logs
+
+If you have [Ruby Paint](https://github.com/janlelis/paint#setup) gem as a dependency, and it is [required](https://ruby-doc.org/core-2.7.0/Kernel.html#method-i-require), then `CONVENIENT_SERVICE_LOGGER_ENABLE_COLORS` env variable activates coloring like so:
+
+```bash
+CONVENIENT_SERVICE_LOGGER_LEVEL=0 CONVENIENT_SERVICE_LOGGER_ENABLE_COLORS=true bundle exec rails console
+```

@@ -63,6 +63,7 @@ const sidebars = {
       collapsed: true,
       items: [
         'advanced_guides/how_to_debug_lib',
+        'advanced_guides/how_to_print_lib_logs',
       ],
     },
     {
