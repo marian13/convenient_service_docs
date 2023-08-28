@@ -159,6 +159,7 @@ const sidebars = {
       collapsed: true,
       items: [
         'best_practices/avoid_error_shadowing',
+        'best_practices/service_has_only_one_success',
       ],
     },
     {

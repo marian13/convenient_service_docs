@@ -1,6 +1,6 @@
 ---
 slug: /best_practices/avoid_error_shadowing
-sidebar_position: 1
+sidebar_position: 2
 title: Avoid error shadowing
 ---
 
@@ -105,7 +105,7 @@ class MainService
   # ...
   def result
     # highlight-start
-    return sub_service_result.message unless sub_service_result.success?
+    return sub_service_result unless sub_service_result.success?
     # highlight-end
     # ...
     success

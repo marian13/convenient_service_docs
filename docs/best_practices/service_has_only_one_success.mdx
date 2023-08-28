@@ -1,0 +1,155 @@
+---
+slug: /best_practices/service_has_only_one_success
+sidebar_position: 1
+title: Service has only one `success`
+---
+
+Most of the time it is relatively easy to follow this rule.
+
+Consider the following service:
+
+```ruby
+class BuildDisplayName
+  include ::ConvenientService::Standard::Config
+
+  attr_reader :person
+
+  def initialize(person:)
+    @person = person
+  end
+
+  def result
+    return failure(person: "can't be blank") if person.blank?
+
+    success(display_name: "#{person.first_name} #{persom.last_name}")
+  end
+end
+```
+
+It currently has no conditional logic to build the `display_name`.
+
+After a while, our system started to grow and it appears that some people would like to see their pseudo in place of display names.
+
+Let's reflect on that change in the code using a naive approach:
+
+```ruby
+class BuildDisplayName
+  include ::ConvenientService::Standard::Config
+
+  attr_reader :person
+
+  def initialize(person:)
+    @person = person
+  end
+
+  def result
+    return failure(person: "can't be blank") if person.blank?
+
+    if person.has_pseudonym?
+      success(display_name: person.pseudonym)
+    else
+      success(display_name: "#{person.first_name} #{persom.last_name}")
+    end
+  end
+end
+```
+
+
+Having two `success` calls inside the `result` is what we try to avoid.
+
+Why?
+
+- It encourages future devs to write [deeply nested conditionals](https://en.wikibooks.org/wiki/Computer_Programming/Coding_Style/Minimize_nesting).
+
+- It interferes with the [layering of information](https://www.oreilly.com/library/view/universal-principles-of/9781592535873/xhtml/ch67.html).
+
+You don't need to know the details of the implementation until you really need it.
+
+The code above tells you about pseudonyms too early, even if you are not interested in them.
+
+If you refactor `BuildDisplayName` like this:
+
+```ruby
+class BuildDisplayName
+  include ::ConvenientService::Standard::Config
+
+  def initialize(person:)
+    @person = person
+  end
+
+  def result
+    return failure(person: "can't be blank") if person.blank?
+
+    success(display_name: display_name)
+  end
+
+  private
+
+  def display_name
+    @display_name ||= person.has_pseudonym? ? person.pseudonym : "#{person.first_name} #{persom.last_name}"
+  end
+end
+```
+
+Then the `result` describes which data it may return and when it is NOT successful, just that.
+
+Only when you are curious about how `display_name` is exactly built, feel free to check private methods.
+
+This is how the [layering of information](https://www.oreilly.com/library/view/universal-principles-of/9781592535873/xhtml/ch67.html) works in practice.
+
+Nesting is replaced by a [flat ternary operator](https://blog.codinghorror.com/flattening-arrow-code/).
+
+It is time to have a look at the specs:
+
+```ruby
+# spec/services/assert_file_exists_spec.rb
+require "spec_helper"
+
+RSpec.describe BuildDisplayName do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      let(:result) { described_class.result(person: person) }
+
+      context "when building of display name is NOT successful" do
+        context "when `person` is blank" do
+          let(:person) { nil }
+
+          it "returns `failure`" do
+            expect(result).to be_failure.with_data(person: "can't be blank").of_service(described_class).without_step
+          end
+        end
+      end
+
+      context "when building of display name is successful" do
+        context "when `person` does NOT have pseudonym" do
+          let(:person) { Person.new("John", "Doe") }
+
+          it "returns `success` with first name and last name as display name" do
+            expect(result).to be_success.with_data(display_name: "John Doe").of_service(described_class).without_step
+          end
+        end
+
+        context "when `person` has pseudonym" do
+          let(:person) { Person.new("John", "Doe", preudonym: "Gorilla") }
+
+          it "returns `success` with pseudonym as display name" do
+            expect(result).to be_success.with_data(display_name: "Gorilla").of_service(described_class).without_step
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+As you can see, specs still have two contexts for successful cases and that is completely OK.
+
+Now, we are ready for the conclusion:
+
+*Service has only one `success`* actually means that a service calls `success` inside `result` only once.
+
+But that `success` can still have multiple variations of data values, just like `display_name` in `BuildDisplayName`.
+
+Thanks.
