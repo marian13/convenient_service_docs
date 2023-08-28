@@ -63,7 +63,7 @@ Why?
 
 - It interferes with the [layering of information](https://www.oreilly.com/library/view/universal-principles-of/9781592535873/xhtml/ch67.html).
 
-You don't need to know the details of the implementation until you really need it.
+You don't need to know the details of the implementation until it is really necessary.
 
 The code above tells you about pseudonyms too early, even if you are not interested in them.
 
@@ -148,8 +148,6 @@ As you can see, specs still have two contexts for successful cases and that is c
 
 Now, we are ready for the conclusion:
 
-*Service has only one `success`* actually means that a service calls `success` inside `result` only once.
+A fact that a *Service has only one `success`* actually means that the service calls `success` inside `result` only once.
 
-But that `success` can still have multiple variations of data values, just like `display_name` in `BuildDisplayName`.
-
-Thanks.
+But that `success` can still have multiple variations of data values, just like `display_name` in `BuildDisplayName` service.
