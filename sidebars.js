@@ -160,6 +160,7 @@ const sidebars = {
       items: [
         'best_practices/avoid_error_shadowing',
         'best_practices/service_has_only_one_success',
+        'best_practices/services_with_or_conditionals',
       ],
     },
     {

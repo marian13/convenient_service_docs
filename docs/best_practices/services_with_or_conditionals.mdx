@@ -1,0 +1,378 @@
+---
+slug: /best_practices/services_with_or_conditionals
+sidebar_position: 3
+title: Services with `or` conditionals
+---
+
+[Convenient Service](/) shines very brightly when you have `and` conditional logic.
+
+It is very easy to construct such behavior using the `step` DSL.
+
+Check out the following service:
+
+```ruby
+class RefreshSubscription
+  include ::ConvenientService::Standard::Config
+
+  attr_reader :user, :subscription_id
+
+  step IsSubscriptionOwner,
+    in: [:user, :subscription_id]
+
+  step FindSubscription,
+    in: :subscription_id,
+    out: :subscription
+
+  step RegenerateSubscriptionTokens
+    in: :subscription,
+    out: :tokens
+
+  step UploadSubscriptionTokens
+    in: :subscription,
+    out: :tokens
+
+  def initialize(:user, :subscription_id)
+    @user = user
+    @subscription_id = subscription_id
+  end
+end
+```
+
+Let's use the pseudo notation below to describe a sequence of steps from `RefreshSubscription` as `and` conditionals:
+
+
+```ruby
+`IsSubscriptionOwner`
+  and `FindSubscription`
+  and `RegenerateSubscriptionTokens`
+  and `UploadSubscriptionTokens`.
+```
+
+Pretty simple and straightforward.
+
+But, but, but 😢...
+
+What should we do when we have some `or` conditionals?
+
+For example, two additional requirements are introduced to the one we had before:
+
+- Super admin can refresh any user subscriptions.
+
+- A user with a special ability can refresh other user's subscriptions.
+
+- User can refresh its own subscription (already existing requirement).
+
+In our pseudo notation it will look like this:
+
+```ruby
+`IsSuperAdmin` or `HasAbility`or `IsSubscriptionOwner`
+  and `FindSubscription`
+  and `RegenerateSubscriptionTokens`
+  and `UploadSubscriptionTokens`
+```
+
+It is not the time to give up 😭.
+
+The list of to-do actions is not so long:
+
+1. Create a new service which name generalizes all `or` conditions, for instance - `IsAuthorizedForSubscriptionRefresh`.
+
+  Then the updated pseudo notation can be displayed as:
+
+  ```ruby
+  `IsAuthorizedForSubscriptionRefresh`
+    and `FindSubscription`
+    and `RegenerateSubscriptionTokens`
+    and `UploadSubscriptionTokens`
+  ```
+
+  Now, we can utilize all the [`step` DSL](/basics/step_to_result_translation_table) s usual.
+
+  ```ruby
+  class RefreshSubscription
+    # ...
+
+    step IsAuthorizedForSubscriptionRefresh,
+      in: [:user, :subscription_id]
+
+    step FindSubscription,
+      in: :subscription_id,
+      out: :subscription
+
+    step RegenerateSubscriptionTokens
+      in: :subscription,
+      out: :tokens
+
+    step UploadSubscriptionTokens
+      in: :subscription,
+      out: :tokens
+
+    # ...
+  end
+  ```
+
+2. Prepare a common template for a service with `or` conditionals.
+
+  Here it is for our particular case:
+
+  ```ruby
+  class IsAuthorizedForSubscriptionRefresh
+    include ::ConvenientService::Standard::Config
+
+    attr_reader :user, :subscription_id
+
+    def initialize(:user, :subscription_id)
+      @user = user
+      @subscription_id = subscription_id
+    end
+
+    def result
+      # TODO: Implement
+    end
+
+    private
+
+    def is_super_admin_result
+      @is_super_admin_result ||= IsSuperAdmin.result(user: user)
+    end
+
+    def has_ability_result
+      @has_ability_result ||= HasAbility.result(user: user, ability: :refresh_someone_else_subscription)
+    end
+
+    def is_subscription_owner_result
+      @is_subscription_owner_result ||= IsSubscriptionOwner.result(user: user, subscription_id: subscription_id)
+    end
+  end
+  ```
+
+3. Implement the `result` method.
+
+  Before we move on to the final polished chuck of code, let's discuss the common anti-patterns.
+
+  Please, welcome [deeply nested if statements](https://lawyerdev.medium.com/i-never-write-nested-ifs-e4e91a5440ee) and [multiple success calls](/best_practices/service_has_only_one_success).
+
+  ### Zombie version 🧟
+
+  ```ruby
+  # bad - zombie
+  def result
+    if is_super_admin_result.not_success?
+      if has_ability_result.not_success?
+        if is_subscription_owner_result.not_success?
+          error(
+            "All conditions are not satisfied:"
+              + " "
+              + is_super_admin_result.message
+              + " "
+              + has_ability_result.message
+              + " "
+              + is_subscription_owner_result.message
+          )
+        else
+          success
+        end
+      else
+        success
+      end
+    else
+      success
+    end
+  end
+  ```
+
+  Although, this code is "perfect" from the performance point of view and it works exactly as needed according to the requirements...
+
+  Please, do not commit it.
+
+  Just imagine what will happen with an additional fourth or fifth condition.
+
+  How can we make it simpler and more readable?
+
+    - [Call `success` only once](/best_practices/service_has_only_one_success).
+
+    - [Leverage Ruby collections](https://ruby-doc.org/core-2.7.0/Enumerable.html).
+
+  ### Array version
+
+  ```ruby
+  # better - array, but it preloads all conditions even when they are not used
+  def result
+    if conditions.all?(&:not_success?)
+      return error("All conditions are not satisfied: " + conditions.map(&:message).join(" "))
+    end
+
+    success
+  end
+
+  private
+
+  def conditions
+    @conditions ||= [
+      is_super_admin_result,
+      has_ability_result,
+      is_subscription_owner_result
+    ]
+  end
+  ```
+
+  As you can see, it removes [deeply nested if statements](https://lawyerdev.medium.com/i-never-write-nested-ifs-e4e91a5440ee) completely.
+
+  Also it allows to use [only one success](/best_practices/service_has_only_one_success).
+
+  The array version is a lot better than what we had before, but it still has one hidden problem that is not obvious.
+
+  When you create an array, its elements are immediately calculated, no matter whether you access them later or not.
+
+  If we make an assumption that a user has the ability to refresh someone else subscription, then we don't need to check whether that user is the subscription owner at all.
+
+  This extra verification can become a huge issue if it is resource-heavy like a long-running SQL query or low-responding HTTP request.
+
+  Luckily, Ruby has a [build-in class](https://ruby-doc.org/core-2.7.0/Enumerator.html) that has the array-like interface, but with lazy elements calculation.
+
+  ### Enumerator version:
+
+  ```ruby
+  # very good - enumerator, simple code and lazy calculation
+  def result
+    if conditions.all?(&:not_success?)
+      return error("All conditions are not satisfied: " + conditions.map(&:message).join(" "))
+    end
+
+    success
+  end
+
+  private
+
+  def conditions
+    @conditions ||= ::Enumerator.new do |collection|
+      collection << is_super_admin_result
+      collection << has_ability_result
+      collection << is_subscription_owner_result
+    end
+  end
+  ```
+
+  [Enumerator](https://ruby-doc.org/core-2.7.0/Enumerator.html) is a duck for [Array](https://ruby-doc.org/core-2.7.0/Array.html) most of the time, since both of them include the [Enumerable](https://ruby-doc.org/core-2.7.0/Enumerable.html) module.
+
+  But the crucial moment is that [Enumerator](https://ruby-doc.org/core-2.7.0/Enumerator.html) may lazily calculate its elements when used properly.
+
+  ### Pattern
+
+  The final full version will quickly become a pattern in your codebase.
+
+  ```ruby
+  class IsAuthorizedForSubscriptionRefresh
+    include ::ConvenientService::Standard::Config
+
+    attr_reader :user, :subscription_id
+
+    def initialize(:user, :subscription_id)
+      @user = user
+      @subscription_id = subscription_id
+    end
+
+    def result
+      if conditions.all?(&:not_success?)
+        return error("All conditions are not satisfied: " + conditions.map(&:message).join(" "))
+      end
+
+      success
+    end
+
+    private
+
+    def conditions
+      @conditions ||= ::Enumerator.new do |collection|
+        collection << is_super_admin_result
+        collection << has_ability_result
+        collection << is_subscription_owner_result
+      end
+    end
+
+    def is_super_admin_result
+      @is_super_admin_result ||= IsSuperAdmin.result(user: user)
+    end
+
+    def has_ability_result
+      @has_ability_result ||= HasAbility.result(user: user, ability: :refresh_someone_else_subscription)
+    end
+
+    def is_subscription_owner_result
+      @is_subscription_owner_result ||= IsSubscriptionOwner.result(user: user, subscription_id: subscription_id)
+    end
+  end
+  ```
+
+  In order to add a new `or` condition just create a new memoized method with a result and push it into the [Enumerator](https://ruby-doc.org/core-2.7.0/Enumerator.html) collection.
+
+  :::note
+  Convenient Service authors highly encourage the usage of the pattern from this article since it will be abstracted away in one of the future releases by a new DSL macro like `step`.
+
+  This way you will have all the preconditions met for minimal refactoring.
+  :::
+
+  ### Extended pattern
+
+  It is also very common to have services with `or` conditions for [factory methods](https://refactoring.guru/design-patterns/factory-method).
+
+  In such a scenario original pattern is extended by hashes.
+
+  ```ruby
+  class CreateButton
+    include ::ConvenientService::Standard::Config
+
+    attr_reader :app
+
+    def initialize(:app)
+      @app = app
+    end
+
+    def result
+      if factories.all? { |factory| factory[:result].not_success? }
+        return error("All factories are not satisfied: " + factories.map { |factory| factory[:result].message }.join(" "))
+      end
+
+      success(button: factories.find { |factory| factory[:result].success? }.values_at(:result, :data_key).then { |result, key| result.data[key] })
+    end
+
+    private
+
+    def factories
+      @factories ||= ::Enumerator.new do |collection|
+        collection << create_web_button_factory
+        collection << create_android_button_factory
+        collection << create_ios_button_factory
+        collection << create_desktop_button_factory
+      end
+    end
+
+    def create_web_button_factory
+      @create_web_button_factory ||= {
+        result: CreateWebButtonFactory.result(app: app),
+        data_key: :button
+      }
+    end
+
+    def create_android_button_factory
+      @create_android_button_factory ||= {
+        result: CreateAndroidButtonFactory.result(app: app),
+        data_key: :action
+      }
+    end
+
+    def create_ios_button_factory
+      @create_ios_button_factory ||= {
+        result: CreateIosButtonFactory.result(app: app),
+        data_key: :control
+      }
+    end
+
+    def create_desktop_button_factory
+      @create_desktop_button_factory ||= {
+        result: CreateDesktopButtonFactory.result(app: app),
+        data_key: :knob
+      }
+    end
+  end
+  ```
