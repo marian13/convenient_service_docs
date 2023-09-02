@@ -4,6 +4,10 @@ sidebar_position: 3
 title: Services with `or` conditionals
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
 [Convenient Service](/) shines very brightly when you have `and` conditional logic.
 
 It is very easy to construct such behavior using the `step` DSL.
@@ -162,11 +166,11 @@ The list of to-do actions is not so long:
         if is_subscription_owner_result.not_success?
           error(
             "All conditions are not satisfied:"
-              + " "
+              + " and "
               + is_super_admin_result.message
-              + " "
+              + " and "
               + has_ability_result.message
-              + " "
+              + " and "
               + is_subscription_owner_result.message
           )
         else
@@ -199,7 +203,7 @@ The list of to-do actions is not so long:
   # better - array, but it preloads all conditions even when they are not used
   def result
     if conditions.all?(&:not_success?)
-      return error("All conditions are not satisfied: " + conditions.map(&:message).join(" "))
+      return error("All conditions are not satisfied: " + conditions.map(&:message).join(" and "))
     end
 
     success
@@ -236,7 +240,7 @@ The list of to-do actions is not so long:
   # very good - enumerator, simple code and lazy calculation
   def result
     if conditions.all?(&:not_success?)
-      return error("All conditions are not satisfied: " + conditions.map(&:message).join(" "))
+      return error("All conditions are not satisfied: " + conditions.map(&:message).join(" and "))
     end
 
     success
@@ -274,7 +278,7 @@ The list of to-do actions is not so long:
 
     def result
       if conditions.all?(&:not_success?)
-        return error("All conditions are not satisfied: " + conditions.map(&:message).join(" "))
+        return error("All conditions are not satisfied: " + conditions.map(&:message).join(" and "))
       end
 
       success
@@ -318,61 +322,145 @@ The list of to-do actions is not so long:
 
   In such a scenario original pattern is extended by hashes.
 
-  ```ruby
-  class CreateButton
-    include ::ConvenientService::Standard::Config
-
-    attr_reader :app
-
-    def initialize(:app)
-      @app = app
-    end
-
-    def result
-      if factories.all? { |factory| factory[:result].not_success? }
-        return error("All factories are not satisfied: " + factories.map { |factory| factory[:result].message }.join(" "))
-      end
-
-      success(button: factories.find { |factory| factory[:result].success? }.values_at(:result, :data_key).then { |result, key| result.data[key] })
-    end
-
-    private
-
-    def factories
-      @factories ||= ::Enumerator.new do |collection|
-        collection << create_web_button_factory
-        collection << create_android_button_factory
-        collection << create_ios_button_factory
-        collection << create_desktop_button_factory
-      end
-    end
-
-    def create_web_button_factory
-      @create_web_button_factory ||= {
-        result: CreateWebButtonFactory.result(app: app),
-        data_key: :button
-      }
-    end
-
-    def create_android_button_factory
-      @create_android_button_factory ||= {
-        result: CreateAndroidButtonFactory.result(app: app),
-        data_key: :action
-      }
-    end
-
-    def create_ios_button_factory
-      @create_ios_button_factory ||= {
-        result: CreateIosButtonFactory.result(app: app),
-        data_key: :control
-      }
-    end
-
-    def create_desktop_button_factory
-      @create_desktop_button_factory ||= {
-        result: CreateDesktopButtonFactory.result(app: app),
-        data_key: :knob
-      }
-    end
-  end
-  ```
+  <Tabs groupId="config">
+    <TabItem value="source" label="Source" default>
+      <CodeBlock language="ruby">
+        {`
+          class CreateButton
+            include ::ConvenientService::Standard::Config
+            -
+            attr_reader :app
+            -
+            def initialize(:app)
+              @app = app
+            end
+            -
+            def result
+              if factories.all? { |factory| factory[:result].not_success? }
+                return error("All factories are not satisfied: " + factories.map { |factory| factory[:result].message }.join(" and "))
+              end
+              -
+              success(button: factories.find { |factory| factory[:result].success? }.values_at(:result, :data_key).then { |result, key| result.data[key] })
+            end
+            -
+            private
+            -
+            def factories
+              @factories ||= ::Enumerator.new do |collection|
+                collection << create_web_button_factory
+                collection << create_android_button_factory
+                collection << create_ios_button_factory
+                collection << create_desktop_button_factory
+              end
+            end
+            -
+            def create_web_button_factory
+              @create_web_button_factory ||= {
+                result: CreateWebButtonFactory.result(app: app),
+                data_key: :button
+              }
+            end
+            -
+            def create_android_button_factory
+              @create_android_button_factory ||= {
+                result: CreateAndroidButtonFactory.result(app: app),
+                data_key: :action
+              }
+            end
+            -
+            def create_ios_button_factory
+              @create_ios_button_factory ||= {
+                result: CreateIosButtonFactory.result(app: app),
+                data_key: :control
+              }
+            end
+            -
+            def create_desktop_button_factory
+              @create_desktop_button_factory ||= {
+                result: CreateDesktopButtonFactory.result(app: app),
+                data_key: :knob
+              }
+            end
+          end
+        `}
+      </CodeBlock>
+    </TabItem>
+    <TabItem value="rspec" label="RSpec">
+      <CodeBlock language="ruby">
+        {`
+          require "spec_helper"
+          -
+          RSpec.describe CreateButton do
+            include ConvenientService::RSpec::Matchers::Results
+            -
+            example_group "class methods" do
+              describe ".result" do
+                subject(:result) { described_class.result(app: app) }
+                -
+                context "when \`CreateButton\` is NOT successful" do
+                  let(:app) { App.new(platform: :cli) }
+                  -
+                  context "when all factories are NOT successful" do
+                    let(:message) do
+                      [
+                        "All factories are not satisfied: ",
+                        CreateWebButtonFactory.result(app: app),
+                        CreateAndroidButtonFactory.result(app: app),
+                        CreateIosButtonFactory.result(app: app),
+                        CreateDesktopButtonFactory.result(app: app)
+                      ]
+                        .each(&:success?)
+                        .map(&:message)
+                        .join(" and ")
+                    end
+                    -
+                    it "returns error with message" do
+                      expect(result).to be_error.with_message(message).of_service(described_class).without_step
+                    end
+                  end
+                end
+                -
+                context "when \`CreateButton\` is successful" do
+                  context "when \`CreateWebButtonFactory\` is successful" do
+                    let(:app) { App.new(platform: :web) }
+                    let(:button) { App::UI::Web::Button.new }
+                    -
+                    it "returns success" do
+                      expect(result).to be_success.with_data(button: button).of_service(described_class).without_step
+                    end
+                  end
+                  -
+                  context "when \`CreateAndroidButtonFactory\` is successful" do
+                    let(:app) { App.new(platform: :android) }
+                    let(:button) { App::UI::Android::Action.new }
+                    -
+                    it "returns success" do
+                      expect(result).to be_success.with_data(button: button).of_service(described_class).without_step
+                    end
+                  end
+                  -
+                  context "when \`CreateIosButtonFactory\` is successful" do
+                    let(:app) { App.new(platform: :ios) }
+                    let(:button) { App::UI::IOS::Control.new }
+                    -
+                    it "returns success" do
+                      expect(result).to be_success.with_data(button: button).of_service(described_class).without_step
+                    end
+                  end
+                  -
+                  context "when \`CreateDesktopButtonFactory\` is successful" do
+                    let(:app) { App.new(platform: :desktop) }
+                    let(:button) { App::UI::Desktop::Knob.new }
+                    -
+                    it "returns success" do
+                      expect(result).to be_success.with_data(button: button).of_service(described_class).without_step
+                    end
+                  end
+                end
+              end
+            end
+          end
+        `}
+      </CodeBlock>
+    </TabItem>
+  </Tabs>
