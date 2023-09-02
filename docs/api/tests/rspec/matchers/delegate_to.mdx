@@ -203,37 +203,3 @@ first == second # => false
 first == first # => true
 second == second # => true
 :::
-
-## Pitfalls
-
-Currently, `delegate_to` expects that delegation is executed only once inside the `expect` block.
-
-For example, the next spec won't work:
-
-```ruby
-it "fails since delegation was done twice" do
-  expect {
-    File.exist?("Gemfile")
-
-    !File.exist?("Gemfile")
-  }
-    .to delegate_to(File, :exist?)
-    .with_arguments("Gemfile")
-end
-```
-
-[Receive Counts](https://relishapp.com/rspec/rspec-mocks/docs/setting-constraints/receive-counts) feature is planned for the future releases of the [Convenient Service](/).
-
-For now, please stick with plain [RSpec](https://rspec.info/) for such cases.
-
-```ruby
-it "passes with multiple delegations" do
-  allow(File).to receive(:exist?).with("Gemfile").and_call_original
-
-  File.exist?("Gemfile")
-
-  !File.exist?("Gemfile")
-
-  expect(File).to have_received(:exist?).with("Gemfile").twice
-end
-```
