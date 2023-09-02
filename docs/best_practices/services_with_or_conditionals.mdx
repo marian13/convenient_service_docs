@@ -265,48 +265,123 @@ The list of to-do actions is not so long:
 
   The final full version will quickly become a pattern in your codebase.
 
-  ```ruby
-  class IsAuthorizedForSubscriptionRefresh
-    include ::ConvenientService::Standard::Config
-
-    attr_reader :user, :subscription_id
-
-    def initialize(:user, :subscription_id)
-      @user = user
-      @subscription_id = subscription_id
-    end
-
-    def result
-      if conditions.all?(&:not_success?)
-        return error("All conditions are not satisfied: " + conditions.map(&:message).join(" and "))
-      end
-
-      success
-    end
-
-    private
-
-    def conditions
-      @conditions ||= ::Enumerator.new do |collection|
-        collection << is_super_admin_result
-        collection << has_ability_result
-        collection << is_subscription_owner_result
-      end
-    end
-
-    def is_super_admin_result
-      @is_super_admin_result ||= IsSuperAdmin.result(user: user)
-    end
-
-    def has_ability_result
-      @has_ability_result ||= HasAbility.result(user: user, ability: :refresh_someone_else_subscription)
-    end
-
-    def is_subscription_owner_result
-      @is_subscription_owner_result ||= IsSubscriptionOwner.result(user: user, subscription_id: subscription_id)
-    end
-  end
-  ```
+  <Tabs groupId="examples">
+    <TabItem value="source" label="Source" default>
+      <CodeBlock language="ruby">
+        {`
+          class IsAuthorizedForSubscriptionRefresh
+            include ::ConvenientService::Standard::Config
+            -
+            attr_reader :user, :subscription_id
+            -
+            def initialize(:user, :subscription_id)
+              @user = user
+              @subscription_id = subscription_id
+            end
+            -
+            def result
+              if conditions.all?(&:not_success?)
+                return error("All conditions are not satisfied: " + conditions.map(&:message).join(" and "))
+              end
+              -
+              success
+            end
+            -
+            private
+            -
+            def conditions
+              @conditions ||= ::Enumerator.new do |collection|
+                collection << is_super_admin_result
+                collection << has_ability_result
+                collection << is_subscription_owner_result
+              end
+            end
+            -
+            def is_super_admin_result
+              @is_super_admin_result ||= IsSuperAdmin.result(user: user)
+            end
+            -
+            def has_ability_result
+              @has_ability_result ||= HasAbility.result(user: user, ability: :refresh_someone_else_subscription)
+            end
+            -
+            def is_subscription_owner_result
+              @is_subscription_owner_result ||= IsSubscriptionOwner.result(user: user, subscription_id: subscription_id)
+            end
+          end
+        `}
+      </CodeBlock>
+    </TabItem>
+    <TabItem value="rspec" label="RSpec">
+      <CodeBlock language="ruby">
+        {`
+          require "spec_helper"
+          -
+          RSpec.describe IsAuthorizedForSubscriptionRefresh do
+            include ConvenientService::RSpec::Matchers::Results
+            -
+            example_group "class methods" do
+              describe ".result" do
+                subject(:result) { described_class.result(user: user, subscription_id: subscription_id) }
+                -
+                let(:user) { User.new }
+                let(:subscription_id) { Subcription.new.id }
+                -
+                context "when \`IsAuthorizedForSubscriptionRefresh\` is NOT successful" do
+                  context "when all conditions are NOT successful" do
+                    let(:user) { Guest.new }
+                    let(:subscription_id) { nil }
+                    -
+                    let(:message) do
+                      [
+                        "All conditions are not satisfied: ",
+                        IsSuperAdmin.result(user: user),
+                        HasAbility.result(user: user, ability: :refresh_someone_else_subscription),
+                        IsSubscriptionOwner.result(user: user, subscription_id: subscription_id),
+                      ]
+                        .each(&:success?)
+                        .map(&:message)
+                        .join(" and ")
+                    end
+                    -
+                    it "returns error with message" do
+                      expect(result).to be_error.with_message(message).of_service(described_class).without_step
+                    end
+                  end
+                end
+                -
+                context "when \`IsAuthorizedForSubscriptionRefresh\` is successful" do
+                  context "when \`IsSuperAdmin\` is successful" do
+                    let(:user) { SuperAdmin.new }
+                    -
+                    it "returns success" do
+                      expect(result).to be_success.without_data.of_service(described_class).without_step
+                    end
+                  end
+                  -
+                  context "when \`HasAbility\` is successful" do
+                    let(:user) { User.new(abilities: [:refresh_someone_else_subscription]) }
+                    -
+                    it "returns success" do
+                      expect(result).to be_success.without_data.of_service(described_class).without_step
+                    end
+                  end
+                  -
+                  context "when \`IsSubscriptionOwner\` is successful" do
+                    let(:subscription_id) { Subcription.new(user: user).id }
+                    -
+                    it "returns success" do
+                      expect(result).to be_success.without_data.of_service(described_class).without_step
+                    end
+                  end
+                end
+              end
+            end
+          end
+        `}
+      </CodeBlock>
+    </TabItem>
+  </Tabs>
 
   In order to add a new `or` condition just create a new memoized method with a result and push it into the [Enumerator](https://ruby-doc.org/core-2.7.0/Enumerator.html) collection.
 
@@ -322,7 +397,7 @@ The list of to-do actions is not so long:
 
   In such a scenario original pattern is extended by hashes.
 
-  <Tabs groupId="config">
+  <Tabs groupId="examples">
     <TabItem value="source" label="Source" default>
       <CodeBlock language="ruby">
         {`
@@ -397,9 +472,9 @@ The list of to-do actions is not so long:
               describe ".result" do
                 subject(:result) { described_class.result(app: app) }
                 -
+                let(:app) { App.new(platform: :cli) }
+                -
                 context "when \`CreateButton\` is NOT successful" do
-                  let(:app) { App.new(platform: :cli) }
-                  -
                   context "when all factories are NOT successful" do
                     let(:message) do
                       [
@@ -441,7 +516,7 @@ The list of to-do actions is not so long:
                   -
                   context "when \`CreateIosButtonFactory\` is successful" do
                     let(:app) { App.new(platform: :ios) }
-                    let(:button) { App::UI::IOS::Control.new }
+                    let(:button) { App::UI::Ios::Control.new }
                     -
                     it "returns success" do
                       expect(result).to be_success.with_data(button: button).of_service(described_class).without_step
