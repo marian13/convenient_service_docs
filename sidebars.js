@@ -161,6 +161,7 @@ const sidebars = {
         'best_practices/avoid_error_shadowing',
         'best_practices/service_has_only_one_success',
         'best_practices/services_with_or_conditionals',
+        'best_practices/skip_result_call_for_boolean_services',
       ],
     },
     {
@@ -171,6 +172,7 @@ const sidebars = {
       },
       collapsed: true,
       items: [
+        'glossary/boolean_service',
         'glossary/decorator_middleware',
         'glossary/proxy_middleware',
       ],

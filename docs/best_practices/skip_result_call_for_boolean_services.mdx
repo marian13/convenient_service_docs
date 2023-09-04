@@ -1,0 +1,59 @@
+---
+slug: /best_practices/skip_result_call_for_boolean_services
+sidebar_position: 4
+title: Skip `result` call for boolean services
+---
+
+Let's check the following [boolean service](/glossary/boolean_service):
+
+```ruby
+class IsConnectionActive
+  include ::ConvenientService::Standard::Config
+
+  attr_reader :connection
+
+  def initialize(:connection)
+    @connection = connection
+  end
+
+  def result
+    return failure(connection: "can't be blank") if connection.blank?
+    return error("Connection `#{connection.id}` is NOT connected") unless connection.connected?
+    return error("Connection `#{connection.id}` has NO task") if connection.task.blank?
+    return error("Connection `#{connection.id}` task is NOT in progress") unless connection.task.in_progres?
+
+    success
+  end
+end
+```
+
+A common way to run a usual service is like this:
+
+```ruby
+# okish
+result = IsConnectionActive.result(connection: connection)
+
+if result.success?
+  ##
+  # `result.data` is processed somehow by the end-user here...
+  #
+  result.data
+else
+
+end
+```
+
+Most of the time you will probably work with `result.data` inside `if result.success?` branch.
+
+But that is not the case for the [boolean services](/glossary/boolean_service).
+
+Their `success` calls do NOT accept any data, that is why the previous chunk of code can be written in a shorter form:
+
+```ruby
+# better
+if IsConnectionActive.success?(connection: connection)
+
+else
+
+end
+```

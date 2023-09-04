@@ -1,0 +1,104 @@
+---
+slug: /glossary/boolean_service
+sidebar_position: 1
+title: Boolean Service
+---
+
+- *Boolean service* is a service that confirms/denies an assumption.
+
+- *Boolean service* is a service that answers to a question.
+
+- *Boolean service* is a service whose `success` result has no data.
+
+`success` result from the boolean service confirms the assumption stated in its name, in other words, it answers positively to the question.
+
+`error` result from the boolean service tells why exactly the assumption is NOT accurate, in other words, it answers negatively to the question + provides the reason.
+
+`failure` result explains why there is no even hypothetical opportunity to confirm/deny the assumption, in other words, it gives no answer to the question at all.
+
+Here are some examples of such services:
+
+```ruby
+class IsEmployeeFree
+  attr_reader :employee
+
+  def initialize(:employee)
+    @employee = employee
+  end
+
+  def result
+    return failure(employee: "can't be blank") if employee.blank?
+    return error("Employee `#{employee.id}` has task `#{employee.tasks.find(&:in_progress?).id}` in progress") if employee.tasks.any?(&:in_progress?)
+
+    success
+  end
+end
+```
+
+`IsEmployeeFree` assumes that an employee is available.
+
+The following command either confirms or denies that assumption.
+
+```ruby
+IsEmployeeFree.success?(employee: employee)
+```
+
+```ruby
+class IsTaskUnassigned
+  attr_reader :task
+
+  def initialize(:task)
+    @task = task
+  end
+
+  def result
+    return failure(task: "can't be blank") if task.blank?
+    return error("Task `#{task.id}` has employee `#{task.employee}`") if task.employee.present?
+
+    success
+  end
+end
+```
+
+`IsTaskUnassigned` asks a question - is a task not assigned to anyone?
+
+The expression below answers it either positively or negatively.
+
+```ruby
+IsEmployeeFree.success?(employee: employee)
+```
+
+Also as with any other type of service, the boolean service can be triggered via the `result` method or a step:
+
+```ruby
+result = IsEmployeeFree.result(employee: employee)
+```
+
+```ruby
+class AssignTaskToEmployee
+  include ::ConvenientService::Standard::Config
+
+  attr_reader :task, :employee
+
+  step IsTaskUnassigned,
+    in: :task
+
+  step IsEmployeeFree,
+    in: :employee
+
+  def initialize(task:, employee:)
+    @task = task
+    @employee = employee
+  end
+
+  def result
+    task.employee = employee
+
+    saved = task.save
+
+    return error("Task `#{task.id}` employee `#{employee.id}` is NOT saved") unless saved
+
+    success
+  end
+end
+```
