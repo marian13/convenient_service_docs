@@ -1,0 +1,207 @@
+---
+slug: /advanced_guides/how_to_migrate_from_standard_v1
+sidebar_position: 2
+title: How to migrate from `Standard::V1`?
+---
+
+Consider the following old service that is using the outdated [ConvenientService::Standard::V1::Config](/glossary/standard_v1).
+
+```ruby
+class AssertFileNotEmpty
+  include ConvenientService::Standard::V1::Config
+
+  attr_reader :path
+
+  def initialize(path:)
+    @path = path
+  end
+
+  def result
+    return failure(path: "Path is \`nil\`") if path.nil?
+    return failure(path: "Path is empty") if path.empty?
+
+    return error("File is empty at path \`#{path}\`") if ::File.zero?(path)
+
+    success
+  end
+end
+```
+
+Its spec may look like this:
+
+```ruby
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  include ConvenientService::RSpec::Matchers::Results
+  include ConvenientService::RSpec::Matchers::IncludeModule
+
+  let(:result) { described_class.result(path: path) }
+
+  example_group "modules" do
+    subject { described_class }
+
+    it { is_expected.to include_module(ApplicationService::Config) }
+  end
+
+  example_group "class methods" do
+    describe ".result" do
+      context "when assertion that file exists is NOT successful" do
+        context "when `path` is NOT valid" do
+          context "when `path` is `nil`" do
+            let(:path) { nil }
+
+            it "returns `failure` with `data`" do
+              expect(result).to be_failure.with_data(path: "Path is `nil`").of_service(described_class).without_step
+            end
+          end
+
+          context "when `path` is empty" do
+            let(:path) { "" }
+
+            it "returns `failure` with `data`" do
+              expect(result).to be_failure.with_data(path: "Path is empty").of_service(described_class).without_step
+            end
+          end
+        end
+
+        context "when file with `path` does NOT exist" do
+          let(:path) { "non_existing_path" }
+
+          it "returns `error` with `message`" do
+            expect(result).to be_error.with_message("File with path `#{path}` does NOT exist").of_service(described_class).without_step
+          end
+        end
+      end
+
+      context "when assertion that file exists is successful" do
+        ##
+        # NOTE: Tempfile uses its own `let` in order to prevent its premature garbage collection.
+        #
+        let(:tempfile) { Tempfile.new }
+        let(:path) { tempfile.path }
+
+        it "returns `success`" do
+          expect(result).to be_success.of_service(described_class).without_step
+        end
+      end
+    end
+  end
+end
+```
+
+In order to migrate it, we need to perform four actions:
+
+1. Rename the outdated configuration to the modern one.
+
+```ruby
+class AssertFileNotEmpty
+  # before
+  include ConvenientService::Standard::V1::Config
+
+  # after
+  include ConvenientService::Standard::Config
+
+  # ...
+end
+```
+
+2. Rename `failures` and `errors` results inside the source code.
+
+```ruby
+class AssertFileNotEmpty
+  # ...
+
+  # before
+  def result
+    return failure(path: "Path is \`nil\`") if path.nil?
+    return failure(path: "Path is empty") if path.empty?
+
+    return error("File is empty at path \`#{path}\`") if ::File.zero?(path)
+
+    success
+  end
+
+  # after
+  def result
+    return error("Path is \`nil\`") if path.nil?
+    return error("Path is empty") if path.empty?
+
+    return failure("File is empty at path \`#{path}\`") if ::File.zero?(path)
+
+    success
+  end
+end
+```
+
+:::caution
+
+This update should NOT be "blind".
+
+Make sure `failures` and `errors` are used according to their meanings.
+
+:::
+
+3. Rename `failures` and `errors` results inside the specs.
+
+```ruby
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  # ...
+
+  # before
+  it "returns `failure` with `data`" do
+    expect(result).to be_failure.with_data(path: "Path is `nil`").of_service(described_class).without_step
+  end
+
+  # after
+  it "returns `error` with `message`" do
+    expect(result).to be_error.with_message("Path is `nil`").of_service(described_class).without_step
+  end
+
+  # before
+  it "returns `failure` with `data`" do
+    expect(result).to be_failure.with_data(path: "Path is empty").of_service(described_class).without_step
+  end
+
+  # after
+  it "returns `error` with `message`" do
+    expect(result).to be_error.with_message("Path is empty").of_service(described_class).without_step
+  end
+
+  # before
+  it "returns `error` with `message`" do
+    expect(result).to be_error.with_message("File with path `#{path}` does NOT exist").of_service(described_class).without_step
+  end
+
+  # after
+  it "returns `failure` with `message`" do
+    expect(result).to be_failure.with_message("File with path `#{path}` does NOT exist").of_service(described_class).without_step
+  end
+
+  # ...
+end
+```
+
+:::caution
+
+Again, please, ensure that `failures` and `errors` are used according to their meanings.
+
+Otherwise, this renaming makes no sense.
+
+:::
+
+4. Repeat the same procedure for the rest services that are using [ConvenientService::Standard::V1::Config](/glossary/standard_v1).
+
+:::danger
+
+Do not mix services with the modern and outdated configurations.
+
+For example, that is possible with steps.
+
+Instead, update all outdated services at once or delay this refactoring for the better times.
+
+If you structure your services as isolated features, then refactor the whole feature.
+
+:::
