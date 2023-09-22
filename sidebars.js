@@ -177,6 +177,7 @@ const sidebars = {
         'glossary/clean_code',
         'glossary/decorator_middleware',
         'glossary/proxy_middleware',
+        'glossary/standard_v1',
       ],
     },
   ],
