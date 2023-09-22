@@ -174,6 +174,7 @@ const sidebars = {
       collapsed: true,
       items: [
         'glossary/boolean_service',
+        'glossary/clean_code',
         'glossary/decorator_middleware',
         'glossary/proxy_middleware',
       ],
