@@ -1,0 +1,60 @@
+---
+slug: /faq
+sidebar_position: 1
+title: Frequently Asked Questions
+---
+
+## Is it possible to modify the step collection from a callback?
+
+No❗
+
+That is done by design.
+
+One of the main [Convenient Service](/) goals is the representation of the complex logic as a sequence of simple declarative steps.
+
+This idea is completely lost when a callback allows modification of step collection.
+
+Right after the first such mutation, you can not rely on what you see.
+
+In order to make sure, that the steps declared at the build time are actually the same at runtime, you need to check implementation of every callback.
+
+This contradicts the [Clean Code](/glossary/clean_code) definition.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step :one
+
+  step :two
+
+  step :three
+
+  before :step do
+    byebug
+
+    steps.clear
+    # => FrozenError
+  end
+
+  def one
+    puts "one"
+
+    success
+  end
+
+  def two
+    puts "two"
+
+    success
+  end
+
+  def three
+    puts "three"
+
+    success
+  end
+end
+
+Service.result
+```

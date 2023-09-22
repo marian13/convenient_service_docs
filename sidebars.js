@@ -164,6 +164,7 @@ const sidebars = {
         'best_practices/skip_result_call_for_boolean_services',
       ],
     },
+    'faq',
     {
       type: 'category',
       label: 'Glossary',
