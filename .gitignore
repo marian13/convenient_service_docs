@@ -18,3 +18,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+##
+# NOTE: Ignores `TODO.md`. Usually, this file is used for notes that are NOT ready to be shared with the outside world.
+#
+TODO.md
