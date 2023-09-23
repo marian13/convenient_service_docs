@@ -178,6 +178,17 @@ const sidebars = {
         'glossary/clean_code',
         {
           type: 'category',
+          label: 'FDD',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'glossary/fdd/entry',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Advanced',
           link: {
             type: 'generated-index',

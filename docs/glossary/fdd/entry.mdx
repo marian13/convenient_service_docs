@@ -1,0 +1,86 @@
+---
+slug: /glossary/fdd/entry
+sidebar_position: 1
+title: Entry
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+*Entry* is a single part of the feature's [public interface](https://en.wikipedia.org/wiki/Public_interface).
+
+Let's check the following feature class.
+
+```ruby
+module Application
+  module Features
+    class Gemfile
+      include ConvenientService::Feature::Standard::Config
+
+      entry :format do |path:|
+        Services::Format.result(path: path)
+      end
+
+      entry :lint do |path:|
+        Services::Lint.result(path: path)
+      end
+    end
+  end
+end
+```
+
+After a brief overview, you should start to have a high-level understanding of the goal of the `Gemfile` feature and what to do with it in practice.
+
+In this particular case, two abilities are available:
+
+- Formatting of a Gemfile (`entry :format`).
+
+- Linting of a Gemfile (`entry :lint`).
+
+Calling of an entry is as simple as:
+
+```ruby
+# Somewhere inside your codebase.
+App::Features::Gemfile.format(path: "Gemfile")
+
+App::Features::Gemfile.lint(path: "Gemfile")
+```
+
+That's why people are often thinking about entries as something really close to Ruby's regular class methods.
+
+```ruby
+##
+# The actual entry.
+#
+entry :format do |path:|
+  Services::Format.result(path: path)
+end
+
+##
+# Just a mental concept to imagine entries as wrappers over class methods (under the hood they are something not so straightforward, but this is a topic for a different story).
+#
+def self.format(path:)
+  Services::Format.result(path: path)
+end
+```
+
+Eventually, a list of entries may and must be considered as a [Facade](https://refactoring.guru/design-patterns/facade) in front of the complex system.
+
+:::tip
+
+While having a code review of a new (or existing) feature, prefer to check its list of entries at the very beginning.
+
+This is the way to quickly get a summary of the feature and its main purpose.
+
+In other words, to get so-called ["minimal context"](/glossary/clean_code).
+
+After that, the intention of the internal feature services may become more obvious (hopefully 🙂).
+
+:::
+
+:::tip
+
+In order to find all feature triggers, just search for entries invocations using your favorite code editor.
+
+<img src={useBaseUrl('./img/glossary/fdd/entry/search.png')} />
+
+:::
