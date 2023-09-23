@@ -176,9 +176,19 @@ const sidebars = {
       items: [
         'glossary/boolean_service',
         'glossary/clean_code',
-        'glossary/decorator_middleware',
-        'glossary/proxy_middleware',
-        'glossary/standard_v1',
+        {
+          type: 'category',
+          label: 'Advanced',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'glossary/advanced/decorator_middleware',
+            'glossary/advanced/proxy_middleware',
+            'glossary/advanced/standard_v1',
+          ],
+        },
       ],
     },
   ],
