@@ -52,18 +52,19 @@ const sidebars = {
         'guides/how_to_find_result_step',
         'guides/how_to_access_result_attributes_without_checking_its_status',
         'guides/how_to_rescue_all_result_unhandled_exceptions',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Advanced Guides',
-      link: {
-        type: 'generated-index',
-      },
-      collapsed: true,
-      items: [
-        'advanced_guides/how_to_debug_lib',
-        'advanced_guides/how_to_print_lib_logs',
+        {
+          type: 'category',
+          label: 'Advanced',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'guides/advanced/how_to_debug_lib',
+            'guides/advanced/how_to_print_lib_logs',
+            'guides/advanced/how_to_migrate_from_standard_v1',
+          ],
+        },
       ],
     },
     {
