@@ -4,8 +4,8 @@
   <ShortName>Convenient Service</ShortName>
   <Description>Search Convenient Service</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://marian13.github.io/convenient_service_docs/img/favicon.ico</Image>
-  <Url type="text/html" method="get" template="https://marian13.github.io/convenient_service_docs/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://marian13.github.io/convenient_service_docs/opensearch.xml" />
-  <moz:SearchForm>https://marian13.github.io/convenient_service_docs/</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://marian13.github.io/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://marian13.github.io/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://marian13.github.io/opensearch.xml" />
+  <moz:SearchForm>https://marian13.github.io/</moz:SearchForm>
 </OpenSearchDescription>
