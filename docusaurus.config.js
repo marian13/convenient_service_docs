@@ -9,7 +9,7 @@ const config = {
   title: 'Convenient Service',
   tagline: 'Yet another approach to revisit the service object pattern, but this time focusing on the unique, opinionated features',
   url: 'https://marian13.github.io',
-  baseUrl: '/convenient_service_docs/',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
