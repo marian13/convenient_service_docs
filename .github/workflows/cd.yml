@@ -47,3 +47,4 @@ jobs:
           # NOTE: Build output to publish to the `gh-pages` branch.
           #
           publish_dir: ./build
+          cname: userdocs.convenientservice.org
