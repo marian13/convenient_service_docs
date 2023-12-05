@@ -68,3 +68,89 @@ As a result, some breaking changes may still happen.
 [ConvenientService::Standard::V1::Config](/glossary/advanced/standard_v1) is a config that was created to delay the migration of services that were created by older [Convenient Service](/) versions.
 
 Specifically, `v0.12.0` and lower.
+
+## Why `case/when` does NOT work with just result codes?
+
+Sometimes it may feel idiomatic to check the result code in the following way:
+
+```ruby
+# wrong
+if result.not_success?
+  case result.code # `result.code` returns fancy object
+  when :full_queue
+    notify_devops
+  when :duplicated_job
+    notify_devs
+  else
+    # ...
+  end
+end
+```
+
+Although this snippet looks very appealing, it won't work as expected.
+
+A lot of Ruby folks often have an assumption that a value of `case` is compared with a value of `when`.
+
+```ruby
+case value === when value
+```
+
+In other words, the `case/when` from example above can be transformed to `if/else` like so:
+
+```ruby
+# wrong
+if result.not_success?
+  if result.code === :full_queue
+    notify_devops
+  elsif result.code === :duplicated_job
+    notify_devs
+  else
+    # ...
+  end
+end
+```
+
+But, that is NOT correct.
+
+In reality, the value of `when` is [always compared](https://stackoverflow.com/a/4467823/12201472) with the value of `case`.
+
+```ruby
+when value === case value
+```
+
+Let's write the proper transformation:
+
+```ruby
+# okish
+if result.not_success?
+  if :full_queue === result.code
+    notify_devops
+  elsif :duplicated_job === result.code
+    notify_devs
+  else
+    # ...
+  end
+end
+```
+
+[Symbol#===](https://ruby-doc.org/core-2.7.1/Symbol.html#method-i-3D-3D-3D) is just an alias to [Symbol#==](https://ruby-doc.org/core-2.7.1/Symbol.html#method-i-3D-3D).
+
+There is no way to hook into any behavior like with strings ([String#===](https://ruby-doc.org/core-2.7.1/String.html#method-i-3D-3D-3D) calls [to_str](https://ruby-doc.org/core-2.7.1/String.html#method-i-to_str) on its argument).
+
+As a result, just `case result.code` is not enough.
+
+But once you use `case result.code.to_sym`, the natural Ruby charm is back.
+
+```ruby
+# ok
+if result.not_success?
+  case result.code.to_sym
+  when :full_queue
+    notify_devops
+  when :duplicated_job
+    notify_devs
+  else
+    # ...
+  end
+end
+```
