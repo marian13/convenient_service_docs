@@ -81,7 +81,7 @@ return error(message: "Job is NOT unique", code: :duplicated_job) if job.duplica
 # ...
 
 if result.error?
-  case result.code # symbol-like object
+  case result.code.to_sym
   when :full_queue
     notify_devops
   when :duplicated_job
