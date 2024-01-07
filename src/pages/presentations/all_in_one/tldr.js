@@ -10,6 +10,7 @@ export default function TLDR() {
     <LayoutProvider>
       <CodeBlock language="ruby">
         {`
+          # Any source code in the project.
           def read_file_content(path)
             result = ReadFileContent.result(path: path)
             -
@@ -169,10 +170,10 @@ export default function TLDR() {
                 end
                 -
                 def result
-                  return failure(path: "Path is \`nil\`") if path.nil?
-                  return failure(path: "Path is empty") if path.empty?
+                  return error("Path is \`nil\`") if path.nil?
+                  return error("Path is empty") if path.empty?
                   -
-                  return error("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
+                  return failure("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
                   -
                   success
                 end
@@ -192,7 +193,7 @@ export default function TLDR() {
                 validates :path, presence: true
                 -
                 def result
-                  return error("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
+                  return failure("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
                   -
                   success
                 end
@@ -216,7 +217,7 @@ export default function TLDR() {
                 end
                 -
                 def result
-                  return error("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
+                  return failure("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
                   -
                   success
                 end
@@ -256,16 +257,16 @@ export default function TLDR() {
                         context "when \`path\` is \`nil\`" do
                           let(:path) { nil }
                           -
-                          it "returns \`failure\` with \`data\`" do
-                            expect(result).to be_failure.with_data(path: "Path is \`nil\`").of_service(described_class).without_step
+                          it "returns \`error\` with \`message\`" do
+                            expect(result).to be_error.with_message("Path is \`nil\`").of_service(described_class).without_step
                           end
                         end
                         -
                         context "when \`path\` is empty" do
                           let(:path) { "" }
                           -
-                          it "returns \`failure\` with \`data\`" do
-                            expect(result).to be_failure.with_data(path: "Path is empty").of_service(described_class).without_step
+                          it "returns \`error\` with \`message\`" do
+                            expect(result).to be_error.with_message("Path is empty").of_service(described_class).without_step
                           end
                         end
                       end
@@ -273,8 +274,8 @@ export default function TLDR() {
                       context "when file with \`path\` does NOT exist" do
                         let(:path) { "non_existing_path" }
                         -
-                        it "returns \`error\` with \`message\`" do
-                          expect(result).to be_error.with_message("File with path \`#{path}\` does NOT exist").of_service(described_class).without_step
+                        it "returns \`failure\` with \`message\`" do
+                          expect(result).to be_failure.with_message("File with path \`#{path}\` does NOT exist").of_service(described_class).without_step
                         end
                       end
                     end
@@ -321,16 +322,16 @@ export default function TLDR() {
                       context "when \`path\` is NOT present" do
                         let(:path) { "" }
                         -
-                        it "returns \`failure\` with \`data\`" do
-                          expect(result).to be_failure.with_data(path: "can't be blank").of_service(described_class).without_step
+                        it "returns \`error\` with \`message\`" do
+                          expect(result).to be_error.with_message("can't be blank").of_service(described_class).without_step
                         end
                       end
                       -
                       context "when file with \`path\` does NOT exist" do
                         let(:path) { "non_existing_path" }
                         -
-                        it "returns \`error\` with \`message\`" do
-                          expect(result).to be_error.with_message("File with path \`#{path}\` does NOT exist").of_service(described_class).without_step
+                        it "returns \`failure\` with \`message\`" do
+                          expect(result).to be_failure.with_message("File with path \`#{path}\` does NOT exist").of_service(described_class).without_step
                         end
                       end
                     end
@@ -377,16 +378,16 @@ export default function TLDR() {
                       context "when \`path\` is NOT present" do
                         let(:path) { "" }
                         -
-                        it "returns \`failure\` with \`data\`" do
-                          expect(result).to be_failure.with_data(path: "must be filled").of_service(described_class).without_step
+                        it "returns \`error\` with \`message\`" do
+                          expect(result).to be_error.with_message("must be filled").of_service(described_class).without_step
                         end
                       end
                       -
                       context "when file with \`path\` does NOT exist" do
                         let(:path) { "non_existing_path" }
                         -
-                        it "returns \`error\` with \`message\`" do
-                          expect(result).to be_error.with_message("File with path \`#{path}\` does NOT exist").of_service(described_class).without_step
+                        it "returns \`failure\` with \`message\`" do
+                          expect(result).to be_failure.with_message("File with path \`#{path}\` does NOT exist").of_service(described_class).without_step
                         end
                       end
                     end
@@ -429,10 +430,10 @@ export default function TLDR() {
                 end
                 -
                 def result
-                  return failure(path: "Path is \`nil\`") if path.nil?
-                  return failure(path: "Path is empty") if path.empty?
+                  return error("Path is \`nil\`") if path.nil?
+                  return error("Path is empty") if path.empty?
                   -
-                  return error("File is empty at path \`#{path}\`") if ::File.zero?(path)
+                  return failure("File is empty at path \`#{path}\`") if ::File.zero?(path)
                   -
                   success
                 end
@@ -452,7 +453,7 @@ export default function TLDR() {
                 validates :path, presence: true
                 -
                 def result
-                  return error("File is empty at path \`#{path}\`") if ::File.zero?(path)
+                  return failure("File is empty at path \`#{path}\`") if ::File.zero?(path)
                   -
                   success
                 end
@@ -476,7 +477,7 @@ export default function TLDR() {
                 end
                 -
                 def result
-                  return error("File is empty at path \`#{path}\`") if ::File.zero?(path)
+                  return failure("File is empty at path \`#{path}\`") if ::File.zero?(path)
                   -
                   success
                 end
@@ -516,16 +517,16 @@ export default function TLDR() {
                         context "when \`path\` is \`nil\`" do
                           let(:path) { nil }
                           -
-                          it "returns \`failure\` with \`data\`" do
-                            expect(result).to be_failure.with_data(path: "Path is \`nil\`").of_service(described_class).without_step
+                          it "returns \`error\` with \`message\`" do
+                            expect(result).to be_error.with_message("Path is \`nil\`").of_service(described_class).without_step
                           end
                         end
                         -
                         context "when \`path\` is empty" do
                           let(:path) { "" }
                           -
-                          it "returns \`failure\` with \`data\`" do
-                            expect(result).to be_failure.with_data(path: "Path is empty").of_service(described_class).without_step
+                          it "returns \`error\` with \`message\`" do
+                            expect(result).to be_error.with_message("Path is empty").of_service(described_class).without_step
                           end
                         end
                       end
@@ -537,8 +538,8 @@ export default function TLDR() {
                         let(:tempfile) { Tempfile.new }
                         let(:path) { tempfile.path }
                         -
-                        it "returns \`error\` with \`message\`" do
-                          expect(result).to be_error.with_message("File with path \`#{path}\` is empty").of_service(described_class).without_step
+                        it "returns \`failure\` with \`message\`" do
+                          expect(result).to be_failure.with_message("File with path \`#{path}\` is empty").of_service(described_class).without_step
                         end
                       end
                     end
@@ -585,8 +586,8 @@ export default function TLDR() {
                       context "when \`path\` is NOT present" do
                         let(:path) { "" }
                         -
-                        it "returns \`failure\` with \`data\`" do
-                          expect(result).to be_failure.with_data(path: "can't be blank").of_service(described_class).without_step
+                        it "returns \`error\` with \`message\`" do
+                          expect(result).to be_error.with_message("can't be blank").of_service(described_class).without_step
                         end
                       end
                       -
@@ -597,8 +598,8 @@ export default function TLDR() {
                         let(:tempfile) { Tempfile.new }
                         let(:path) { tempfile.path }
                         -
-                        it "returns \`error\` with \`message\`" do
-                          expect(result).to be_error.with_message("File with path \`#{path}\` is empty").of_service(described_class).without_step
+                        it "returns \`failure\` with \`message\`" do
+                          expect(result).to be_failure.with_message("File with path \`#{path}\` is empty").of_service(described_class).without_step
                         end
                       end
                     end
@@ -645,8 +646,8 @@ export default function TLDR() {
                       context "when \`path\` is NOT present" do
                         let(:path) { "" }
                         -
-                        it "returns \`failure\` with \`data\`" do
-                          expect(result).to be_failure.with_data(path: "must be filled").of_service(described_class).without_step
+                        it "returns \`error\` with \`message\`" do
+                          expect(result).to be_error.with_message("must be filled").of_service(described_class).without_step
                         end
                       end
                       -
@@ -657,8 +658,8 @@ export default function TLDR() {
                         let(:tempfile) { Tempfile.new }
                         let(:path) { tempfile.path }
                         -
-                        it "returns \`error\` with \`message\`" do
-                          expect(result).to be_error.with_message("File with path \`#{path}\` is empty").of_service(described_class).without_step
+                        it "returns \`failure\` with \`message\`" do
+                          expect(result).to be_failure.with_message("File with path \`#{path}\` is empty").of_service(described_class).without_step
                         end
                       end
                     end
@@ -712,8 +713,8 @@ export default function TLDR() {
                 private
                 -
                 def validate_path
-                  return failure(path: "Path is \`nil\`") if path.nil?
-                  return failure(path: "Path is empty") if path.empty?
+                  return error("Path is \`nil\`") if path.nil?
+                  return error("Path is empty") if path.empty?
                   -
                   success
                 end
@@ -809,16 +810,16 @@ export default function TLDR() {
                         context "when \`path\` is \`nil\`" do
                           let(:path) { nil }
                           -
-                          it "returns \`failure\` with \`data\`" do
-                            expect(result).to be_failure.with_data(path: "Path is \`nil\`").of_service(described_class).of_step(:validate_path)
+                          it "returns \`error\` with \`message\`" do
+                            expect(result).to be_error.with_message("Path is \`nil\`").of_service(described_class).of_step(:validate_path)
                           end
                         end
                         -
                         context "when \`path\` is empty" do
                           let(:path) { "" }
                           -
-                          it "returns \`failure\` with \`data\`" do
-                            expect(result).to be_failure.with_data(path: "Path is empty").of_service(described_class).of_step(:validate_path)
+                          it "returns \`error\` with \`message\`" do
+                            expect(result).to be_error.with_message("Path is empty").of_service(described_class).of_step(:validate_path)
                           end
                         end
                       end
@@ -881,8 +882,8 @@ export default function TLDR() {
                       context "when path is NOT present" do
                         let(:path) { "" }
                         -
-                        it "returns \`failure\` with \`data\`" do
-                          expect(result).to be_failure.with_data(path: "can't be blank").without_step
+                        it "returns \`error\` with \`message\`" do
+                          expect(result).to be_error.with_message("can't be blank").without_step
                         end
                       end
                     end
@@ -944,8 +945,8 @@ export default function TLDR() {
                       context "when \`path\` is NOT present" do
                         let(:path) { "" }
                         -
-                        it "returns \`failure\` with \`data\`" do
-                          expect(result).to be_failure.with_data(path: "must be filled").of_service(described_class).without_step
+                        it "returns \`error\` with \`message\`" do
+                          expect(result).to be_error.with_message("must be filled").of_service(described_class).without_step
                         end
                       end
                     end
