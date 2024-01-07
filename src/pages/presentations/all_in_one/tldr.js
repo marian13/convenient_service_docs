@@ -10,15 +10,29 @@ export default function TLDR() {
     <LayoutProvider>
       <CodeBlock language="ruby">
         {`
-          # Any file in the project
           def read_file_content(path)
             result = ReadFileContent.result(path: path)
             -
-            content = result.success? ? result.data[:content] : ""
-            -
-            puts result.message unless result.success?
-            -
-            content
+            if result.success?
+              ##
+              # Service tried to read the file content and completed it.
+              #
+              result.data[:content] # File content.
+            elsif result.failure?
+              ##
+              # Service tried to read file content but did NOT complete it due to some expected reason.
+              #
+              App.logger.warn { result.message.to_s }
+              -
+              "" # Fallback value or any other reasonable fallback behavior.
+            else # result.error?
+              ##
+              # Service NOT even tried to read file content due to a validation issue or exception.
+              #
+              App.logger.error { result.message.to_s }
+              -
+              raise VerboseException, result.message.to_s # Self-explanatory exception or any other reasonable fallback behavior.
+            end
           end
         `}
       </CodeBlock>
