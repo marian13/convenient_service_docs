@@ -136,7 +136,7 @@ const config = {
         /**
          * The application ID provided by Algolia.
          */
-        appId: '6E1KEPD9NX',
+        appId: '28FNFYWD0P',
 
         /**
          * Public API key: it is safe to commit it.
