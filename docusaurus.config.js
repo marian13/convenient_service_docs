@@ -148,8 +148,9 @@ const config = {
 
         /**
          * Index name. Can be found in the Algolia Dashboard.
+         * - https://dashboard.algolia.com/apps/28FNFYWD0P/explorer/browse/convenient_service?searchMode=search
          */
-        indexName: 'convenient-service-',
+        indexName: 'convenient-service',
 
         /**
          * https://docusaurus.io/docs/search#contextual-search
