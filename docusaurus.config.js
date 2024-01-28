@@ -140,9 +140,11 @@ const config = {
 
         /**
          * Public API key: it is safe to commit it.
-         * https://docsearch.algolia.com/docs/legacy/faq/#can-i-share-the-apikey-in-my-repo
+         * - https://docsearch.algolia.com/docs/legacy/faq/#can-i-share-the-apikey-in-my-repo
+         * - https://dashboard.algolia.com/account/api-keys/all?applicationId=28FNFYWD0P
+         * - https://www.algolia.com/doc/guides/security/api-keys/#create-and-manage-your-api-keys
          */
-        apiKey: 'ccff65e7a534d6b352979e76f1e3cd22',
+        apiKey: '42110676756fcfbcdf9d0f0fef8cb56d',
 
         /**
          * Index name. Can be found in the Algolia Dashboard.
