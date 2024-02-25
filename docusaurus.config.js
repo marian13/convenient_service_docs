@@ -161,6 +161,12 @@ const config = {
          * Path for search page that enabled by default (`false` to disable it).
          */
         searchPagePath: 'search',
+
+        /**
+         * - https://docsearch.algolia.com/docs/crawler/#how-often-will-you-crawl-my-website
+         * - https://www.algolia.com/doc/tools/crawler/apis/configuration/schedule/
+         */
+        schedule: 'every 1 day at 3:00 pm',
       },
     }),
 };
