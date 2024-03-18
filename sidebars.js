@@ -61,7 +61,17 @@ const sidebars = {
           collapsed: true,
           items: [
             'guides/advanced/how_to_debug_lib',
-            'guides/advanced/how_to_print_lib_logs',
+            {
+              type: 'category',
+              label: 'Monitoring',
+              link: {
+                type: 'generated-index',
+              },
+              collapsed: true,
+              items: [
+                'guides/advanced/monitoring/how_to_print_lib_logs',
+              ],
+            },
             'guides/advanced/how_to_migrate_from_standard_v1',
           ],
         },

@@ -1,5 +1,5 @@
 ---
-slug: /guides/advanced/how_to_print_lib_logs
+slug: /guides/advanced/monitoring/how_to_print_lib_logs
 sidebar_position: 2
 title: How to print library logs?
 ---
@@ -48,4 +48,14 @@ If you have [Ruby Paint](https://github.com/janlelis/paint#setup) gem as a depen
 
 ```bash
 CONVENIENT_SERVICE_LOGGER_LEVEL=0 CONVENIENT_SERVICE_LOGGER_ENABLE_COLORS=true bundle exec rails console
+```
+
+## Configuration via script
+
+[Convenient Service](/) logger can be accessed inside any Ruby source as well.
+
+For example:
+
+```ruby
+ConvenientService.logger.level = Logger::INFO
 ```
