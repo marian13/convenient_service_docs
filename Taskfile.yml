@@ -2,13 +2,13 @@ version: '3'
 
 ##
 # IMPORTANT: All tasks listed in this file should be executed from the root folder.
-# https://taskfile.dev/usage/#task-directory
+# - https://taskfile.dev/usage/#task-directory
 #
 # NOTE: Examples of multiline strings in YAML.
-# https://yaml-multiline.info/
+# - https://yaml-multiline.info
 #
 # NOTE: Forwarding CLI arguments to commands ({{.CLI_ARGS}}).
-# https://taskfile.dev/usage/#forwarding-cli-arguments-to-commands
+# - https://taskfile.dev/usage/#forwarding-cli-arguments-to-commands
 #
 tasks:
   ##
@@ -31,7 +31,7 @@ tasks:
   #
   start:
     cmds:
-      - yarn start
+      - yarn start --port 8200
 
   ##
   # NOTE: Dev only command.
