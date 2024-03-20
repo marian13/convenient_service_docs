@@ -15,6 +15,7 @@
 const sidebars = {
   docs: [
     'introduction',
+    'tldr',
     'requirements',
     'installation',
     {
@@ -25,7 +26,6 @@ const sidebars = {
       },
       collapsed: true,
       items: [
-        'basics/tldr',
         'basics/services',
         'basics/results',
         'basics/failures',
