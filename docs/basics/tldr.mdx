@@ -15,14 +15,30 @@ import CodeBlock from '@theme/CodeBlock';
 
 <CodeBlock language="ruby">
   {`
+    # Any source code in the project.
     def read_file_content(path)
       result = ReadFileContent.result(path: path)
       -
-      content = result.success? ? result.data[:content] : ""
-      -
-      puts result.message unless result.success?
-      -
-      content
+      if result.success?
+        ##
+        # Service tried to read the file content and completed it.
+        #
+        result.data[:content] # File content.
+      elsif result.failure?
+        ##
+        # Service tried to read file content but did NOT complete it due to some expected reason.
+        #
+        App.logger.warn { result.message.to_s }
+        -
+        "" # Fallback value or any other reasonable fallback behavior.
+      else # result.error?
+        ##
+        # Service NOT even tried to read file content due to a validation issue or exception.
+        #
+        App.logger.error { result.message.to_s }
+        -
+        raise VerboseException, result.message.to_s # Self-explanatory exception or any other reasonable fallback behavior.
+      end
     end
   `}
 </CodeBlock>
@@ -42,7 +58,7 @@ import CodeBlock from '@theme/CodeBlock';
         -
         ConvenientService::Dependencies.require_assigns_attributes_in_constructor_using_active_model_attribute_assignment
         ConvenientService::Dependencies.require_has_attributes_using_active_model_attributes
-        ConvenientService::Dependencies.require_has_result_params_validations_using_active_model_validations
+        ConvenientService::Dependencies.require_has_j_send_result_params_validations_using_active_model_validations
       `}
     </CodeBlock>
   </TabItem>
@@ -56,6 +72,22 @@ import CodeBlock from '@theme/CodeBlock';
         -
         ConvenientService::Dependencies.require_assigns_attributes_in_constructor_using_dry_initializer
         ConvenientService::Dependencies.require_has_result_params_validations_using_dry_validation
+      `}
+    </CodeBlock>
+  </TabItem>
+  <TabItem value="custom" label="Custom">
+    <CodeBlock language="ruby">
+      {`
+        require "active_model" # NOTE: Minimal \`active_model\` version - \`5.2.0\`.
+        require "dry-initializer" # NOTE: Minimal \`dry-initializer\` version - \`3.0.0\`.
+        require "awesome_print" # NOTE: Minimal \`awesome_print\` version - \`1.0.0\`.
+        -
+        require "convenient_service"
+        -
+        ConvenientService::Dependencies.require_has_j_send_result_params_validations_using_active_model_validations
+        ConvenientService::Dependencies.require_assigns_attributes_in_constructor_using_dry_initializer
+        ConvenientService::Dependencies.require_rescues_result_unhandled_exceptions
+        ConvenientService::Dependencies.require_awesome_print_inspect if Rails.env.development? || Rails.env.test?
       `}
     </CodeBlock>
   </TabItem>
@@ -84,13 +116,13 @@ import CodeBlock from '@theme/CodeBlock';
           module Config
             include ConvenientService::Concern
             -
-            included
+            included do
               include ConvenientService::Standard::Config
               -
               concerns do
                 use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Concern
                 use ConvenientService::Plugins::Common::HasAttributes::UsingActiveModelAttributes::Concern
-                use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Concern
+                use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Concern
               end
               -
               middlewares :initialize do
@@ -99,8 +131,8 @@ import CodeBlock from '@theme/CodeBlock';
               -
               middlewares :result do
                 insert_before \\
-                  ConvenientService::Plugins::Service::CanHaveSteps::Middleware,
-                  ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+                  ConvenientService::Plugins::Service::CanHaveConnectedSteps::Middleware,
+                  ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
               end
             end
           end
@@ -115,18 +147,58 @@ import CodeBlock from '@theme/CodeBlock';
           module Config
             include ConvenientService::Concern
             -
-            included
+            included do
               include ConvenientService::Standard::Config
               -
               concerns do
                 use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingDryInitializer::Concern
-                use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Concern
+                use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingDryValidation::Concern
               end
               -
               middlewares :result do
                 insert_before \\
-                  ConvenientService::Plugins::Service::CanHaveSteps::Middleware,
-                  ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Middleware
+                  ConvenientService::Plugins::Service::CanHaveConnectedSteps::Middleware,
+                  ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingDryValidation::Middleware
+              end
+            end
+          end
+        end
+      `}
+    </CodeBlock>
+  </TabItem>
+  <TabItem value="custom" label="Custom">
+    <CodeBlock language="ruby">
+      {`
+        module CustomService
+          module Config
+            include ConvenientService::Concern
+            -
+            included do
+              include ConvenientService::Standard::Config
+              -
+              if Rails.env.development? || Rails.env.test?
+                include ConvenientService::AwesomePrintInspect::Config
+              end
+              -
+              concerns do
+                use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingDryInitializer::Concern
+                use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Concern
+              end
+              -
+              middlewares :result do
+                insert_before \\
+                  ConvenientService::Plugins::Service::CanHaveConnectedSteps::Middleware,
+                  ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
+              end
+              -
+              if !Rails.env.test?
+                middlewares :result do
+                  use ConvenientService::Plugins::Service::RescuesResultUnhandledExceptions::Middleware
+                end
+                -
+                middlewares :result, scope: :class do
+                  use ConvenientService::Plugins::Service::RescuesResultUnhandledExceptions::Middleware
+                end
               end
             end
           end
@@ -150,10 +222,10 @@ import CodeBlock from '@theme/CodeBlock';
           end
           -
           def result
-            return failure(path: "Path is \`nil\`") if path.nil?
-            return failure(path: "Path is empty") if path.empty?
+            return error("Path is \`nil\`") if path.nil?
+            return error("Path is empty") if path.empty?
             -
-            return error("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
+            return failure("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
             -
             success
           end
@@ -172,7 +244,7 @@ import CodeBlock from '@theme/CodeBlock';
           validates :path, presence: true
           -
           def result
-            return error("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
+            return failure("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
             -
             success
           end
@@ -195,7 +267,26 @@ import CodeBlock from '@theme/CodeBlock';
           end
           -
           def result
-            return error("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
+            return failure("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
+            -
+            success
+          end
+        end
+      `}
+    </CodeBlock>
+  </TabItem>
+  <TabItem value="custom" label="Custom">
+    <CodeBlock language="ruby">
+      {`
+        class AssertFileExists
+          include CustomService::Config
+          -
+          option :path
+          -
+          validates :path, presence: true
+          -
+          def result
+            return failure("File does not exist at path \`#{path}\`") unless ::File.exist?(path)
             -
             success
           end
@@ -223,10 +314,10 @@ import CodeBlock from '@theme/CodeBlock';
           end
           -
           def result
-            return failure(path: "Path is \`nil\`") if path.nil?
-            return failure(path: "Path is empty") if path.empty?
+            return error("Path is \`nil\`") if path.nil?
+            return error("Path is empty") if path.empty?
             -
-            return error("File is empty at path \`#{path}\`") if ::File.zero?(path)
+            return failure("File is empty at path \`#{path}\`") if ::File.zero?(path)
             -
             success
           end
@@ -245,7 +336,7 @@ import CodeBlock from '@theme/CodeBlock';
           validates :path, presence: true
           -
           def result
-            return error("File is empty at path \`#{path}\`") if ::File.zero?(path)
+            return failure("File is empty at path \`#{path}\`") if ::File.zero?(path)
             -
             success
           end
@@ -268,7 +359,26 @@ import CodeBlock from '@theme/CodeBlock';
           end
           -
           def result
-            return error("File is empty at path \`#{path}\`") if ::File.zero?(path)
+            return failure("File is empty at path \`#{path}\`") if ::File.zero?(path)
+            -
+            success
+          end
+        end
+      `}
+    </CodeBlock>
+  </TabItem>
+  <TabItem value="custom" label="Custom">
+    <CodeBlock language="ruby">
+      {`
+        class AssertFileNotEmpty
+          include CustomService::Config
+          -
+          option :path
+          -
+          validates :path, presence: true
+          -
+          def result
+            return failure("File is empty at path \`#{path}\`") if ::File.zero?(path)
             -
             success
           end
@@ -307,8 +417,8 @@ import CodeBlock from '@theme/CodeBlock';
           private
           -
           def validate_path
-            return failure(path: "Path is \`nil\`") if path.nil?
-            return failure(path: "Path is empty") if path.empty?
+            return error("Path is \`nil\`") if path.nil?
+            return error("Path is empty") if path.empty?
             -
             success
           end
@@ -350,6 +460,27 @@ import CodeBlock from '@theme/CodeBlock';
               required(:path).value(:string)
             end
           end
+          -
+          step AssertFileExists, in: :path
+          step AssertFileNotEmpty, in: :path
+          step :result, in: :path, out: :content
+          -
+          def result
+            success(content: ::File.read(path))
+          end
+        end
+      `}
+    </CodeBlock>
+  </TabItem>
+  <TabItem value="custom" label="Custom">
+    <CodeBlock language="ruby">
+      {`
+        class ReadFileContent
+          include CustomService::Config
+          -
+          option :path
+          -
+          validates :path, presence: true
           -
           step AssertFileExists, in: :path
           step AssertFileNotEmpty, in: :path
