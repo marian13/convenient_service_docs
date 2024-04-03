@@ -28,8 +28,8 @@ const sidebars = {
       items: [
         'basics/services',
         'basics/results',
-        'basics/failures',
         'basics/errors',
+        'basics/failures',
         'basics/success',
         'basics/results_are_ducks',
         'basics/steps',

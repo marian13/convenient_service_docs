@@ -1,92 +1,64 @@
 ---
 slug: /basics/errors
-sidebar_position: 5
+sidebar_position: 4
 title: Errors
 ---
 
 ## What is an error?
 
-_Error_ prevents the achievement of the service goal.
+_Error_ is a problem caused either by the wrong input data (_validation error_) or by the exceptional behaviour (_exception error_).
 
-That is why is so vital to use meaningful names for services.
+In some cases, it may be a validation rule violation, unsatisfied [assertion](https://wiki.c2.com/?ReplaceCommentWithAssertion), or unmet precondition based on the service arguments.
 
-For instance, when the aim is <u>to schedule a delayed job</u>, call it - `ScheduleDelayedJob`.
+It is a responsibility of a developer/service user to provide correct inputs.
 
-When a job was not registered into the queue for whatever reason (except validation, since it is a failure), it should be treated as an error.
+Otherwise, there is no sense in even starting any service processing.
 
-Please, read the following code snippet carefully:
+Also errors are often semantically close to the [exceptions](https://ruby-doc.org/core-2.7.0/Exception.html).
+
+In other words, service errors are frequently located at the same places where [exceptions](https://ruby-doc.org/core-2.7.0/Exception.html) are [raised/rescued](https://ruby-doc.com/docs/ProgrammingRuby/html/tut_exceptions.html) in the reqular methods.
+
+:::info
+
+Exceptional behaviour like HTTP connection issues, database inconsistencies, timeouts, etc are also errors.
+
+:::
+
+Check out the following example:
 
 ```ruby
-class ScheduleDelayedJob
+class EnsureFeatureActive
   # ...
+  def initialize(name:)
+    @name = name
+  end
+
   def result
-    return failure(data: {id: "User id is NOT alphanumeric"}) unless user_id.alphanumeric?
+    return error("Feature name can NOT be `nil`") if name.nil?
+    return error("Unknown feature `#{name}`") unless Feature.exist?(name: name)
 
-    return error(message: "Queue has no space") if queue.full?
-    return error(message: "Job is NOT unique") if job.duplicated?
-
-    job_tracker = ApplicationScheduler.delay(job)
-
-    success(data: {tracker: job_tracker})
+    # ... Tricky and non trivial logic to ensure that feature is active...
+  rescue Feature::Exceptions::ConnectionTimeout => exception
+    return error("Feature `#{name}` connection timeout due to `#{exception.message}`")
   end
 end
 ```
 
-In contrast, when your objective is just <u>to try to schedule a job</u>, but it does not really important whether it was scheduled or not, the service name should reflect such desire explicitly.
+And this is how it can be triggerred:
 
 ```ruby
-class TryToScheduleDelayedJob
-  # ...
-  def result
-    return failure(data: {id: "User id is NOT alphanumeric"}) unless user_id.alphanumeric?
-
-    job_tracker =
-      if job.unique? && !queue.full? && !queue.stuck?
-        ApplicationScheduler.delay(job)
-      else
-        ""
-      end
-
-    ##
-    # Even if the `tracker` is empty, the service still is considered successful.
-    # Since the trial is the target, but not the guarantee.
-    # `tracker` is more like a metadata here.
-    #
-    success(data: {tracker: job_tracker})
-  end
-end
-```
-
-## How to process errors?
-
-Most of the time, handling is the same for all kinds of errors, just like this:
-
-```ruby
-result = ScheduleDelayedJob.result
+result = EnsureFeatureActive.result(name: "Fancy feature")
 
 if result.error?
   # `result.message` is a string-like object with error reason.
-  send_alert(result.message)
+  result.message
 end
 ```
 
-But when you need to treat them differently, do NOT parse strings, please.
+There is no point to involve all the heavy machinery when the feature name is `nil`.
 
-There is the second option `code`, exactly for this purpose, that can be passed to any error calls.
+Why do we need to waste any expensive resources if the feature name is unknown?
 
-```ruby
-# ...
-return error(message: "Queue has no space", code: :full_queue) if queue.full?
-return error(message: "Job is NOT unique", code: :duplicated_job) if job.duplicated?
-# ...
+Can we guarantee whether the feature is actually active when a connection timeout happens?
 
-if result.error?
-  case result.code.to_sym
-  when :full_queue
-    notify_devops
-  when :duplicated_job
-    notify_devs
-  else
-  # ...
-end
-```
+So, the one of the purposes of the error result is to say that the callers need to make adjustments in their code/config/dependency, not the service authors.
