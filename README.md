@@ -24,7 +24,3 @@ Every push to `main` triggers a deployment to [https://marian13.github.io/conven
 ### Source
 
 Convenient Service source code is located at [https://github.com/marian13/convenient_service](https://github.com/marian13/convenient_service).
-
-### Search
-
-Convenient Service Search Crawler can be configured at [Algolia Dashboard](https://www.algolia.com/apps/6E1KEPD9NX/explorer/browse/convenient-service-?searchMode=search). 
