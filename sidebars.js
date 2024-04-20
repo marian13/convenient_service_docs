@@ -28,6 +28,7 @@ const sidebars = {
       items: [
         'basics/services',
         'basics/results',
+        'basics/service_goals',
         'basics/errors',
         'basics/failures',
         'basics/success',

@@ -8,7 +8,7 @@ title: Success
 
 _Success_ is a kind of result when the service objective is fully satisfied.
 
-All the preconditions are met.
+All errors and failures preconditions are met.
 
 Every validation check is passed.
 
@@ -41,11 +41,11 @@ class FetchPopularVideos
     # ...
     # Actual logic to fetch videos.
     # ...
-    success(data: {
+    success(
       own_channel_videos: own_channel_videos,
       followers_videos: followers_videos,
       all_videos: own_channel_videos.concat(followers_videos)
-    })
+    )
   end
 end
 ```

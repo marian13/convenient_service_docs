@@ -1,39 +1,37 @@
 ---
 slug: /basics/failures
-sidebar_position: 4
+sidebar_position: 6
 title: Failures
 ---
 
 ## What is a failure?
 
-_Failure_ is a problem caused by the wrong input data.
+Errors prevent the achievement of the service goal due to unsatisfied validations or exceptions.
 
-It may be a validation error or an unmet precondition based on service arguments.
+At the same time, _failures_ prevent the achievement of the service goal due to business reasons.
 
-It is a responsibility of a developer/service user to provide correct inputs.
+That is why is so vital to use meaningful names for services.
 
-Otherwise, there is no sense in even starting any service processing.
+For instance, when the aim is <u>to order a bus ticket</u>, call it - `OrderBusTicket`.
 
-:::caution
+So when the service is invoked, but the ticket is not ordered for some business reason, it should be treated as a failure.
 
-HTTP connection issues, database inconsistencies, timeouts, etc are also failures.
+Why? Because business reason is not an error, since the input is valid, the environment is stable, but the service goal is still not achieved.
 
-:::
-
-Check out the following example:
+Please, read the following code snippet carefully to get the idea.
 
 ```ruby
-class EnsureFeatureActive
+class OrderBusTicket
   # ...
-  def initialize(name:)
-    @name = name
-  end
-
   def result
-    return failure(data: {name: "Feature name can not be `nil`"}) if name.nil?
-    return failure(data: {name: "Unknown feature - `#{name}`"}) unless Feature.exist?(name: name)
+    return error("Bus `#{bus.number}` is NOT valid") unless bus.valid?
 
-    # ... Tricky and non trivial logic to ensure that feature is active...
+    return failure("Bus has no available seats") if bus.full?
+    return failure("Bus trip is postponed") if ::Trip.for_bus(bus).postponed?
+
+    ticket = ::BusTerminal.issue_ticket(bus)
+
+    success(ticket: ticket)
   end
 end
 ```
@@ -41,16 +39,18 @@ end
 And this is how it can be triggerred:
 
 ```ruby
-result = EnsureFeatureActive.result(name: "Fancy feature")
+result = OrderBusTicket.result(bus: bus)
 
 if result.failure?
-  # `result.data` is a hash-like object with failure reasons grouped by parameters.
-  result.data[:name]
+  # `result.message` is a string-like object with failure reason.
+  result.message
 end
 ```
 
-There is no point to involve all the heavy machinery when the feature name is `nil`.
+When the bus has not valid number we can not even try to order a ticket.
 
-Why do we need to waste any expensive resources if the feature name is unknown?
+Hence the error is returned as the result.
 
-The purpose of failure is to say that the callers need to adjust their code, not the service authors.
+But once all the error preconditions are met, the ticket can still be not ordered due to the business reasons like lack of available seats or the trip delay.
+
+That is why those cases are examples of failures.
