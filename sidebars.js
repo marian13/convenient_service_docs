@@ -176,7 +176,19 @@ const sidebars = {
         'best_practices/skip_result_call_for_boolean_services',
       ],
     },
-    'faq',
+    {
+      type: 'category',
+      label: 'Frequently Asked Questions',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'faq/is_it_possible_to_modify_step_collection_from_callback',
+        'faq/what_is_purpose_of_v1_config',
+        'faq/why_case_when_does_not_work_with_jus_result_codes',
+      ],
+    },
     {
       type: 'category',
       label: 'Glossary',
