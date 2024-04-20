@@ -64,13 +64,13 @@ const sidebars = {
             'guides/advanced/how_to_debug_lib',
             {
               type: 'category',
-              label: 'Monitoring',
+              label: 'Logging',
               link: {
                 type: 'generated-index',
               },
               collapsed: true,
               items: [
-                'guides/advanced/monitoring/how_to_print_lib_logs',
+                'guides/advanced/logging/how_to_print_lib_logs',
               ],
             },
             'guides/advanced/how_to_migrate_from_standard_v1',
