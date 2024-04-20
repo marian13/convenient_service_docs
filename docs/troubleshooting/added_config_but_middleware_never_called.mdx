@@ -1,10 +1,8 @@
 ---
-slug: /troubleshooting/i_am_a_convenient_service_debuggerer
+slug: /troubleshooting/added_config_but_middleware_never_called
 sidebar_position: 1
-title: I am a Convenient Service debuggerer
+title: My plugin is added to the config, but its middleware is never called
 ---
-
-## My plugin is added to the config, but its middleware is never called
 
 Some plugins are order-dependent.
 
@@ -99,9 +97,3 @@ end
 ```
 
 Apart from [insert_before](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#insert-before), [insert_after](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#insert-after), [insert_after_each](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#insert-after-each), [insert_before_each](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#insert-before-each), [replace](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#replace), and [delete](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2#delete) are also available.
-
-:::note
-
-This page is inspired by [I am a puts debuggerer](https://tenderlovemaking.com/2016/02/05/i-am-a-puts-debuggerer.html#) and [Ruby Debugging Magic Cheat Sheet](https://www.schneems.com/2016/01/25/ruby-debugging-magic-cheat-sheet.html).
-
-:::

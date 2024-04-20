@@ -158,7 +158,7 @@ const sidebars = {
       },
       collapsed: true,
       items: [
-        'troubleshooting/i_am_a_convenient_service_debuggerer',
+        'troubleshooting/added_config_but_middleware_never_called',
         'troubleshooting/i18n_translate_wrong_number_of_arguments',
       ],
     },
