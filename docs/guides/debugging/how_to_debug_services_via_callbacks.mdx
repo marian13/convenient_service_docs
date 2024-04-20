@@ -1,6 +1,6 @@
 ---
-slug: /guides/how_to_debug_services_via_callbacks
-sidebar_position: 4
+slug: /guides/debugging/how_to_debug_services_via_callbacks
+sidebar_position: 1
 title: 'How to debug services via callbacks?'
 ---
 
@@ -84,8 +84,8 @@ module Services
     private
 
     def validate_name
-      return failure(name: "Name is `nil`") if name.nil?
-      return failure(name: "Name is empty") if name.empty?
+      return error("Name is `nil`") if name.nil?
+      return error("Name is empty") if name.empty?
 
       success
     end

@@ -1,6 +1,6 @@
 ---
-slug: /guides/how_to_pass_value_to_step_class_or_instance_scope
-sidebar_position: 3
+slug: /guides/usage/how_to_pass_value_to_step_class_or_instance_scope
+sidebar_position: 1
 title: How to pass a value to step from class/instance scope?
 ---
 
@@ -54,7 +54,7 @@ There are multiple ways:
 
   ```ruby
   step EscapeRegexp, \
-    in: {pattern: ->{ ENV["PATH_PATTERN"] }},
+    in: {pattern: -> { ENV["PATH_PATTERN"] }},
     out: :escaped
   ```
 
@@ -64,7 +64,7 @@ There are multiple ways:
 
   ```ruby
   step EscapeRegexp, \
-    in: {pattern: ->{ any_instance_method }},
+    in: {pattern: -> { any_instance_method }},
     out: :escaped
   ```
 

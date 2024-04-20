@@ -45,14 +45,54 @@ const sidebars = {
       },
       collapsed: true,
       items: [
-        'guides/how_to_set_up_in_rails',
-        'guides/how_to_set_up_in_rspec',
-        'guides/how_to_pass_value_to_step_class_or_instance_scope',
-        'guides/how_to_debug_services_via_callbacks',
-        'guides/how_to_find_result_parents',
-        'guides/how_to_find_result_step',
-        'guides/how_to_access_result_attributes_without_checking_its_status',
-        'guides/how_to_rescue_all_result_unhandled_exceptions',
+        {
+          type: 'category',
+          label: 'Setup',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'guides/setup/how_to_set_up_in_rails',
+            'guides/setup/how_to_set_up_in_rspec',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Usage',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'guides/usage/how_to_pass_value_to_step_class_or_instance_scope',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Debugging',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'guides/debugging/how_to_debug_services_via_callbacks',
+            'guides/debugging/how_to_find_result_parents',
+            'guides/debugging/how_to_find_result_step',
+            'guides/debugging/how_to_access_result_attributes_without_checking_its_status',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Exception handling',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'guides/exception_handling/how_to_rescue_all_result_unhandled_exceptions',
+          ],
+        },
         {
           type: 'category',
           label: 'Advanced',
@@ -61,7 +101,17 @@ const sidebars = {
           },
           collapsed: true,
           items: [
-            'guides/advanced/how_to_debug_lib',
+            {
+              type: 'category',
+              label: 'Debugging',
+              link: {
+                type: 'generated-index',
+              },
+              collapsed: true,
+              items: [
+                'guides/advanced/debugging/how_to_debug_lib',
+              ],
+            },
             {
               type: 'category',
               label: 'Logging',
@@ -73,7 +123,17 @@ const sidebars = {
                 'guides/advanced/logging/how_to_print_lib_logs',
               ],
             },
-            'guides/advanced/how_to_migrate_from_standard_v1',
+            {
+              type: 'category',
+              label: 'Deprecations',
+              link: {
+                type: 'generated-index',
+              },
+              collapsed: true,
+              items: [
+                'guides/advanced/deprecations/how_to_migrate_from_standard_v1',
+              ],
+            },
           ],
         },
       ],
@@ -152,18 +212,6 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Troubleshooting',
-      link: {
-        type: 'generated-index',
-      },
-      collapsed: true,
-      items: [
-        'troubleshooting/added_config_but_middleware_never_called',
-        'troubleshooting/i18n_translate_wrong_number_of_arguments',
-      ],
-    },
-    {
-      type: 'category',
       label: 'Best Practices',
       link: {
         type: 'generated-index',
@@ -187,6 +235,18 @@ const sidebars = {
         'faq/is_it_possible_to_modify_step_collection_from_callback',
         'faq/what_is_purpose_of_v1_config',
         'faq/why_case_when_does_not_work_with_jus_result_codes',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Troubleshooting',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'troubleshooting/added_config_but_middleware_never_called',
+        'troubleshooting/i18n_translate_wrong_number_of_arguments',
       ],
     },
     {
