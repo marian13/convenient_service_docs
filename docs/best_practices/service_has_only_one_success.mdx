@@ -78,7 +78,7 @@ class BuildDisplayName
   end
 
   def result
-    return failure(person: "can't be blank") if person.blank?
+    return error("Person can't be blank") if person.blank?
 
     success(display_name: display_name)
   end
@@ -116,8 +116,8 @@ RSpec.describe BuildDisplayName do
         context "when `person` is blank" do
           let(:person) { nil }
 
-          it "returns `failure`" do
-            expect(result).to be_failure.with_data(person: "can't be blank").of_service(described_class).without_step
+          it "returns `error`" do
+            expect(result).to be_error.with_message("Person can't be blank").of_service(described_class).without_step
           end
         end
       end

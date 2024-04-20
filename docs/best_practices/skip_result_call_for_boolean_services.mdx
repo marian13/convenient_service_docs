@@ -17,10 +17,10 @@ class IsConnectionActive
   end
 
   def result
-    return failure(connection: "can't be blank") if connection.blank?
-    return error("Connection `#{connection.id}` is NOT connected") unless connection.connected?
-    return error("Connection `#{connection.id}` has NO task") if connection.task.blank?
-    return error("Connection `#{connection.id}` task is NOT in progress") unless connection.task.in_progres?
+    return error("Connection: can't be blank") if connection.blank?
+    return failure("Connection `#{connection.id}` is NOT connected") unless connection.connected?
+    return failure("Connection `#{connection.id}` has NO task") if connection.task.blank?
+    return failure("Connection `#{connection.id}` task is NOT in progress") unless connection.task.in_progres?
 
     success
   end
