@@ -16,15 +16,15 @@ Here is a comparison table:
 
 | | data | message | code |
 | - | - | - | - |
-| success | *data or `{}` | `""` | `:default_success` |
-| failure | *data or `{}` | first value from *data or `""` | `:default_failure` |
-| error | `{}` | *message or `""` | *code or `:default_error` |
+| success | *data or `{}` | *message or `""` | *code or `:default_success` |
+| failure | *data or `{}` | *message or `""` | *code or `:default_failure` |
+| error | *data or `{}` | *message or `""` | *code or `:default_error` |
 
 Where \* means _user-provided_.
 
 :::info
 
-As a user, you have the ability to pass custom values for everything, e.g: extraordinary code for failures.
+As a user, you have the ability to pass custom values for everything, e.g: extraordinary code for success.
 
 We (as library designers) left such a possibility to avoid the [Incomplete Library Class](https://refactoring.guru/smells/incomplete-library-class) code smell.
 
