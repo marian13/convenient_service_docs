@@ -193,216 +193,34 @@ The list of to-do actions is not so long:
 
   How can we make it simpler and more readable?
 
-    - [Call `success` only once](/best_practices/service_has_only_one_success).
-
-    - [Leverage Ruby collections](https://ruby-doc.org/core-2.7.0/Enumerable.html).
-
-  ### Array version
-
-  ```ruby
-  # better - array, but it preloads all conditions even when they are not used
-  def result
-    if conditions.all?(&:not_success?)
-      return error("All conditions are not satisfied: " + conditions.map(&:message).join(" and "))
-    end
-
-    success
-  end
-
-  private
-
-  def conditions
-    @conditions ||= [
-      is_super_admin_result,
-      has_ability_result,
-      is_subscription_owner_result
-    ]
-  end
-  ```
-
-  As you can see, it removes [deeply nested if statements](https://lawyerdev.medium.com/i-never-write-nested-ifs-e4e91a5440ee) completely.
-
-  Also it allows to use [only one success](/best_practices/service_has_only_one_success).
-
-  The array version is a lot better than what we had before, but it still has one hidden problem that is not obvious.
-
-  When you create an array, its elements are immediately calculated, no matter whether you access them later or not.
-
-  If we make an assumption that a user has the ability to refresh someone else subscription, then we don't need to check whether that user is the subscription owner at all.
-
-  This extra verification can become a huge issue if it is resource-heavy like a long-running SQL query or low-responding HTTP request.
-
-  Luckily, Ruby has a [build-in class](https://ruby-doc.org/core-2.7.0/Enumerator.html) that has the array-like interface, but with lazy elements calculation.
-
-  ### Enumerator version:
-
-  ```ruby
-  # very good - enumerator, simple code and lazy calculation
-  def result
-    if conditions.all?(&:not_success?)
-      return error("All conditions are not satisfied: " + conditions.map(&:message).join(" and "))
-    end
-
-    success
-  end
-
-  private
-
-  def conditions
-    @conditions ||= ::Enumerator.new do |collection|
-      collection << is_super_admin_result
-      collection << has_ability_result
-      collection << is_subscription_owner_result
-    end
-  end
-  ```
-
-  [Enumerator](https://ruby-doc.org/core-2.7.0/Enumerator.html) is a duck for [Array](https://ruby-doc.org/core-2.7.0/Array.html) most of the time, since both of them include the [Enumerable](https://ruby-doc.org/core-2.7.0/Enumerable.html) module.
-
-  But the crucial moment is that [Enumerator](https://ruby-doc.org/core-2.7.0/Enumerator.html) may lazily calculate its elements when used properly.
-
-  ### Pattern
-
-  The final full version will quickly become a pattern in your codebase.
-
-  <Tabs groupId="examples">
-    <TabItem value="source" label="Source" default>
-      <CodeBlock language="ruby">
-        {`
-          class IsAuthorizedForSubscriptionRefresh
-            include ::ConvenientService::Standard::Config
-            -
-            attr_reader :user, :subscription_id
-            -
-            def initialize(:user, :subscription_id)
-              @user = user
-              @subscription_id = subscription_id
-            end
-            -
-            def result
-              if conditions.all?(&:not_success?)
-                return error("All conditions are not satisfied: " + conditions.map(&:message).join(" and "))
-              end
-              -
-              success
-            end
-            -
-            private
-            -
-            def conditions
-              @conditions ||= ::Enumerator.new do |collection|
-                collection << is_super_admin_result
-                collection << has_ability_result
-                collection << is_subscription_owner_result
-              end
-            end
-            -
-            def is_super_admin_result
-              @is_super_admin_result ||= IsSuperAdmin.result(user: user)
-            end
-            -
-            def has_ability_result
-              @has_ability_result ||= HasAbility.result(user: user, ability: :refresh_someone_else_subscription)
-            end
-            -
-            def is_subscription_owner_result
-              @is_subscription_owner_result ||= IsSubscriptionOwner.result(user: user, subscription_id: subscription_id)
-            end
-          end
-        `}
-      </CodeBlock>
-    </TabItem>
-    <TabItem value="rspec" label="RSpec">
-      <CodeBlock language="ruby">
-        {`
-          require "spec_helper"
-          -
-          RSpec.describe IsAuthorizedForSubscriptionRefresh do
-            include ConvenientService::RSpec::Matchers::Results
-            -
-            example_group "class methods" do
-              describe ".result" do
-                subject(:result) { described_class.result(user: user, subscription_id: subscription_id) }
-                -
-                let(:user) { User.new }
-                let(:subscription_id) { Subcription.new.id }
-                -
-                context "when \`IsAuthorizedForSubscriptionRefresh\` is NOT successful" do
-                  context "when all conditions are NOT successful" do
-                    let(:user) { Guest.new }
-                    let(:subscription_id) { nil }
-                    -
-                    let(:message) do
-                      [
-                        "All conditions are not satisfied: ",
-                        IsSuperAdmin.result(user: user),
-                        HasAbility.result(user: user, ability: :refresh_someone_else_subscription),
-                        IsSubscriptionOwner.result(user: user, subscription_id: subscription_id),
-                      ]
-                        .each(&:success?)
-                        .map(&:message)
-                        .join(" and ")
-                    end
-                    -
-                    it "returns error with message" do
-                      expect(result).to be_error.with_message(message).of_service(described_class).without_step
-                    end
-                  end
-                end
-                -
-                context "when \`IsAuthorizedForSubscriptionRefresh\` is successful" do
-                  context "when \`IsSuperAdmin\` is successful" do
-                    let(:user) { SuperAdmin.new }
-                    -
-                    it "returns success" do
-                      expect(result).to be_success.without_data.of_service(described_class).without_step
-                    end
-                  end
-                  -
-                  context "when \`HasAbility\` is successful" do
-                    let(:user) { User.new(abilities: [:refresh_someone_else_subscription]) }
-                    -
-                    it "returns success" do
-                      expect(result).to be_success.without_data.of_service(described_class).without_step
-                    end
-                  end
-                  -
-                  context "when \`IsSubscriptionOwner\` is successful" do
-                    let(:subscription_id) { Subcription.new(user: user).id }
-                    -
-                    it "returns success" do
-                      expect(result).to be_success.without_data.of_service(described_class).without_step
-                    end
-                  end
-                end
-              end
-            end
-          end
-        `}
-      </CodeBlock>
-    </TabItem>
-  </Tabs>
-
-  In order to add a new `or` condition just create a new memoized method with a result and push it into the [Enumerator](https://ruby-doc.org/core-2.7.0/Enumerator.html) collection.
-
-  :::note
-  Convenient Service authors highly encourage the usage of the pattern from this article since it will be abstracted away in one of the future releases by a new DSL macro like `step`.
-
-  This way you will have all the preconditions met for minimal refactoring.
-  :::
-
-  ### Extended pattern
-
-  It is also very common to have services with `or` conditions for [factory methods](https://refactoring.guru/design-patterns/factory-method).
-
-  In such a scenario original pattern is extended by hashes.
+  Use `or_step`.
 
   <Tabs groupId="examples">
     <TabItem value="source" label="Source" default>
       <CodeBlock language="ruby">
         {`
           class CreateButton
-            include ::ConvenientService::Standard::Config
+            include ConvenientService::Standard::Config
+            -
+            step CreateWebButtonFactory,
+              in: :app,
+              out: :button
+            -
+            or_step CreateAndroidButtonFactory,
+              in: :app,
+              out: {action: :button}
+            -
+            or_step CreateIosButtonFactory,
+              in: :app,
+              out: {control: :button}
+            -
+            or_step CreateDesktopButtonFactory,
+              in: :app,
+              out: {knob: :button}
+            -
+            step :result,
+              in: :app,
+              out: :button
             -
             attr_reader :app
             -
@@ -411,50 +229,7 @@ The list of to-do actions is not so long:
             end
             -
             def result
-              if factories.all? { |factory| factory[:result].not_success? }
-                return error("All factories are not satisfied: " + factories.map { |factory| factory[:result].message }.join(" and "))
-              end
-              -
-              success(button: factories.find { |factory| factory[:result].success? }.values_at(:result, :data_key).then { |result, key| result.data[key] })
-            end
-            -
-            private
-            -
-            def factories
-              @factories ||= ::Enumerator.new do |collection|
-                collection << create_web_button_factory
-                collection << create_android_button_factory
-                collection << create_ios_button_factory
-                collection << create_desktop_button_factory
-              end
-            end
-            -
-            def create_web_button_factory
-              @create_web_button_factory ||= {
-                result: CreateWebButtonFactory.result(app: app),
-                data_key: :button
-              }
-            end
-            -
-            def create_android_button_factory
-              @create_android_button_factory ||= {
-                result: CreateAndroidButtonFactory.result(app: app),
-                data_key: :action
-              }
-            end
-            -
-            def create_ios_button_factory
-              @create_ios_button_factory ||= {
-                result: CreateIosButtonFactory.result(app: app),
-                data_key: :control
-              }
-            end
-            -
-            def create_desktop_button_factory
-              @create_desktop_button_factory ||= {
-                result: CreateDesktopButtonFactory.result(app: app),
-                data_key: :knob
-              }
+              success(button: button)
             end
           end
         `}
@@ -475,22 +250,9 @@ The list of to-do actions is not so long:
                 let(:app) { App.new(platform: :cli) }
                 -
                 context "when \`CreateButton\` is NOT successful" do
-                  context "when all factories are NOT successful" do
-                    let(:message) do
-                      [
-                        "All factories are not satisfied: ",
-                        CreateWebButtonFactory.result(app: app),
-                        CreateAndroidButtonFactory.result(app: app),
-                        CreateIosButtonFactory.result(app: app),
-                        CreateDesktopButtonFactory.result(app: app)
-                      ]
-                        .each(&:success?)
-                        .map(&:message)
-                        .join(" and ")
-                    end
-                    -
-                    it "returns error with message" do
-                      expect(result).to be_error.with_message(message).of_service(described_class).without_step
+                  context "when all alternatives are NOT successful" do
+                    it "returns intermediate step" do
+                      expect(result).to be_not_success.of_service(described_class).of_step(CreateDesktopButtonFactory)
                     end
                   end
                 end
@@ -501,7 +263,7 @@ The list of to-do actions is not so long:
                     let(:button) { App::UI::Web::Button.new }
                     -
                     it "returns success" do
-                      expect(result).to be_success.with_data(button: button).of_service(described_class).without_step
+                      expect(result).to be_success.with_data(button: button).of_service(described_class).of_step(:result)
                     end
                   end
                   -
@@ -510,7 +272,7 @@ The list of to-do actions is not so long:
                     let(:button) { App::UI::Android::Action.new }
                     -
                     it "returns success" do
-                      expect(result).to be_success.with_data(button: button).of_service(described_class).without_step
+                      expect(result).to be_success.with_data(button: button).of_service(described_class).of_step(:result)
                     end
                   end
                   -
@@ -519,7 +281,7 @@ The list of to-do actions is not so long:
                     let(:button) { App::UI::Ios::Control.new }
                     -
                     it "returns success" do
-                      expect(result).to be_success.with_data(button: button).of_service(described_class).without_step
+                      expect(result).to be_success.with_data(button: button).of_service(described_class).of_step(:result)
                     end
                   end
                   -
@@ -528,7 +290,7 @@ The list of to-do actions is not so long:
                     let(:button) { App::UI::Desktop::Knob.new }
                     -
                     it "returns success" do
-                      expect(result).to be_success.with_data(button: button).of_service(described_class).without_step
+                      expect(result).to be_success.with_data(button: button).of_service(described_class).of_step(:result)
                     end
                   end
                 end

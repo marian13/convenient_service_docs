@@ -27,9 +27,9 @@ class OrderBusTicket
     return error("Bus `#{bus.number}` is NOT valid") unless bus.valid?
 
     return failure("Bus has no available seats") if bus.full?
-    return failure("Bus trip is postponed") if ::Trip.for_bus(bus).postponed?
+    return failure("Bus trip is postponed") if Trip.for_bus(bus).postponed?
 
-    ticket = ::BusTerminal.issue_ticket(bus)
+    ticket = BusTerminal.issue_ticket(bus)
 
     success(ticket: ticket)
   end
