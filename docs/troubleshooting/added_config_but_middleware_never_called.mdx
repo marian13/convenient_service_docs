@@ -50,7 +50,7 @@ When a service has no steps, `CanHaveSteps` just calls what is next in the middl
 
 Otherwise, it returns the last step copy.
 
-Let's place, e.g. `HasResultParamsValidations::UsingActiveModelValidations` plugin after `CanHaveSteps` in your [application service config](tldr).
+Let's place, e.g. `HasJSendResultParamsValidations::UsingActiveModelValidations` plugin after `CanHaveSteps` in your [application service config](tldr).
 
 ```ruby
 module ApplicationService
@@ -62,7 +62,7 @@ module ApplicationService
       include ConvenientService::Standard::Config
       # ...
       middlewares :result do
-        use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+        use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
       end
       # highlight-end
     end
@@ -70,7 +70,7 @@ module ApplicationService
 end
 ```
 
-This way `HasResultParamsValidations::UsingActiveModelValidations` is never called for services with steps.
+This way `HasJSendResultParamsValidations::UsingActiveModelValidations` is never called for services with steps.
 
 To fix that, locate it before `CanHaveSteps` like so:
 
@@ -87,7 +87,7 @@ module ApplicationService
           # highlight-start
           insert_before \
             ConvenientService::Plugins::Service::CanHaveSteps::Middleware,
-            ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+            ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
           # highlight-end
         end
       end

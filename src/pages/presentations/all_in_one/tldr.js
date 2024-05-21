@@ -108,7 +108,7 @@ export default function TLDR() {
                     concerns do
                       use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Concern
                       use ConvenientService::Plugins::Common::HasAttributes::UsingActiveModelAttributes::Concern
-                      use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Concern
+                      use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Concern
                     end
                     -
                     middlewares :initialize do
@@ -118,7 +118,7 @@ export default function TLDR() {
                     middlewares :result do
                       insert_before \\
                         ConvenientService::Plugins::Service::CanHaveSteps::Middleware,
-                        ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+                        ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
                     end
                   end
                 end
@@ -139,13 +139,13 @@ export default function TLDR() {
                     -
                     concerns do
                       use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingDryInitializer::Concern
-                      use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Concern
+                      use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingDryValidation::Concern
                     end
                     -
                     middlewares :result do
                       insert_before \\
                         ConvenientService::Plugins::Service::CanHaveSteps::Middleware,
-                        ConvenientService::Plugins::Service::HasResultParamsValidations::UsingDryValidation::Middleware
+                        ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingDryValidation::Middleware
                     end
                   end
                 end

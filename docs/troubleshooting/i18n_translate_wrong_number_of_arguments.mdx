@@ -40,7 +40,7 @@ nator'
 :in `next'
 ```
 
-This exception may happen when `HasResultParamsValidations::UsingActiveModelValidations` plugin is used in an environemnt with [Ruby 3+](https://www.ruby-lang.org/en/news/2020/12/25/ruby-3-0-0-released/) and [Rails 5](https://api.rubyonrails.org/v5.0.0/).
+This exception may happen when `HasJSendResultParamsValidations::UsingActiveModelValidations` plugin is used in an environemnt with [Ruby 3+](https://www.ruby-lang.org/en/news/2020/12/25/ruby-3-0-0-released/) and [Rails 5](https://api.rubyonrails.org/v5.0.0/).
 
 It is caused by [separation of positional and keyword arguments in Ruby 3.0](https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-keyword-arguments-in-ruby-3-0/).
 
@@ -54,15 +54,15 @@ Actually, you may choose any of the following two options:
 
 1. [Upgrade to Rails 6 or higher](https://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html).
 
-2. Or remove `HasResultParamsValidations::UsingActiveModelValidations` plugin from config <br />
+2. Or remove `HasJSendResultParamsValidations::UsingActiveModelValidations` plugin from config <br />
   (do not forget to remove [validates](https://edgeguides.rubyonrails.org/active_record_validations.html) calls as well).
 
   ```ruby
   concerns do
-    delete Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Concern
+    delete Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Concern
   end
 
   middlewares :result do
-    delete Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+    delete Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
   end
   ```

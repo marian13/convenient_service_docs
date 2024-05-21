@@ -76,7 +76,7 @@ import version from '/src/constants/version';
                   concerns do
                     use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Concern
                     use ConvenientService::Plugins::Common::HasAttributes::UsingActiveModelAttributes::Concern
-                    use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Concern
+                    use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Concern
                   end
                   -
                   middlewares :initialize do
@@ -84,7 +84,7 @@ import version from '/src/constants/version';
                   end
                   -
                   middlewares :result do
-                    use ConvenientService::Plugins::Service::HasResultParamsValidations::UsingActiveModelValidations::Middleware
+                    use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
                   end
                 end
               end
