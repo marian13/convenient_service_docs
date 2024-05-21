@@ -1,0 +1,52 @@
+---
+slug: /troubleshooting/amazing_print_inspect_does_not_colorize
+sidebar_position: 2
+title: "`AmazingPrintInspect` does not colorize"
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+Consider a service that includes the `AmazingPrintInspect` config.
+
+Here is the minimal example.
+
+```ruby
+ConvenientService::Dependencies.require_amazing_print_inspect
+
+class Service
+  include ::ConvenientService::Standard::Config
+  include ::ConvenientService::AmazingPrintInspect::Config
+
+  def result
+    success(foo: :bar, baz: :qux)
+  end
+end
+```
+
+When it is called from the console like [IRB](https://github.com/ruby/irb).
+
+```ruby
+Service.result
+```
+
+The result should be pretty-printed by [amazing_print](https://github.com/amazing-print/amazing_print).
+
+But it actually outputs some ["weird escape characters"](https://colors.sh) `^[[0;37m`, `^[[0m` or `^[[0;33m` like in the screenshot below.
+
+<img src={useBaseUrl('./img/troubleshooting/amazing_print_inspect_does_not_colorize_results/weird_escape_characters.png')} />
+
+One way to fix that problem is to [activate Amazing Print IRB integration](https://github.com/amazing-print/amazing_print?tab=readme-ov-file#irb-integration).
+
+```ruby
+AmazingPrint.irb!
+```
+
+Thus the output is colorized as expected.
+
+<img src={useBaseUrl('./img/troubleshooting/amazing_print_inspect_does_not_colorize_results/proper_coloring.png')} />
+
+In case you are using [Pry](https://github.com/pry/pry), [Amazing Print has integration for it](https://github.com/amazing-print/amazing_print?tab=readme-ov-file#pry-integration) as well.
+
+```ruby
+AmazingPrint.pry!
+```
