@@ -6,34 +6,31 @@ title: My plugin is added to the config, but its middleware is never called
 
 Some plugins are order-dependent.
 
-For example, `CanHaveSteps` has a middleware for the instance `result` method in the `Standard` config.
+For example, `CanHaveConnectedSteps` has a middleware for the instance `result` method in the [`Standard` config](https://github.com/marian13/convenient_service/blob/main/lib/convenient_service/service/configs/standard.rb).
 
 ```ruby
 middlewares :result do
   # ...
-  use Plugins::Service::HasResult::Middleware
-  use Plugins::Service::CanHaveSteps::Middleware
-  # ...
-  use Plugins::Common::CachesReturnValue::Middleware
+  use Plugins::Service::CanHaveConnectedSteps::Middleware
   # ...
 end
 ```
 
-If your plugin enhances the instance `result` method as well, you may be affected by `CanHaveSteps`.
+If your plugin enhances the instance `result` method as well, you may be affected by `CanHaveConnectedSteps`.
 
-How? Let's check its source.
+How? Let's check its [source](https://github.com/marian13/convenient_service/blob/main/lib/convenient_service/service/plugins/can_have_connected_steps/middleware.rb).
 
 ```ruby
 module ConvenientService
   module Service
     module Plugins
-      module CanHaveSteps
+      module CanHaveConnectedSteps
         class Middleware < Core::MethodChainMiddleware
           # highlight-start
           def next(...)
             return chain.next(...) if entity.steps.none?
-
-            last_step.result.copy
+            # ...
+            entity.steps.result
           end
           # highlight-end
           # ...
@@ -46,11 +43,11 @@ end
 
 It works as a [proxy middleware](/glossary/advanced/proxy_middleware).
 
-When a service has no steps, `CanHaveSteps` just calls what is next in the middleware chain, by `chain.next(...)`.
+When a service has no steps, `CanHaveConnectedSteps` just calls what is next in the middleware chain, by `chain.next(...)`.
 
-Otherwise, it returns the last step copy.
+Otherwise, it returns the last completed step result.
 
-Let's place, e.g. `HasJSendResultParamsValidations::UsingActiveModelValidations` plugin after `CanHaveSteps` in your [application service config](tldr).
+Let's place, e.g. `HasJSendResultParamsValidations::UsingActiveModelValidations` plugin after `CanHaveConnectedSteps` in your [application service config](tldr).
 
 ```ruby
 module ApplicationService
@@ -72,7 +69,7 @@ end
 
 This way `HasJSendResultParamsValidations::UsingActiveModelValidations` is never called for services with steps.
 
-To fix that, locate it before `CanHaveSteps` like so:
+To fix that, locate it before `CanHaveConnectedSteps` like so:
 
 ```ruby
 module ApplicationService
@@ -86,7 +83,7 @@ module ApplicationService
         middlewares :result do
           # highlight-start
           insert_before \
-            ConvenientService::Plugins::Service::CanHaveSteps::Middleware,
+            ConvenientService::Plugins::Service::CanHaveConnectedSteps::Middleware,
             ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
           # highlight-end
         end
