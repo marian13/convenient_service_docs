@@ -19,7 +19,7 @@ class BuildDisplayName
   end
 
   def result
-    return failure(person: "can't be blank") if person.blank?
+    return error("Person can't be blank") if person.blank?
 
     success(display_name: "#{person.first_name} #{persom.last_name}")
   end
@@ -43,7 +43,7 @@ class BuildDisplayName
   end
 
   def result
-    return failure(person: "can't be blank") if person.blank?
+    return error("Person can't be blank") if person.blank?
 
     if person.has_pseudonym?
       success(display_name: person.pseudonym)
