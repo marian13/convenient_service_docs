@@ -39,3 +39,10 @@ tasks:
   tmuxinator:start:
     cmds:
       - tmuxinator start convenient_service_docs --project-config=.dev/.tmuxinator.yml
+
+  ##
+  # NOTE: Dev only command.
+  #
+  tmuxinator:stop:
+    cmds:
+      - tmuxinator stop convenient_service_docs --project-config=.dev/.tmuxinator.yml
