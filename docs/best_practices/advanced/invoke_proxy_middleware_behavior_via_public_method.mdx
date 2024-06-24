@@ -1,0 +1,144 @@
+---
+slug: /best_practices/advanced/invoke_proxy_middleware_behavior_via_public_method
+sidebar_position: 1
+title: Invoke proxy middleware behavior via public method
+---
+
+## How?
+
+```ruby
+##
+# Okish.
+#
+module Plugins
+  module CanHaveConnectedSteps
+    class Middleware < MethodChainMiddleware
+      intended_for :result, entity: :service
+
+      def next(...)
+        return chain.next(...) if entity.steps.none?
+
+        entity.steps.each_evaluated_step do |step|
+          step.save_outputs_in_organizer!
+
+          # ...
+        end
+
+        entity.steps.result
+      end
+    end
+  end
+end
+```
+
+```ruby
+##
+# Better.
+#
+module Plugins
+  module CanHaveConnectedSteps
+    class Middleware < MethodChainMiddleware
+      intended_for :result, entity: :service
+
+      def next(...)
+        return chain.next(...) if entity.steps.none?
+
+        entity.steps_result(...)
+      end
+    end
+  end
+end
+
+module Plugins
+  module CanHaveConnectedSteps
+    module Concern
+      include Support::Concern
+
+      instance_methods do
+        def steps_result
+          # ...
+
+          steps.each_evaluated_step do |step|
+            step.save_outputs_in_organizer!
+
+            # ...
+          end
+
+          steps.result
+        end
+
+        # ...
+      end
+    end
+  end
+end
+```
+
+## Why?
+
+- It allows end-users to create middlewares specifically for proxy middleware behavior. For example:
+
+  ```ruby
+  ##
+  # Good.
+  #
+  class Service
+    include ConvenientService::Standard::Config
+
+    middlewares :steps_result do
+      # ...
+    end
+
+    # ...
+  end
+  ```
+
+- It decreases the amount of type checks.
+
+  Without the extracted method, the end-user requries to utilize type checks to distinguish return values.
+
+  ```ruby
+  ##
+  # Bad.
+  #
+  class Middleware < MethodChainMiddleware
+    intended_for :result, entity: :service
+
+    def next(...)
+      result = chain.next(...)
+
+      if result.from_step? # Type check.
+        some_logic_with(result)
+      else
+        # ...
+      end
+    end
+  end
+  ```
+
+  ```ruby
+  ##
+  # Better.
+  #
+  class Middleware < MethodChainMiddleware
+    intended_for :step_result, entity: :service
+
+    def next(...)
+      result = chain.next(...)
+
+      some_logic_with(result)
+    end
+  end
+  ```
+
+- It decreases the amount of order-dependent middlewares.
+
+<!-- TODO: Example -->
+
+- It simplifies specs. Methods are easier to tests than middlewares.
+
+<!-- TODO: Example -->
+
+## Why not?
+
+- When proxy middleware behavior is truly private.

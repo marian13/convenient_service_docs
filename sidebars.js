@@ -222,6 +222,17 @@ const sidebars = {
         'best_practices/service_has_only_one_success',
         'best_practices/services_with_or_conditionals',
         'best_practices/skip_result_call_for_boolean_services',
+        {
+          type: 'category',
+          label: 'Advanced',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'best_practices/advanced/invoke_proxy_middleware_behavior_via_public_method',
+          ],
+        },
       ],
     },
     {
