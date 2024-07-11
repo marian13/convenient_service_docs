@@ -4,6 +4,8 @@ sidebar_position: 6
 title: Failures
 ---
 
+Having an overview of errors, let's discuss the meaning of failures.
+
 ## What is a failure?
 
 Errors prevent the achievement of the service goal due to unsatisfied validations or exceptions.
@@ -14,9 +16,11 @@ That is why is so vital to use meaningful names for services.
 
 For instance, when the aim is <u>to order a bus ticket</u>, call it - `OrderBusTicket`.
 
-So when the service is invoked, but the ticket is not ordered for some business reason, it should be treated as a failure.
+So when the service is invoked, but the ticket is not ordered for some logical business reason, it should be treated as a failure.
 
-Why? Because business reason is not an error, since the input is valid, the environment is stable, but the service goal is still not achieved.
+Why?
+
+Business reason is not an error, since the input is valid, the environment is stable, but the service goal is still not achieved.
 
 Please, read the following code snippet carefully to get the idea.
 
@@ -24,7 +28,8 @@ Please, read the following code snippet carefully to get the idea.
 class OrderBusTicket
   # ...
   def result
-    return error("Bus `#{bus.number}` is NOT valid") unless bus.valid?
+    return error("Bus is nil") if bus.nil?
+    return error("Bus `#{bus.number}` is NOT valid") unless bus.has_valid_number?
 
     return failure("Bus has no available seats") if bus.full?
     return failure("Bus trip is postponed") if Trip.for_bus(bus).postponed?
@@ -32,6 +37,8 @@ class OrderBusTicket
     ticket = BusTerminal.issue_ticket(bus)
 
     success(ticket: ticket)
+  rescue => exception
+    error("Ticket order for bus `#{name}` is not completed due to `#{exception.message}`")
   end
 end
 ```
@@ -47,10 +54,26 @@ if result.failure?
 end
 ```
 
-When the bus has not valid number we can not even try to order a ticket.
+When the bus is `nil` we can not even try to order a ticket.
 
-Hence the error is returned as the result.
+When the bus does not have a valid number, we can not even try to order a ticket.
 
-But once all the error preconditions are met, the ticket can still be not ordered due to the business reasons like lack of available seats or the trip delay.
+When an exception is raised, we can not complete the ticket order due to the technical issue.
 
-That is why those cases are examples of failures.
+Hence errors are returned for those cases.
+
+But once all the validation preconditions are met and exceptions are avoided, the ticket can still not be ordered for business reasons.
+
+This is the place when failures come into play.
+
+The lack of available seats or the trip delay are examples of business reasons.
+
+Just accept the fact that at the given moment in time, there is no possibility to order a ticket for that specific bus.
+
+But the crucial point is that a failure is a strong and reliable explainer of why the desired effect hasn't happened.
+
+That is the key difference between errors and failures.
+
+Errors give you [no service goal resolution](/basics/service_goals#service-problem-resolutions) at all.
+
+While failures provide a stable negative service goal resolution that is a strong foundation for the subsequent decision-making.
