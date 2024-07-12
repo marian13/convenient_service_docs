@@ -66,9 +66,9 @@ That is the main reason of why [ConvenientService](/) differentiate [failures](/
 
 Sure, the lib still can NOT 100% guarantee the complete elimination of the issue.
 
-However it encourages the users to think about fallbacks and split the failures and errors from the beginning.
+However, it encourages the users to think about fallbacks and split the failures and errors from the beginning.
 
-The curiosity or the confusion that the people feel when they find it difficult to decide whether to use a [failure](/docs/basics/failures.mdx) or an [error](/docs/basics/errors.mdx) works as a provocation for them to open and read this article.
+The curiosity or the confusion that people feel when they find it difficult to decide whether to use a [failure](/docs/basics/failures.mdx) or an [error](/docs/basics/errors.mdx) works as a provocation for them to open and read this article.
 
 This way they become aware of the issue and share it with others more frequently.
 
@@ -136,4 +136,18 @@ end
 <% end %>
 ```
 
-The code is more verbose, but that is the price of realability.
+The code is more verbose, but that is the price of reliability.
+
+Using the service goal resolution terminology, this is what we have as a summary.
+
+- `@fetch_allergies_result.success?` means that a patient 100% has allergies (positive service goal resolution).
+
+   That is why we freely display them.
+
+- `@fetch_allergies_result.failure?` means that a patient 100% has NO allergies (negative service goal resolution).
+
+   So we are confident in the "Patient has no allergies" text.
+
+- `@fetch_allergies_result.error?` means that even after service invocation, we still don't know whether a patient has allergies or not (no service goal resolution at all).
+
+   Due to that, we are telling the truth that "No allergies information available" instead of the false-negative resolution that we had before the separation of failure and errors.
