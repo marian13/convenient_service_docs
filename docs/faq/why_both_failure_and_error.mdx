@@ -1,0 +1,139 @@
+---
+slug: /faq/why_both_failure_and_error
+sidebar_position: 1
+title: "Why failures and errors? Why not just failure?"
+---
+
+Consider the following user story.
+
+_As a doctor I would like to see a list of the patient's allergies._
+
+The list is received from the third-party API.
+
+Sometimes a controller for this task may be implemented as follows.
+
+```ruby title="controllers/allergies_controller.rb"
+class AllergiesController < ApplicationController
+  # ...
+  def index
+    # `response` is a `Hash`.
+    response = ApiClient.get(
+      "/allergies",
+      params: {patient_id: allowed_patient_id}
+    )
+
+    @allergies = response.dig(:data, :allergies)
+  end
+end
+```
+
+And the corresponding view.
+
+```erb title="views/allergies/index.html.erb"
+<h2>Allergies</h2>
+
+<% if @allergies.present? %>
+  <% @allergies.each do |allergy| %>
+    <p>
+      <div>
+        Name: <%= allergy[:name] %>
+      </div>
+      <div>
+        Symptoms: <%= allergy[:symptoms].join(", ") %>
+      </div>
+    </p>
+  <% end %>
+<% else %>
+  <span>
+    Patient has no allergies.
+  </span>
+<% end %>
+```
+
+The code may look innocent from the first point of view, but the devil is in the details.
+
+In a case, the API response has an unexpected format `response.dig(:data, :allergies)` returns `nil`.
+
+Then `@allergies.present?` is evaluated as `false` in the view.
+
+As a consequence, the `"Patient has no allergies"` string is displayed in the doctor's browser.
+
+Just try to imagine what may happen when a doctor blindly relies on the page text 😬?
+
+Unfortunately, a code with similar problems sometimes may be written even by senior developers 😢.
+
+That is the main reason of why [ConvenientService](/) differentiate [failures](/docs/basics/failures.mdx) and [errors](/docs/basics/errors.mdx).
+
+Sure, the lib still can NOT 100% guarantee the complete elimination of the issue.
+
+However it encourages the users to think about fallbacks and split the failures and errors from the beginning.
+
+The curiosity or the confusion that the people feel when they find it difficult to decide whether to use a [failure](/docs/basics/failures.mdx) or an [error](/docs/basics/errors.mdx) works as a provocation for them to open and read this article.
+
+This way they become aware of the issue and share it with others more frequently.
+
+Refactoring using [ConvenientService](/) is the following:
+
+```ruby title="controllers/allergies_controller.rb"
+class FetchAllergies
+  include ::ConvenientService::Standard::Config
+  # ...
+  def result
+    return error("API response does not have `data` key") unless response.has_key?(:data)
+    return error("API response data does not have `allergies` key") unless response[:data].has_key?(:allergies)
+
+    return failure("Patient `#{allowed_patient_id}` has no allergies") if response[:data][:allergies].empty?
+
+    success(allergies: response[:data][:allergies])
+  end
+
+  private
+
+  def response
+    # `response` is a `Hash`.
+    @response ||= ApiClient.get("/allergies", params: {patient_id: allowed_patient_id})
+  end
+end
+```
+
+```ruby title="controllers/allergies_controller.rb"
+class AllergiesController < ApplicationController
+  # ...
+  def index
+    @fetch_allergies_result = FetchAllergies.result(allowed_patient_id: allowed_patient_id)
+  end
+end
+```
+
+```erb title="views/allergies/index.html.erb"
+<h2>Allergies</h2>
+
+<% if @fetch_allergies_result.success? %>
+  <% @fetch_allergies_result.data[:allergies].each do |allergy| %>
+    <p>
+      <div>
+        Name: <%= allergy[:name] %>
+      </div>
+      <div>
+        Symptoms: <%= allergy[:symptoms].join(", ") %>
+      </div>
+    </p>
+  <% end %>
+<% elsif @fetch_allergies_result.success? %>
+  <span>
+    Patient has no allergies.
+  </span>
+<% else # @fetch_allergies_result.error? %>
+  <span>
+    No allergies information available.
+  </span>
+  <div>
+    Try to refresh the page after a while.
+  <div>
+  <div>
+    If the issue persists please contact the support.
+  </div>
+<% end %>
+```
+
+The code is more verbose, but that is the price of realability.
