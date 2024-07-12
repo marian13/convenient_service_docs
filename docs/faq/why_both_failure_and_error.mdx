@@ -52,7 +52,7 @@ And the corresponding view.
 
 The code may look innocent from the first point of view, but the devil is in the details.
 
-In a case, the API response has an unexpected format `response.dig(:data, :allergies)` returns `nil`.
+In a case, the API response has an unexpected format `response.dig(:data, :allergies)`, returns `nil`.
 
 Then `@allergies.present?` is evaluated as `false` in the view.
 
@@ -119,7 +119,7 @@ end
       </div>
     </p>
   <% end %>
-<% elsif @fetch_allergies_result.success? %>
+<% elsif @fetch_allergies_result.failure? %>
   <span>
     Patient has no allergies.
   </span>
