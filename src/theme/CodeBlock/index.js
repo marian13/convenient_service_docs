@@ -6,6 +6,7 @@
 import Prism from 'prism-react-renderer/prism';
 (typeof global !== 'undefined' ? global : window).Prism = Prism;
 require('prismjs/components/prism-ruby');
+require('prismjs/components/prism-erb');
 
 import React from 'react';
 import CodeBlock from '@theme-original/CodeBlock';
