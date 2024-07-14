@@ -1,8 +1,10 @@
 ---
 slug: /faq/why_both_failure_and_error
 sidebar_position: 1
-title: "Why failures and errors? Why not just failure?"
+title: Why failures and errors? Why not just failure or error?
 ---
+
+## Failure and errors have different fallbacks
 
 Consider the following user story.
 
@@ -52,7 +54,7 @@ And the corresponding view.
 
 The code may look innocent from the first point of view, but the devil is in the details.
 
-In a case, the API response has an unexpected format `response.dig(:data, :allergies)`, returns `nil`.
+In a case, the API response has an unexpected format, `response.dig(:data, :allergies)` returns `nil`.
 
 Then `@allergies.present?` is evaluated as `false` in the view.
 
@@ -62,7 +64,7 @@ Just try to imagine what may happen when a doctor blindly relies on the page tex
 
 Unfortunately, a code with similar problems sometimes may be written even by senior developers 😢.
 
-That is the main reason of why [ConvenientService](/) differentiate [failures](/docs/basics/failures.mdx) and [errors](/docs/basics/errors.mdx).
+That is the main reason of why [Convenient Service](/) differentiate [failures](/docs/basics/failures.mdx) and [errors](/docs/basics/errors.mdx).
 
 Sure, the lib still can NOT 100% guarantee the complete elimination of the issue.
 
@@ -72,7 +74,7 @@ The curiosity or the confusion that people feel when they find it difficult to d
 
 This way they become aware of the issue and share it with others more frequently.
 
-Refactoring using [ConvenientService](/) is the following:
+Refactoring using [Convenient Service](/) is the following:
 
 ```ruby title="controllers/allergies_controller.rb"
 class FetchAllergies
@@ -138,7 +140,7 @@ end
 
 The code is more verbose, but that is the price of reliability.
 
-Using the service goal resolution terminology, this is what we have as a summary.
+Using the [service goal resolution terminology](/docs/basics/service_goals.mdx), this is what we have as a summary.
 
 - `@fetch_allergies_result.success?` means that a patient 100% has allergies (positive service goal resolution).
 
