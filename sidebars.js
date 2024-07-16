@@ -244,6 +244,7 @@ const sidebars = {
       collapsed: true,
       items: [
         'faq/why_both_failure_and_error',
+        'faq/why_error_not_exception',
         'faq/is_it_possible_to_modify_step_collection_from_callback',
         'faq/why_case_when_does_not_work_with_jus_result_codes',
         'faq/what_is_purpose_of_v1_config',
