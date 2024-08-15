@@ -1,6 +1,6 @@
 ---
 slug: /guides/setup/how_to_set_up_in_rails
-sidebar_position: 1
+sidebar_position: 2
 title: Setup in a Rails project
 ---
 
@@ -22,15 +22,15 @@ import version from '/src/constants/version';
   bundle install
   ```
 
-- When you are following the [classic Rails folder structure](https://tutorialspoint.com/ruby-on-rails/rails-directory-structure.htm), we recommend creating `app/services` directory like so:
+- To mimic the [classic Rails folder structure](https://tutorialspoint.com/ruby-on-rails/rails-directory-structure.htm), you may consider creating `app/services` directory like so:
 
   ```bash
   mkdir -p app/services
   ```
 
-  Feel free to select any folder you like.
+  But feel free to select other directory if you like.
 
-  `app/services` was chosen for a demonstration since it is [autoloaded](https://guides.rubyonrails.org/autoloading_and_reloading_constants.html#config-autoload-paths) by Rails.
+  `app/services` is chosen for a demonstration since it is [autoloaded](https://guides.rubyonrails.org/autoloading_and_reloading_constants.html#config-autoload-paths) by Rails.
 
 - Place a configuration file into it.
 
@@ -40,7 +40,7 @@ import version from '/src/constants/version';
   mkdir -p app/services/application_service && touch app/services/application_service/config.rb
   ```
 
-  This example utilizes `Standard` or `Rails` config, but you can also pick any other [predefined configuration](./tldr), create customization, or even [have multiple configs](./tldr).
+  This example utilizes `Standard` or `Rails` configs, but you can also pick any other [predefined configuration](./tldr), create customization, or even [have multiple configs](./tldr).
 
   <Tabs groupId="config">
     <TabItem value="standard" label="Standard" default>
@@ -48,10 +48,10 @@ import version from '/src/constants/version';
         {`
           module ApplicationService
             module Config
-              include ConvenientService::Concern
+              include ConvenientService::Config
               -
-              included do |service_class|
-                service_class.include ConvenientService::Standard::Config
+              included do
+                include ConvenientService::Standard::Config
               end
             end
           end
@@ -69,23 +69,21 @@ import version from '/src/constants/version';
             module Config
               include ConvenientService::Concern
               -
-              included do |service_class|
-                service_class.class_exec do
-                  include ConvenientService::Standard::Config
-                  -
-                  concerns do
-                    use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Concern
-                    use ConvenientService::Plugins::Common::HasAttributes::UsingActiveModelAttributes::Concern
-                    use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Concern
-                  end
-                  -
-                  middlewares :initialize do
-                    use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Middleware
-                  end
-                  -
-                  middlewares :result do
-                    use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
-                  end
+              included do
+                include ConvenientService::Standard::Config
+                -
+                concerns do
+                  use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Concern
+                  use ConvenientService::Plugins::Common::HasAttributes::UsingActiveModelAttributes::Concern
+                  use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Concern
+                end
+                -
+                middlewares :initialize do
+                  use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingActiveModelAttributeAssignment::Middleware
+                end
+                -
+                middlewares :result do
+                  use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
                 end
               end
             end

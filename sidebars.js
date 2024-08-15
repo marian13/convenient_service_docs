@@ -53,8 +53,10 @@ const sidebars = {
           },
           collapsed: true,
           items: [
+            'guides/setup/how_to_set_up_in_ruby',
             'guides/setup/how_to_set_up_in_rails',
             'guides/setup/how_to_set_up_in_rspec',
+            'guides/setup/how_to_set_up_in_minitest',
           ],
         },
         {
