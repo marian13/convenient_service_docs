@@ -1,0 +1,47 @@
+---
+slug: /guides/usage/how_to_create_and_invoke_services
+sidebar_position: 1
+title: How to create and invoke services?
+---
+
+## How to create a service?
+
+Create a [class](https://ruby-doc.org/core-2.7.1/Class.html), include some [Convenient Service](/) configuration, define the `result` method 🙂.
+
+Here is the minimal example.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+## How to invoke a service?
+
+There a two ways to do it.
+
+First one - using the [class method](https://ruby-doc.org/core-2.7.1/doc/syntax/methods_rdoc.html#label-Scope) `result`.
+
+```ruby
+result = Service.result
+```
+
+Second one - using the [instance method](https://ruby-doc.org/core-2.7.1/doc/syntax/methods_rdoc.html#label-Scope) `result`.
+
+```ruby
+service = Service.new
+
+result = service.result
+```
+
+:::info
+
+Most of the time you will utilize the class method variant (`Service.result`).
+
+But keep in my mind, that allocating a service instance may be useful when it is needed to delay result calculation.
+
+:::

@@ -1,0 +1,304 @@
+---
+slug: /guides/usage/how_to_use_results
+sidebar_position: 2
+title: How to use service results?
+---
+
+## Which result types/statuses are available?
+
+There are only [3 available statuses](/faq/why_both_failure_and_error) for service results.
+
+The `success` status is when the service goal is resolved positively.
+
+The `failure` status is when a service goal is resolved negatively.
+
+The `error` status is when the service goal is not resolved. Additional moves are required to get a `failure` or `success` instead.
+
+## When to use `success` results?
+
+When you have a 100% guarantee that the service's desired outcome is achieved.
+
+:::tip
+
+In other words, all [business rules](https://en.wikipedia.org/wiki/Business_rule) are satisfied and the service's actual action is completed.
+
+:::
+
+## When to use `failure` results?
+
+When you have a 100% guarantee that the service's desired outcome is NOT achieved.
+
+:::tip
+
+In other words, any [business rule](https://en.wikipedia.org/wiki/Business_rule) is NOT satisfied.
+
+:::
+
+## When to use `error` results?
+
+When you don't have any guarantee that the service's desired outcome was even tried to be completely achieved.
+
+:::tip
+
+In other words, some [business rule](https://en.wikipedia.org/wiki/Business_rule) is NOT completed.
+
+:::
+
+## How to decide between `success`, `failure`, and `error` results?
+
+Let's consider the following service.
+
+```ruby
+class AddRole
+  include ConvenientService::Standard::Config
+
+  attr_reader :user, :role_name
+
+  def initialize(user:, role_name:)
+    @user = user
+    @role_name = role_name
+  end
+
+  def result
+    return error("User is blank") if user.blank?
+    return error("Role name is blank") if role_name.blank?
+
+    return failure("User(#{user.id}) already has `#{role_name}` role") if user.has_role?(role_name) # Business rule.
+    return failure("User(#{user.id}) reputation is too low for `#{role_name}` role") if user.reputation.low? && role_name == :admin # Business rule.
+
+    user.add_role(role_name) # Service actual action.
+
+    success
+  rescue DB::ConnectionTimeout => exception
+    error("DB connection is lost due to `#{exception.message}`")
+  end
+end
+```
+
+As its name states, the `AddRole` service is responsible for the addition of a role to a particular user.
+
+That is successfully added role is its [service goal](/basics/service_goals).
+
+`AddRole` can be easily invoked like so:
+
+```ruby
+result = AddRole.result(user: User.find(1), role_name: :admin)
+```
+
+When the `success` result is returned, you are confident that the role is added.
+
+```ruby
+result.success?
+# => true
+```
+
+When the `failure` result is returned, you are confident that the role is NOT added.
+
+```ruby
+result.failure?
+# => true
+```
+
+As a significant bonus, you immediately receive the exact logical reason that clearly explains what forbade the role addition.
+
+For this concrete service, it is the fact that the user already has the passed role.
+
+```ruby
+result.message
+# => "User(1) already has `admin` role"
+```
+
+Or the fact that the user's reputation is too low for the `admin` role.
+
+```ruby
+result.message
+# => "User(1) reputation is too low for `admin` role"
+```
+
+So you can quickly report that reason to the interested people without additional debugging sessions.
+
+When the `error` result is returned, you obtain NO new information about the service goal.
+
+```ruby
+result.error?
+# => true
+```
+
+As you had NO idea whether it was possible or impossible to add the role before running the service.
+
+The same question remains open and unresolved after executing the service.
+
+Strictly speaking, the `error` result notifies that the only way to get the reliable service goal outcome is to rerun the service with changed inputs or to retry later.
+
+`AddRole` has multiple errors.
+
+The first two of them are unsatisfied input validations.
+
+```ruby
+result.message
+# => "User is blank"
+```
+
+```ruby
+result.message
+# => "Role name is blank"
+```
+
+Usually, they indicate that a developer (service user) who was invoking a service made a mistake by providing incorrect inputs.
+
+That is why they should be changed before rerunning the service.
+
+The last one is a database exception.
+
+```ruby
+result.message
+# => "DB connection is lost due to `Default timeout exceeded`"
+```
+
+Such an error may show that the runtime infrastructure is not stable.
+
+That is why retrying again later may be an option.
+
+Similarly to `failures`, `errors` also have messages that clearly explain the reasons for what went wrong.
+
+But, this time they are just hints about where to proceed with debugging, not the reliable facts about service goal resolution.
+
+## How to check result status?
+
+Check the comprehensive list of commands below.
+
+To make them more demonstrative, let's introduce the following minimalistic services.
+
+```ruby
+class SuccessService
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+`SuccessService` always returns `success`.
+
+```ruby
+class FailureService
+  include ConvenientService::Standard::Config
+
+  def result
+    failure
+  end
+end
+```
+
+`FailureService` always returns `failure`.
+
+```ruby
+class ErrorServices
+  include ConvenientService::Standard::Config
+
+  def result
+    error
+  end
+end
+```
+
+`ErrorServices` always returns `error`.
+
+Having that information status checkers work as follows:
+
+```ruby
+SuccessService.result.success?
+# => true
+
+FailureService.result.success?
+# => false
+
+ErrorService.result.success?
+# => false
+```
+
+```ruby
+SuccessService.result.failure?
+# => false
+
+FailureService.result.failure?
+# => true
+
+ErrorService.result.failure?
+# => false
+```
+
+```ruby
+SuccessService.result.error?
+# => false
+
+FailureService.result.error?
+# => false
+
+ErrorService.result.error?
+# => true
+```
+
+Also `not` counterparts are available.
+
+```ruby
+SuccessService.result.not_success?
+# => false
+
+FailureService.result.not_success?
+# => true
+
+ErrorService.result.not_success?
+# => true
+```
+
+```ruby
+SuccessService.result.not_failure?
+# => true
+
+FailureService.result.not_failure?
+# => false
+
+ErrorService.result.not_failure?
+# => true
+```
+
+```ruby
+SuccessService.result.not_error?
+# => true
+
+FailureService.result.not_error?
+# => true
+
+ErrorService.result.not_error?
+# => false
+```
+
+For people who like to save every keyboard stroke - a shorter equivalent is available for `success`.
+
+It is just `ok`.
+
+```ruby
+SuccessService.result.ok?
+# => true
+
+FailureService.result.ok?
+# => false
+
+ErrorService.result.ok?
+# => false
+```
+
+And the opposite for it.
+
+```ruby
+SuccessService.result.not_ok?
+# => false
+
+FailureService.result.not_ok?
+# => true
+
+ErrorService.result.not_ok?
+# => true
+```

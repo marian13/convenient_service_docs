@@ -67,6 +67,8 @@ const sidebars = {
           },
           collapsed: true,
           items: [
+            'guides/usage/how_to_create_and_invoke_services',
+            'guides/usage/how_to_use_results',
             'guides/usage/how_to_pass_value_to_step_class_or_instance_scope',
           ],
         },
