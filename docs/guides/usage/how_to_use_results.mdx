@@ -350,6 +350,104 @@ ErrorService.result.not_ok?
 # => true
 ```
 
+## How to check for specific `failure` or `error`?
+
+No. You don't need to match regular expressions by yourself.
+
+Something like `result.message.to_s.match?(/Business Rule/)` is NOT the way to go.
+
+Please, consider the `code` keyword.
+
+Here is a quick demonstration.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  attr_reader :number
+
+  def initialize(number:)
+    @number = number
+  end
+
+  def result
+    return error(message: "Message for `foo`", code: :foo) if number == 1
+    return error(message: "Message for `bar`", code: :bar) if number == 2
+
+    return failure(message: "Message for `baz`", code: :baz) if number == 3
+    return failure(message: "Message for `qux`", code: :qux) if number == 4
+
+    success
+  end
+end
+```
+
+Depending on the input `number`, the service above returns various `failures` and `errors`.
+
+A shorter form is also available.
+
+```ruby
+def result
+  return error("Message for `foo`", :foo) if number == 1
+  return error("Message for `bar`", :bar) if number == 2
+
+  return failure("Message for `baz`", :baz) if number == 3
+  return failure("Message for `qux`", :qux) if number == 4
+
+  success
+end
+```
+
+This is how you can differentiate those `failures` and `errors` on the calling code.
+
+```ruby
+result = Service.result(number: 4)
+
+if result.success?
+  # ...
+elsif result.failure?
+  if result.code.to_sym == :baz
+    result.message
+    # => "Message for `baz`"
+  elsif result.code.to_sym == :qux
+    result.message
+    # => "Message for `qux`"
+  else
+    # ...
+  end
+else # result.error?
+  if result.code.to_sym == :foo
+    result.message
+    # => "Message for `foo`"
+  elsif result.code.to_sym == :bar
+    result.message
+    # => "Message for `bar`"
+  else
+    # ...
+  end
+end
+```
+
+Sure, this snippet is not the prettiest, but currently, there is NO alternative.
+
+Optimization like the following (API is still subject to change) is planned for the subsequent [Convenient Service](/) releases.
+
+```ruby
+result = Service.result(number: 4)
+
+result.respond_to do |status|
+  status.success { }
+
+  status.failure(code: :baz) { }
+  status.failure(code: :qux) { }
+
+  status.error(code: :foo) { }
+  status.error(code: :bar) { }
+
+  status.unexpected { }
+end
+```
+
 ## When to use `success` results?
 
 When you have a 100% guarantee that the service's desired outcome is achieved.
@@ -366,7 +464,7 @@ When you have a 100% guarantee that the service's desired outcome is NOT achieve
 
 :::tip
 
-In other words, any [business rule](https://en.wikipedia.org/wiki/Business_rule) is NOT satisfied.
+In other words, some [business rule](https://en.wikipedia.org/wiki/Business_rule) is NOT satisfied.
 
 :::
 
@@ -376,7 +474,7 @@ When you don't have any guarantee that the service's desired outcome was even tr
 
 :::tip
 
-In other words, some [business rule](https://en.wikipedia.org/wiki/Business_rule) is NOT completed or the service's actual operation is NOT completed.
+In other words, some [business rule](https://en.wikipedia.org/wiki/Business_rule) check is NOT completed or the service's actual operation is NOT completed.
 
 :::
 
