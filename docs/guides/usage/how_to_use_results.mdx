@@ -14,154 +14,201 @@ The `failure` status is when a service goal is resolved negatively.
 
 The `error` status is when the service goal is not resolved. Additional moves are required to get a `failure` or `success` instead.
 
-## When to use `success` results?
+## How to create `success` result?
 
-When you have a 100% guarantee that the service's desired outcome is achieved.
-
-:::tip
-
-In other words, all [business rules](https://en.wikipedia.org/wiki/Business_rule) are satisfied and the service's actual action is completed.
-
-:::
-
-## When to use `failure` results?
-
-When you have a 100% guarantee that the service's desired outcome is NOT achieved.
-
-:::tip
-
-In other words, any [business rule](https://en.wikipedia.org/wiki/Business_rule) is NOT satisfied.
-
-:::
-
-## When to use `error` results?
-
-When you don't have any guarantee that the service's desired outcome was even tried to be completely achieved.
-
-:::tip
-
-In other words, some [business rule](https://en.wikipedia.org/wiki/Business_rule) is NOT completed.
-
-:::
-
-## How to decide between `success`, `failure`, and `error` results?
-
-Let's consider the following service.
+Just call the `success` instance method and return it from `result`.
 
 ```ruby
-class AddRole
+class Service
   include ConvenientService::Standard::Config
 
-  attr_reader :user, :role_name
-
-  def initialize(user:, role_name:)
-    @user = user
-    @role_name = role_name
-  end
-
   def result
-    return error("User is blank") if user.blank?
-    return error("Role name is blank") if role_name.blank?
-
-    return failure("User(#{user.id}) already has `#{role_name}` role") if user.has_role?(role_name) # Business rule.
-    return failure("User(#{user.id}) reputation is too low for `#{role_name}` role") if user.reputation.low? && role_name == :admin # Business rule.
-
-    user.add_role(role_name) # Service actual action.
-
     success
-  rescue DB::ConnectionTimeout => exception
-    error("DB connection is lost due to `#{exception.message}`")
   end
 end
 ```
 
-As its name states, the `AddRole` service is responsible for the addition of a role to a particular user.
+## How to pass `data` to `success` result?
 
-That is successfully added role is its [service goal](/basics/service_goals).
+To be explicit, you may use the `data` keyword.
 
-`AddRole` can be easily invoked like so:
+It accepts a hash with [Symbol](https://ruby-doc.org/core-2.7.0/Symbol.html) keys and any values.
+
+Like in the service below.
 
 ```ruby
-result = AddRole.result(user: User.find(1), role_name: :admin)
+class Service
+  include ConvenientService::Standard::Config
+
+  def result
+    success(data: {foo: :bar, baz: :qux})
+  end
+end
 ```
 
-When the `success` result is returned, you are confident that the role is added.
+But it is more common to omit it.
 
 ```ruby
-result.success?
-# => true
+class Service
+  include ConvenientService::Standard::Config
+
+  def result
+    success(foo: :bar, baz: :qux)
+  end
+end
 ```
 
-When the `failure` result is returned, you are confident that the role is NOT added.
+## How to access `success` result `data`?
+
+Utilize round brackes `[]` on the result `data` object.
 
 ```ruby
-result.failure?
-# => true
+result = Service.result
+
+if result.success?
+  result.data[:foo]
+  # => bar
+end
 ```
 
-As a significant bonus, you immediately receive the exact logical reason that clearly explains what forbade the role addition.
+:::info
 
-For this concrete service, it is the fact that the user already has the passed role.
+A self-explanatory exception is raised when data is accessed before the status is checked.
 
 ```ruby
+result = Service.result
+
+result.data[:foo]
+# => Raises exception since result status is NOT checked...
+```
+
+That is by design.
+
+The intention is to encourage developers to think about fallbacks from the beginning.
+
+For example, to define reasonable `else`.
+
+```ruby
+if result.success?
+  result.data[:foo]
+  # => bar
+else
+  # Fallback.
+end
+```
+
+Or to check for `failure` and `error` as well.
+
+```ruby
+if result.success?
+  result.data[:foo]
+  # => bar
+elsif result.failure?
+  # Some fallback.
+else # result.error?
+  # Some other fallback.
+end
+```
+
+:::
+
+:::info
+
+A self-explanatory exception is raised when a missing data key is accessed.
+
+```ruby
+result = Service.result
+
+if result.success?
+  result.data[:missing_key]
+  # => Raises exception since data has NO value by `:missing_key` key...
+end
+```
+
+That is also by design.
+
+The intention is to highligh typos during development, so that they are fixed earlier.
+
+:::
+
+## How to create `failure` or `error` results?
+
+`failures` and `errors` have similar public interface.
+
+That is why it makes sence to explain them together.
+
+So in order to create a `failure` or `error` - invoke the corresponding instance method, pass a `message` to it, and return its value from `result`.
+
+This is an example for `failure`.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  def result
+    failure(message: "Some business rule is NOT satisfied")
+  end
+end
+```
+
+This is how to create `error`.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  def result
+    error(message: "Something forbided service goal to be resolved")
+  end
+end
+```
+
+The `message` keyword can be omitted.
+
+```ruby
+def result
+  failure("Some business rule is NOT satisfied")
+end
+```
+
+```ruby
+def result
+  error("Something forbided service goal to be resolved")
+end
+```
+
+## How to access `failure` or `error` result `message`?
+
+Utilize the result `message` object.
+
+```ruby
+result = Service.result
+
+if result.success?
+  # ...
+elsif result.failure?
+  result.message
+  # => "Some business rule is NOT satisfied"
+else # result.error?
+  result.message
+  # => "Something forbided service goal to be resolved"
+end
+```
+
+:::info
+
+A self-explanatory exception is raised when message is accessed before the status is checked.
+
+```ruby
+result = Service.result
+
 result.message
-# => "User(1) already has `admin` role"
+# => Raises exception since result status is NOT checked...
 ```
 
-Or the fact that the user's reputation is too low for the `admin` role.
+The motivation is to discourage checks like `if result.message.empty?`.
 
-```ruby
-result.message
-# => "User(1) reputation is too low for `admin` role"
-```
-
-So you can quickly report that reason to the interested people without additional debugging sessions.
-
-When the `error` result is returned, you obtain NO new information about the service goal.
-
-```ruby
-result.error?
-# => true
-```
-
-As you had NO idea whether it was possible or impossible to add the role before running the service.
-
-The same question remains open and unresolved after executing the service.
-
-Strictly speaking, the `error` result notifies that the only way to get the reliable service goal outcome is to rerun the service with changed inputs or to retry later.
-
-`AddRole` has multiple errors.
-
-The first two of them are unsatisfied input validations.
-
-```ruby
-result.message
-# => "User is blank"
-```
-
-```ruby
-result.message
-# => "Role name is blank"
-```
-
-Usually, they indicate that a developer (service user) who was invoking a service made a mistake by providing incorrect inputs.
-
-That is why they should be changed before rerunning the service.
-
-The last one is a database exception.
-
-```ruby
-result.message
-# => "DB connection is lost due to `Default timeout exceeded`"
-```
-
-Such an error may show that the runtime infrastructure is not stable.
-
-That is why retrying again later may be an option.
-
-Similarly to `failures`, `errors` also have messages that clearly explain the reasons for what went wrong.
-
-But, this time they are just hints about where to proceed with debugging, not the reliable facts about service goal resolution.
+:::
 
 ## How to check result status?
 
@@ -302,3 +349,152 @@ FailureService.result.not_ok?
 ErrorService.result.not_ok?
 # => true
 ```
+
+## When to use `success` results?
+
+When you have a 100% guarantee that the service's desired outcome is achieved.
+
+:::tip
+
+In other words, all [business rules](https://en.wikipedia.org/wiki/Business_rule) are satisfied and the service's actual operation is completed.
+
+:::
+
+## When to use `failure` results?
+
+When you have a 100% guarantee that the service's desired outcome is NOT achieved.
+
+:::tip
+
+In other words, any [business rule](https://en.wikipedia.org/wiki/Business_rule) is NOT satisfied.
+
+:::
+
+## When to use `error` results?
+
+When you don't have any guarantee that the service's desired outcome was even tried to be completely achieved.
+
+:::tip
+
+In other words, some [business rule](https://en.wikipedia.org/wiki/Business_rule) is NOT completed or the service's actual operation is NOT completed.
+
+:::
+
+## How to decide between `success`, `failure`, and `error` results?
+
+Let's consider the following service.
+
+```ruby
+class AddRole
+  include ConvenientService::Standard::Config
+
+  attr_reader :user, :role_name
+
+  def initialize(user:, role_name:)
+    @user = user
+    @role_name = role_name
+  end
+
+  def result
+    return error("User is blank") if user.blank?
+    return error("Role name is blank") if role_name.blank?
+
+    return failure("User(#{user.id}) already has `#{role_name}` role") if user.has_role?(role_name) # Business rule.
+    return failure("User(#{user.id}) reputation is too low for `#{role_name}` role") if user.reputation.low? && role_name == :admin # Business rule.
+
+    user.add_role(role_name) # Service actual operation.
+
+    success
+  rescue DB::ConnectionTimeout => exception
+    error("DB connection is lost due to `#{exception.message}`")
+  end
+end
+```
+
+As its name states, the `AddRole` service is responsible for the addition of a role to a particular user.
+
+Thus successfully added role is its [service goal](/basics/service_goals).
+
+`AddRole` can be easily invoked like so:
+
+```ruby
+result = AddRole.result(user: User.find(1), role_name: :admin)
+```
+
+When the `success` result is returned, you are confident that the role is added.
+
+```ruby
+result.success?
+# => true
+```
+
+When the `failure` result is returned, you are confident that the role is NOT added.
+
+```ruby
+result.failure?
+# => true
+```
+
+As a significant bonus, you immediately receive the exact logical reason that clearly explains what forbade the role addition.
+
+For this concrete service, it is the fact that the user already has the passed role.
+
+```ruby
+result.message
+# => "User(1) already has `admin` role"
+```
+
+Or the fact that the user's reputation is too low for the `admin` role.
+
+```ruby
+result.message
+# => "User(1) reputation is too low for `admin` role"
+```
+
+So you can quickly report that reason to the interested people without additional debugging sessions.
+
+When the `error` result is returned, you obtain NO new information about the service goal.
+
+```ruby
+result.error?
+# => true
+```
+
+As you had NO idea whether it was possible or impossible to add the role before running the service.
+
+The same question remains open and unresolved after executing the service.
+
+Strictly speaking, the `error` result notifies that the only way to get the reliable service goal outcome is to rerun the service with changed inputs or to retry later.
+
+`AddRole` has multiple errors.
+
+The first two of them are unsatisfied input validations.
+
+```ruby
+result.message
+# => "User is blank"
+```
+
+```ruby
+result.message
+# => "Role name is blank"
+```
+
+Usually, they indicate that a developer (service user) who was invoking the service made a mistake by providing incorrect inputs.
+
+That is why they should be changed before rerunning the service.
+
+The last one is a database exception.
+
+```ruby
+result.message
+# => "DB connection is lost due to `Default timeout exceeded`"
+```
+
+Such an error may show that the runtime infrastructure is not stable.
+
+That is why retrying again later may be an option.
+
+Similarly to `failures`, `errors` also have messages that clearly explain the reasons for what went wrong.
+
+But, this time they are just hints about where to proceed with debugging, not the reliable facts about service goal resolution.
