@@ -9,7 +9,7 @@
 
 The following command starts a local development server.
 
-Then it opens up a browser window at [http://localhost:8200/convenient_service_docs](http://localhost:8200/convenient_service_docs).
+Then it opens up a browser window at [http://localhost:8200](http://localhost:8200).
 
 Most changes are reflected live without having to restart the server.
 
