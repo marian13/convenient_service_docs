@@ -316,6 +316,7 @@ const sidebars = {
         'deprecations/imports_and_exports_via_dependency_containers',
       ],
     },
+    'index',
   ],
 };
 
