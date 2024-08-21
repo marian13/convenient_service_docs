@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkconvenient_service_docs=self.webpackChunkconvenient_service_docs||[]).push([[9943],{7465:e=>{e.exports=JSON.parse('{"title":"FDD","slug":"/category/fdd","permalink":"/category/fdd","navigation":{"previous":{"title":"Clean Code","permalink":"/glossary/clean_code"},"next":{"title":"Entry","permalink":"/glossary/fdd/entry"}}}')}}]);
