@@ -99,6 +99,27 @@ const sidebars = {
         },
         {
           type: 'category',
+          label: 'FDD',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            {
+              type: 'category',
+              label: 'Usage',
+              link: {
+                type: 'generated-index',
+              },
+              collapsed: true,
+              items: [
+                'guides/fdd/usage/how_to_use_entries',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'category',
           label: 'Advanced',
           link: {
             type: 'generated-index',

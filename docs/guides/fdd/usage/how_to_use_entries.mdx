@@ -1,0 +1,291 @@
+---
+slug: /guides/fdd/usage/how_to_create_and_invoke_entries
+sidebar_position: 1
+title: How to use entries?
+---
+
+## How to create an entry?
+
+There are two ways to do it - block and method forms.
+
+This is how it can be done using the block form.
+
+```ruby
+module Features
+  class Gemfile
+    include ConvenientService::Feature::Standard::Config
+
+    entry :format do
+      Services::Format.result(path: "#{::Dir.pwd}/Gemfile")
+    end
+  end
+end
+```
+
+The following code snippet demonstrates the equivalent method form.
+
+```ruby
+module Features
+  class Gemfile
+    include ConvenientService::Feature::Standard::Config
+
+    entry :format
+
+    def format
+      Services::Format.result(path: "#{::Dir.pwd}/Gemfile")
+    end
+  end
+end
+```
+
+## How to define arguments for entries?
+
+Since entries are built on the top of the regular Ruby blocks and methods you are able to utilize the techniques that you already know.
+
+Here are some examples of how to define positional and keyword arguments.
+
+The block form:
+
+```ruby
+module Features
+  class Gemfile
+    include ConvenientService::Feature::Standard::Config
+
+    entry :format do |path, verbose: false|
+      Services::Format.result(path: path, verbose: verbose)
+    end
+  end
+end
+```
+
+The method form:
+
+```ruby
+module Features
+  class Gemfile
+    include ConvenientService::Feature::Standard::Config
+
+    entry :format
+
+    def format(path, verbose: false)
+      Services::Format.result(path: path, verbose: verbose)
+    end
+  end
+end
+```
+
+Entries with [variable arguments list](https://rubyguides.com/2018/06/rubys-method-arguments) may look like as follows.
+
+The block form:
+
+```ruby
+module Features
+  class Gemfile
+    include ConvenientService::Feature::Standard::Config
+
+    entry :format do |*args, **kwargs, &block|
+      path = args.first
+
+      verbose = block ? block.call : kwargs[:verbose]
+
+      Services::Format.result(path: path, verbose: verbose)
+    end
+  end
+end
+```
+
+The method form:
+
+```ruby
+module Features
+  class Gemfile
+    include ConvenientService::Feature::Standard::Config
+
+    entry :format
+
+    def format(*args, **kwargs, &block)
+      path = args.first
+
+      verbose = block ? block.call : kwargs[:verbose]
+
+      Services::Format.result(path: path, verbose: verbose)
+    end
+  end
+end
+```
+
+## How to invoke an entry?
+
+No matter whether an entry was defined by a block or by a method, its invocation is the same, e.g:
+
+```ruby
+Features::Gemfile.format
+```
+
+```ruby
+Features::Gemfile.format(path, verbose: true)
+```
+
+```ruby
+Features::Gemfile.format(*args, **kwargs, &block)
+```
+
+## How to add a middleware for all entries?
+
+Check the following feature.
+
+```ruby
+module Features
+  class SomeFeature
+    include ConvenientService::Feature::Standard::Config
+
+    entry :some_entry_without_arguments
+    entry :some_entry_with_arguments
+
+    def some_entry_without_arguments
+      puts "Entry `some_entry_without_arguments` called."
+    end
+
+    def some_entry_with_arguments(*args, **kwargs, &block)
+      puts "Entry `some_entry_with_arguments` called."
+    end
+  end
+end
+```
+
+It has two entries that are displaying some text on the screen.
+
+For example:
+
+```ruby
+Features::SomeFeature.first_entry
+# => "Entry `first_entry` called."
+```
+
+```ruby
+Features::SomeFeature.second_entry
+# => "Entry `second_entry` called."
+```
+
+Now, let's define a simple middleware.
+
+```ruby
+class TestMiddleware < ConvenientService::MethodMiddleware
+  def next(entry_name, *args, **kwargs, &block)
+    puts "`TestMiddleware` called for entry `#{entry_name}` with args `#{args.inspect}`, kwargs `#{kwargs.inspect}` and block `#{block.inspect}`."
+
+    chain.next(entry_name, *args, **kwargs, &block)
+  end
+end
+```
+
+It logs the entry name and its arguments.
+
+Then it triggers the original entry behaviour.
+
+In order to register a middleware for all entries inside the particular feature, use the `middlewares :entry` directive.
+
+```ruby
+module Features
+  class SomeFeature
+    include ConvenientService::Feature::Standard::Config
+
+    # highlight-start
+    middlewares :entry do
+      use TestMiddleware
+    end
+    # highlight-end
+
+    entry :some_entry_without_arguments
+    entry :some_entry_with_arguments
+
+    def some_entry_without_arguments
+      puts "Entry `some_entry_without_arguments` called."
+    end
+
+    def some_entry_with_arguments(*args, **kwargs, &block)
+      puts "Entry `some_entry_with_arguments` called."
+    end
+  end
+end
+```
+
+Now the `TestMiddleware` is executed before any entry invocation.
+
+This is how it looks in practice.
+
+```ruby
+Features::SomeFeature.some_entry_without_arguments
+# => "`TestMiddleware` called for entry `some_entry_without_arguments` with args `[]`, kwargs `{}` and block `nil`."
+# => "Entry `some_entry_without_arguments` called."
+```
+
+```ruby
+Features::SomeFeature.some_entry_with_arguments(:foo, foo: :bar) { :foo }
+# => "`TestMiddleware` called for entry `some_entry_with_arguments` with args `[:foo]`, kwargs `{:foo=>:bar}` and block `#<Proc:0x00000001227756c8.>`."
+# => "Entry `some_entry_with_arguments` called."
+```
+
+## How to add a middleware for the specific entry?
+
+The process is almost the same as with the addition of a middleware for all entries.
+
+But the arguments list does not start with positional `entry_name`.
+
+:::info
+
+It is still possible to access `entry_name` via method `method` 🙂.
+
+:::
+
+```ruby
+class TestMiddleware < ConvenientService::MethodMiddleware
+  def next(*args, **kwargs, &block)
+    puts "`TestMiddleware` called for entry `#{method}` with args `#{args.inspect}`, kwargs `#{kwargs.inspect}` and block `#{block.inspect}`."
+
+    chain.next(*args, **kwargs, &block)
+  end
+end
+```
+
+The registration directive contains the specific entry name.
+
+```ruby
+module Features
+  class SomeFeature
+    include ConvenientService::Feature::Standard::Config
+
+    # highlight-start
+    middlewares :some_entry do
+      use TestMiddleware
+    end
+    # highlight-end
+
+    entry :some_entry
+    entry :some_other_entry
+
+    def some_entry(first_positional_argument, second_positional_argument)
+      puts "Entry `some_entry` called."
+    end
+
+    def some_other_entry
+      puts "Entry `some_other_entry` called."
+    end
+  end
+end
+```
+
+Thus the `TestMiddleware` is executed only before specific entry invocation.
+
+```ruby
+Features::SomeFeature.some_entry(:foo, :bar)
+# => "`TestMiddleware` called for entry `some_entry` with args `[:foo, :bar]`, kwargs `{}` and block `nil`."
+# => "Entry `some_entry` called."
+```
+
+All the other entries stay unaffected.
+
+```ruby
+Features::SomeFeature.some_other_entry
+# => "Entry `some_other_entry` called."
+```
