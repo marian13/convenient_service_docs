@@ -1,0 +1,70 @@
+---
+slug: /best_practices/fdd/describe_feature_public_interface_using_entries
+sidebar_position: 1
+title: Describe feature public interface using entries
+---
+
+This way it becomes easier to get an overview of what a feature can do.
+
+Here is an example of the `Gemfile` feature.
+
+```ruby
+module Features
+  class Gemfile
+    include ConvenientService::Feature::Standard::Config
+
+    entry :format
+    entry :lint
+    entry :update
+    entry :regenerate
+
+    def format
+      # ...
+    end
+
+    def lint
+      # ...
+    end
+
+    def update
+      # ...
+    end
+
+    def regenerate
+      # ...
+    end
+  end
+end
+```
+
+Having a quick eye on the list of entries you immediately realize that there are abilities to `format`, `lint`, `update`, and `regenerate` Gemfiles.
+
+Now, check out the `RequestParams` feature.
+
+```ruby
+module Features
+  class RequestParams
+    include ConvenientService::Feature::Standard::Config
+
+    entry :extract_from_url_path
+    entry :extract_from_url_query
+    entry :extract_from_body
+
+    def extract_from_url_path
+      # ...
+    end
+
+    def extract_from_url_query
+      # ...
+    end
+
+    def extract_from_body
+      # ...
+    end
+  end
+end
+```
+
+The same story, once you review the entries' names, you get the idea of what the `RequestParams` feature is about.
+
+It gives the opportunity to extract parameters from the request body and URL path/query.

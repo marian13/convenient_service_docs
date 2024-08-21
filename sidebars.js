@@ -249,6 +249,18 @@ const sidebars = {
         'best_practices/skip_result_call_for_boolean_services',
         {
           type: 'category',
+          label: 'FDD',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'best_practices/fdd/describe_feature_public_interface_using_entries',
+            'best_practices/fdd/cast_feature_arguments_inside_entries',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Advanced',
           link: {
             type: 'generated-index',

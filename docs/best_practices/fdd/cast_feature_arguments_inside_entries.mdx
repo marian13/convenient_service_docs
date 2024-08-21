@@ -1,0 +1,52 @@
+---
+slug: /best_practices/fdd/cast_feature_arguments_inside_entries
+sidebar_position: 2
+title: Cast feature arguments inside entries
+---
+
+Usually, features have their own entities to represent their domain.
+
+Entry is the best place where outside-world objects can be cast into them.
+
+For example, consider the `User` entity for the `LoginSession` feature.
+
+```ruby
+module Features
+  class LoginSession
+    module Entities
+      class User
+        def initialize(email:, password:)
+          @email = email
+          @password = password
+        end
+
+        def self.cast(object)
+          if object.instance_of?(::User)
+            Entities::User.new(email: object.email_address, password: object.encrypted_password)
+          else
+            # ...
+          end
+        end
+
+        # ...
+      end
+    end
+  end
+end
+```
+
+This is how an entry may convert a raw `user` object into feature specific entity.
+
+```ruby
+module Features
+  class LoginSession
+    include ConvenientService::Feature::Standard::Config
+
+    def start(**kwargs)
+      kwargs[:user] = Entities::User.cast(kwargs[:user])
+
+      Services::Login.result(**kwargs)
+    end
+  end
+end
+```
