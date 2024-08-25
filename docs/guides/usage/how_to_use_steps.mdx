@@ -1,0 +1,129 @@
+---
+slug: /guides/usage/how_to_use_steps
+sidebar_position: 3
+title: How to use service steps?
+---
+
+## Which types of steps are available?
+
+The two criteria currently categorize steps.
+
+- By action: service and method steps.
+
+- By control flow: `and`, `or`, `not` steps.
+
+## How to define a service step?
+
+You can register existing services as steps of other services using the `step` directive.
+
+Let's have a look at it in practice.
+
+Having the `Service` service.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+We can use it as a step of the `OtherService` service in the following way.
+
+```ruby
+class OtherService
+  include ConvenientService::Standard::Config
+
+  step Service
+end
+```
+
+This code works almost the same as:
+
+```ruby
+class OtherService
+  include ConvenientService::Standard::Config
+
+  def result
+    Service.result
+  end
+end
+```
+
+That is why for a single-step service the usage of steps may not seem very beneficial.
+
+So consider a more complex example.
+
+Now we have 3 services.
+
+```ruby
+class FooService
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+```ruby
+class BarService
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+```ruby
+class BazService
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+The `HostService` uses them as steps.
+
+```ruby
+class HostService
+  include ConvenientService::Standard::Config
+
+  step FooService
+  step BarService
+  step BazService
+end
+```
+
+Rough `HostService` equivalent without steps may be implemented as follows:
+
+```ruby
+class HostService
+  include ConvenientService::Standard::Config
+
+  def result
+    foo_result = FooService.result
+
+    return foo_result unless foo_result.success?
+
+    bar_result = BarService.result
+
+    return bar_result unless bar_result.success?
+
+    BazService.result
+  end
+end
+```
+
+As you can see, steps allow us to eliminate at least 2 assignments and 2 if-conditionals for this particular example.
+
+Sure, those assignments and if-conditionals are still performed under the hood, but it is no longer a developer's responsibility to manage them.
+
+Now the benefit of steps becomes more obvious, but that is not the only benefit.
+
+Other guides are going to demonstrate the additional simplifications.
