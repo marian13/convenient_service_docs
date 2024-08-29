@@ -1,0 +1,89 @@
+---
+slug: /guides/debugging/how_to_access_result_original_service
+sidebar_position: 5
+title: 'How to access result original service?'
+---
+
+The `Result#service` method returns the service instance that created its result.
+
+For example:
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+```ruby
+result = Service.result
+# => <Service::Result status: :success>
+```
+
+```ruby
+result.service
+# => <Service>
+```
+
+When the result is bubbled up from a deeply nested step, the `Result#service` method returns a top-level organizer instance.
+
+Let's see it in practice:
+
+```ruby
+class TwoLevelsNestedService
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+```ruby
+class OneLevelNestedService
+  include ConvenientService::Standard::Config
+
+  step TwoLevelsNestedService
+end
+```
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step OneLevelNestedService
+end
+```
+
+```ruby
+result = Service.result
+# => <Service::Result status: :success>
+```
+
+```ruby
+result.service
+# => <Service>
+```
+
+Here, the `TwoLevelsNestedService` creates a `success` result.
+
+Later this result is processed by steps from the `OneLevelNestedService` and `Service` services.
+
+That is why it becomes the `Service` overall result.
+
+```ruby
+result.service
+# => <Service>
+```
+
+Sometimes it may be useful to access the original service instance, e.g. for debugging purposes.
+
+For that reason the `Result#original_service` method is available.
+
+```ruby
+result.original_service
+# => <TwoLevelsNestedService>
+```
