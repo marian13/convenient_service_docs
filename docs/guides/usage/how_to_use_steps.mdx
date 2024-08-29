@@ -177,13 +177,13 @@ end
 When all steps are successful, the overall service result is the last step result.
 
 ```ruby
-result.step
-# => <Service::Step method: :baz>
+result = Service.result
+# => <Service::Result status: :success>
 ```
 
 ```ruby
-result = Service.result
-# => <Service::Result status: :success>
+result.step
+# => <Service::Step method: :baz>
 ```
 
 Let's check some other service.
