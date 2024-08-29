@@ -127,3 +127,103 @@ Sure, those assignments and if-conditionals are still performed under the hood, 
 Now the benefit of steps becomes more obvious, but that is not the only benefit.
 
 Other guides are going to demonstrate the additional simplifications.
+
+## How to define a method step?
+
+Any method can be a step.
+
+The only requirement is that it must return a result.
+
+For example:
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step :foo
+
+  def foo
+    success
+  end
+end
+```
+
+## What is the result of a service with steps?
+
+Consider the following service.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step :foo
+  step :bar
+  step :baz
+
+  def foo
+    success
+  end
+
+  def bar
+    success
+  end
+
+  def baz
+    success
+  end
+end
+```
+
+When all steps are successful, the overall service result is the last step result.
+
+```ruby
+result.step
+# => <Service::Step method: :baz>
+```
+
+```ruby
+result = Service.result
+# => <Service::Result status: :success>
+```
+
+Let's check some other service.
+
+```ruby
+class OtherService
+  include ConvenientService::Standard::Config
+
+  step :foo
+  step :bar
+  step :baz
+
+  def foo
+    success
+  end
+
+  def bar
+    failure("Message from `bar`") # `error("Message from `bar`")` also stops the sequence.
+  end
+
+  def baz
+    raise "Not raised exception"
+
+    success
+  end
+end
+```
+
+When any step is NOT successful, the overall service result is that NOT successful step result.
+
+```ruby
+result = OtherService.result
+# => <OtherService::Result status: :failure>
+```
+
+```ruby
+result.step
+# => <OtherService::Step method: :bar>
+```
+
+It is important to note that the remaining steps are NOT even evaluated.
+
+That is why the exception from `baz` was not raised.
