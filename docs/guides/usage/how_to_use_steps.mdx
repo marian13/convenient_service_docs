@@ -148,9 +148,9 @@ class Service
 end
 ```
 
-## What is the result of a service with steps?
+## What is the roption of a service with steps of `step`?
 
-Consider the following service.
+Check the following service that accepts two the following service.
 
 ```ruby
 class Service
@@ -227,3 +227,87 @@ result.step
 It is important to note that the remaining steps are NOT even evaluated.
 
 That is why the exception from `baz` was not raised.
+
+## What is an organizer?
+
+*Organizer* is a service with steps.
+
+It is also worth mentioning that services without steps are often referred to as *regular services*.
+
+## How to pass arguments to steps?
+
+Use the `in` option of the `step` directive.
+
+Here is a quick example.
+
+The `NestedService` accepts two keyword arguments - `:first_kwarg`, and `:second_kwarg`.
+
+```ruby
+class NestedService
+  include ConvenientService::Standard::Config
+
+  attr_reader :first_kwarg, :second_kwarg
+
+  def initialize(:first_kwarg, :second_kwarg)
+    @first_kwarg = first_kwarg
+    @second_kwarg = second_kwarg
+  end
+
+  def result
+    puts "first_kwarg: `#{first_kwarg}`"
+    puts "second_kwarg: `#{second_kwarg}`"
+
+    success
+  end
+end
+```
+
+This is how the `in` option is utilized in order to pass them as step inputs.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step NestedService, in: [:first_kwarg, :second_kwarg]
+
+  def first_kwarg
+    :foo
+  end
+
+  def second_kwarg
+    :bar
+  end
+end
+```
+
+As you can see, the corresponding methods' return values are passed as `:first_kwarg` and `:second_kwarg` to the `NestedService` step when we call the organizer.
+
+For this particular case, it is `:foo` and `:bar` respectively.
+
+```ruby
+result = Service.result
+# => "first_kwarg: `:foo`"
+# => "second_kwarg: `:bar`"
+# => <Service::Result status: :success>
+```
+
+In order to simplify the understanding of the step inputs, let's have a closer look at this specific line.
+
+```ruby
+step NestedService, in: [:first_kwarg, :second_kwarg]
+```
+
+Whenever you have trouble with its meaning, please, remember that it can be always [mentally translated](/basics/step_to_result_translation_table) like so:
+
+```ruby
+def first_step_result
+  @first_step_result ||= NestedService.result(
+    first_kwarg: first_kwarg,
+    second_kwarg: second_kwarg
+  )
+end
+```
+
+That is why it is important to have corresponding instance methods defined for step inputs in the organizer class.
+
+More examples of the `in` usage may be found in [the so-called translation table](/basics/step_to_result_translation_table).
