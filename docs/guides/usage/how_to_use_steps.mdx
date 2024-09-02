@@ -311,3 +311,79 @@ end
 That is why it is important to have corresponding instance methods defined for step inputs in the organizer class.
 
 More examples of the `in` option usage may be found in [the so-called translation table](/basics/step_to_result_translation_table).
+
+## How to access step result data?
+
+Use the `out` option of the `step` directive.
+
+Here is a short example.
+
+The `NestedService` returns a `success` with data that has two keys - `:first_data_key`, and `:second_data_key`.
+
+```ruby
+class NestedService
+  include ConvenientService::Standard::Config
+
+  def result
+    success(first_data_key: :baz, second_data_key: :qux)
+  end
+end
+```
+
+This is how the `out` option is utilized in order to access them as step outputs.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step NestedService, out: [:first_data_key, :second_data_key]
+
+  step :result
+
+  def result
+    puts "first_data_key: `#{first_data_key}`"
+    puts "second_data_key: `#{second_data_key}`"
+
+    success
+  end
+end
+```
+
+Step result data values become available via the `first_data_key` and `second_data_key` instance methods.
+
+For this particular case, they return `:baz` and `:qux`, the same values that were passed to the original `success` in the `NestedService` service.
+
+```ruby
+result = Service.result
+# => "first_data_key: `:baz`"
+# => "second_data_key: `:qux`"
+# => <Service::Result status: :success>
+```
+
+In order to simplify the understanding of the step outputs, let's have a closer look at this specific line.
+
+```ruby
+step NestedService, out: [:first_data_key, :second_data_key]
+```
+
+Whenever you have trouble with its meaning, please, remember that it can be always [mentally translated](/basics/step_to_result_translation_table) like so:
+
+```ruby
+def first_step_result
+  @first_step_result ||= NestedService.result
+end
+
+def first_data_key
+  first_step_result.data[:first_data_key]
+end
+
+def second_data_key
+  first_step_result.data[:second_data_key]
+end
+```
+
+Having this information, avoid defining instance methods with the same names as step outputs in the organizer class.
+
+Otherwise, your methods will be silently overridden.
+
+More examples of the `out` option usage may be found in [the so-called translation table](/basics/step_to_result_translation_table).
