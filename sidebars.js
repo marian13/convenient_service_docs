@@ -86,6 +86,7 @@ const sidebars = {
             'guides/debugging/how_to_find_result_step',
             'guides/debugging/how_to_access_result_attributes_without_checking_its_status',
             'guides/debugging/how_to_access_result_original_service',
+            'guides/debugging/how_to_check_whether_result_comes_from_exception',
           ],
         },
         {

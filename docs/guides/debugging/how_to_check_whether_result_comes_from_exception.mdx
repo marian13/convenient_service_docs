@@ -1,0 +1,92 @@
+---
+slug: /guides/debugging/how_to_check_whether_result_comes_from_exception
+sidebar_position: 5
+title: 'How to check whether the result comes from an unhandled exception?'
+---
+
+import AvailableFromNote from '/src/components/AvailableFromNote';
+
+<AvailableFromNote version="0.20" />
+
+The `Result#from_exception?` and `Result#exception` methods answer this question.
+
+Consider the following regular service.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+  include ConvenientService::FaultTolerance::Config
+
+  def result
+    success
+  end
+end
+```
+
+It uses the `FaultTolerance` configuration to automatically rescue all unhandled exceptions and convert them to `error` results.
+
+In this example it just returns a `success`.
+
+```ruby
+result = Service.result
+# => <Service::Result status: :success>
+```
+
+So when we query the result whether it is from unhandled exception or not it gives us `false`.
+
+```ruby
+result.from_exception?
+# => false
+```
+
+And `result.exception` returns `nil` respectively.
+
+```ruby
+result.exception
+# => nil
+```
+
+Let's have a look at other service.
+
+```ruby
+class OtherService
+  include ConvenientService::Standard::Config
+  include ConvenientService::FaultTolerance::Config
+
+  def result
+    16 / 0
+
+    success
+  end
+end
+```
+
+It intentionally divides `16` by `0` to cause an unhandled exception.
+
+When we invoke `OtherService` result, that exception is automatically rescued by the `FaultTolerance` configuration and converted into `error`.
+
+```ruby
+result = OtherService.result
+# => <OtherService::Result status: :error data_keys: [:exception] message: "ZeroDivisionError...">
+```
+
+Now `from_exception` returns `true`.
+
+```ruby
+result.from_exception?
+# => true
+```
+
+And `result.exception` gives access to original [Ruby exception](https://ruby-doc.org/core-2.7.1/Exception.html).
+
+```ruby
+result.exception
+# => #<ZeroDivisionError: divided by 0>
+```
+
+
+:::warning
+
+The `FaultTolerance` configuration rescues only [StandardError descendants, not direct Exception descendants](https://thoughtbot.com/blog/rescue-standarderror-not-exception), since they are reserved by Ruby.
+
+:::
