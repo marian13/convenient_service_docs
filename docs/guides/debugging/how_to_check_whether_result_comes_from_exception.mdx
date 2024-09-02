@@ -25,14 +25,14 @@ end
 
 It uses the `FaultTolerance` configuration to automatically rescue all unhandled exceptions and convert them to `error` results.
 
-In this example it just returns a `success`.
+In this example, it just returns a `success`.
 
 ```ruby
 result = Service.result
 # => <Service::Result status: :success>
 ```
 
-So when we query the result whether it is from unhandled exception or not it gives us `false`.
+So when we query whether the result is from an unhandled exception or not it gives us `false`.
 
 ```ruby
 result.from_exception?
@@ -63,7 +63,7 @@ end
 
 It intentionally divides `16` by `0` to cause an unhandled exception.
 
-When we invoke `OtherService` result, that exception is automatically rescued by the `FaultTolerance` configuration and converted into `error`.
+When we invoke the `OtherService` result, that exception is automatically rescued by the `FaultTolerance` configuration and converted into `error`.
 
 ```ruby
 result = OtherService.result
@@ -77,7 +77,7 @@ result.from_exception?
 # => true
 ```
 
-And `result.exception` gives access to original [Ruby exception](https://ruby-doc.org/core-2.7.1/Exception.html).
+And `result.exception` gives access to the original [Ruby exception](https://ruby-doc.org/core-2.7.1/Exception.html).
 
 ```ruby
 result.exception
