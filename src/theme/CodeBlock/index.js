@@ -1,13 +1,3 @@
-/**
- * NOTE: Why not support ruby code highlighting？
- * https://github.com/facebook/docusaurus/issues/2356
- */
-// src/theme/CodeBlock/index.js
-import Prism from 'prism-react-renderer/prism';
-(typeof global !== 'undefined' ? global : window).Prism = Prism;
-require('prismjs/components/prism-ruby');
-require('prismjs/components/prism-erb');
-
 import React from 'react';
 import CodeBlock from '@theme-original/CodeBlock';
 

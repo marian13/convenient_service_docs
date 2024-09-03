@@ -3,7 +3,7 @@
   <h1>Convenient Service User Docs</h1>
 </p><br>
 
-<br>This docs website is built using [Docusaurus 2](https://docusaurus.io).
+<br>This docs website is built using [Docusaurus 3](https://docusaurus.io).
 
 ### Development
 
@@ -19,7 +19,7 @@ $ yarn && yarn start
 
 ### Production
 
-Every push to `main` triggers a deployment to [https://marian13.github.io/convenient_service_docs](https://marian13.github.io/convenient_service_docs).
+Every push to `main` triggers a deployment to [https://userdocs.convenientservice.org](https://userdocs.convenientservice.org).
 
 ### Source
 

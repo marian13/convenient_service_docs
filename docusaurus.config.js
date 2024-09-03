@@ -1,10 +1,5 @@
-// @ts-check
-// Note: type annotations allow type checking and IDEs autocompletion
+import {themes as prismThemes} from 'prism-react-renderer';
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-
-/** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Convenient Service',
   tagline: 'Yet another approach to revisit the service object pattern, but this time focusing on the unique, opinionated features',
@@ -13,15 +8,8 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'marian13', // Usually your GitHub org/user name.
-  projectName: 'convenient_service_docs', // Usually your repo name.
-
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
+  organizationName: 'marian13',
+  projectName: 'convenient_service_docs',
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -38,21 +26,18 @@ const config = {
            * https://ricard.dev/how-to-set-docs-as-homepage-for-docusaurus/
            */
           routeBasePath: '/',
-          sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
+          sidebarPath: './sidebars.js',
           editUrl: 'https://github.com/marian13/convenient_service_docs/blob/main',
         },
         blog: false,
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: './src/css/custom.css',
         },
       }),
     ],
   ],
 
   themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
         title: 'Convenient Service',
@@ -118,8 +103,12 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Convenient Service. Built with Docusaurus.`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: prismThemes.github,
+        darkTheme: prismThemes.dracula,
+        /**
+         * NOTE: `'erb'` throws exception `Cannot read properties of undefined (reading 'buildPlaceholders')`.
+         */
+        additionalLanguages: ['ruby']
       },
       // /**
       //  * NOTE: Stopped to use Algolia since there is NO way to trigger reindexing on a free plan.
@@ -184,4 +173,4 @@ const config = {
     ],
 };
 
-module.exports = config;
+export default config;
