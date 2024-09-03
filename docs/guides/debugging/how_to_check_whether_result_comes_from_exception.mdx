@@ -1,5 +1,5 @@
 ---
-slug: /guides/debugging/how_to_check_whether_result_comes_from_exception
+slug: /guides/debugging/how_to_check_whether_result_comes_from_unhandled_exception
 sidebar_position: 5
 title: 'How to check whether the result comes from an unhandled exception?'
 ---
@@ -8,7 +8,7 @@ import AvailableFromNote from '/src/components/AvailableFromNote';
 
 <AvailableFromNote version="0.20" />
 
-The `Result#from_exception?` and `Result#exception` methods answer this question.
+The `Result#from_unhandled_exception?` and `Result#exception` methods answer this question.
 
 Consider the following regular service.
 
@@ -35,14 +35,14 @@ result = Service.result
 So when we query whether the result is from an unhandled exception or not it gives us `false`.
 
 ```ruby
-result.from_exception?
+result.from_unhandled_exception?
 # => false
 ```
 
-And `result.exception` returns `nil` respectively.
+And `result.unhandled_exception` returns `nil` respectively.
 
 ```ruby
-result.exception
+result.unhandled_exception
 # => nil
 ```
 
@@ -70,17 +70,17 @@ result = OtherService.result
 # => <OtherService::Result status: :error data_keys: [:exception] message: "ZeroDivisionError...">
 ```
 
-Now `from_exception` returns `true`.
+Now `from_unhandled_exception` returns `true`.
 
 ```ruby
-result.from_exception?
+result.from_unhandled_exception?
 # => true
 ```
 
-And `result.exception` gives access to the original [Ruby exception](https://ruby-doc.org/core-2.7.1/Exception.html).
+And `result.unhandled_exception` gives access to the original [Ruby exception](https://ruby-doc.org/core-2.7.1/Exception.html).
 
 ```ruby
-result.exception
+result.unhandled_exception
 # => #<ZeroDivisionError: divided by 0>
 ```
 
