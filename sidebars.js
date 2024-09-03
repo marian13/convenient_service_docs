@@ -73,6 +73,7 @@ const sidebars = {
             'guides/debugging/how_to_access_result_attributes_without_checking_its_status',
             'guides/debugging/how_to_access_result_original_service',
             'guides/debugging/how_to_check_whether_result_comes_from_exception',
+            'guides/debugging/how_to_skip_internal_library_frames_in_debugger_session',
           ],
         },
         {
