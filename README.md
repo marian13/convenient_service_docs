@@ -14,7 +14,7 @@ Then it opens up a browser window at [http://localhost:8200](http://localhost:82
 Most changes are reflected live without having to restart the server.
 
 ```
-$ yarn && yarn start
+$ yarn && yarn start --port 8200
 ```
 
 ### Production
