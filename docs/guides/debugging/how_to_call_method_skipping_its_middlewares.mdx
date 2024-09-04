@@ -1,0 +1,89 @@
+---
+slug: /guides/debugging/how_to_call_method_skipping_its_middlewares
+sidebar_position: 3
+title: 'How to call a method skipping its middlewares?'
+---
+
+import AvailableFromNote from '/src/components/AvailableFromNote';
+
+<AvailableFromNote version="0.20" />
+
+For some rare cases, it may be useful to have a way to call a method skipping all its middlewares.
+
+Consider the following example.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+To make it more illustrative, let's add a simple middleware that just prints some text before and after calling the original `result`.
+
+```ruby
+class Middleware < ConvenientService::MethodChainMiddleware
+  def next(...)
+    puts "Before calling `#{method}`..."
+
+    value = chain.next(...)
+
+    puts "After calling `#{method}`..."
+
+    value
+  end
+end
+```
+
+This is how it can be registered.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  middlewares :result, scope: :class do
+    use Middleware
+  end
+
+  def result
+    success
+  end
+end
+```
+
+So now, when we invoke `Service.result`, additional logs are printed.
+
+```ruby
+result = Service.result
+# Before calling result...
+# After calling result...
+# => <Service::Result status: :success>
+```
+
+But there is still a possibility to call it without middlewares like so:
+
+```ruby
+result = Service.result_without_middlewares
+# => <Service::Result status: :success>
+```
+
+:::note
+
+When the original method ends with `?`, like `success?`, the corresponding skipping method is `success_without_middlewares?`.
+
+The same rule is applicable for methods with trailing `!`.
+
+`bar!` -> `bar_without_middlewares!`.
+
+:::
+
+:::danger
+
+Keep in mind that the ability to skip middlewares is present just for debugging purposes.
+
+There are NO common use cases for the production business code with it.
+
+:::
