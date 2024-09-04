@@ -1,14 +1,14 @@
 ---
-slug: /troubleshooting/awesome_print_inspect_does_not_colorize_results
-sidebar_position: 1
-title: "`AwesomePrintInspect` does not colorize results"
+slug: /troubleshooting/awesome_print_inspect_does_not_colorize
+sidebar_position: 2
+title: "`AwesomePrintInspect` does not colorize"
 ---
 
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
-Consider a service that includes the `AwesomePrintInspect` config.
+Consider a service that includes the `AwesomePrintInspect` configuration.
 
-Here is the minimal example.
+Here is a minimal example.
 
 ```ruby
 ConvenientService::Dependencies.require_awesome_print_inspect
@@ -31,22 +31,42 @@ Service.result
 
 The result should be pretty-printed by [awesome_print](https://github.com/awesome-print/awesome_print).
 
-But it actually outputs some ["weird escape characters"](https://colors.sh) `^[[0;37m`, `^[[0m` or `^[[0;33m` like in the screenshot below.
+But it actually outputs some ["weird escape characters"](https://colors.sh) `^[[0;37m`, `^[[0m`, or `^[[0;33m` like in the screenshot below.
 
 <img src={useBaseUrl('./img/troubleshooting/awesome_print_inspect_does_not_colorize_results/weird_escape_characters.png')} />
 
-One way to fix that problem is to [activate Awesome Print IRB integration](https://github.com/awesome-print/awesome_print?tab=readme-ov-file#irb-integration).
+After a deep diving into [IRB](https://github.com/ruby/irb) [source](https://github.com/ruby/irb/blob/v1.13.1/lib/irb/inspector.rb#L113) [code](https://github.com/ruby/irb/blob/v1.13.1/lib/irb/color.rb#L150), it was figured out that the issue may be caused by the upgrade of the [Reline](https://github.com/ruby/reline) gem from Ruby std lib.
+
+To be more precise, the [`Reline::Unicode.escape_for_print`](https://github.com/ruby/reline/blob/v0.5.8/lib/reline/unicode.rb#L44C12-L44C28) method now has more escaping rules.
+
+[One of them](https://github.com/ruby/reline/blob/v0.5.8/lib/reline/unicode.rb#L30) replaces `0x1B.ord` to `^[`.
+
+That is why the coloring becomes broken.
+
+There is one workaround to avoid the issue.
+
+Check the following monkey patch.
 
 ```ruby
-AwesomePrint.irb!
+class Reline::Unicode
+  def self.escape_for_print(str)
+    str
+  end
+end
 ```
 
-Thus the output is colorized as expected.
+Once it is applied, the output is colorized as expected.
 
 <img src={useBaseUrl('./img/troubleshooting/awesome_print_inspect_does_not_colorize_results/proper_coloring.png')} />
 
-In case you are using [Pry](https://github.com/pry/pry), [Awesome Print has integration for it](https://github.com/awesome-print/awesome_print?tab=readme-ov-file#pry-integration) as well.
+:::danger
 
-```ruby
-AwesomePrint.pry!
-```
+Currently, it is not known which exact problem was solved by the Reline developers by [introducing additional escape rules](https://github.com/ruby/reline/commit/e7af054ba5ab8e749c92f9e5cf032f362ebbe747).
+
+We are preparing to open a [GitHub issue](https://github.com/ruby/reline/issues) to ask.
+
+Consequently, although the suggested monkey patch looks safe, we can not estimate its possible negative effect.
+
+Use it at your own risk.
+
+:::
