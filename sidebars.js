@@ -286,8 +286,8 @@ const sidebars = {
       },
       collapsed: true,
       items: [
-        'troubleshooting/awesome_print_inspect_does_not_colorize_results',
-        'troubleshooting/amazing_print_inspect_does_not_colorize_results',
+        'troubleshooting/awesome_print_inspect_does_not_colorize',
+        'troubleshooting/amazing_print_inspect_does_not_colorize',
         'troubleshooting/i18n_translate_wrong_number_of_arguments',
         'troubleshooting/added_config_but_middleware_never_called',
       ],
