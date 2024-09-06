@@ -201,7 +201,8 @@ class OtherService
   end
 
   def bar
-    failure("Message from `bar`") # `error("Message from `bar`")` also stops the sequence.
+    failure("Message from `bar`")
+    # `error("Message from `bar`")` also stops the sequence.
   end
 
   def baz
@@ -286,8 +287,8 @@ For this particular case, it is `:foo` and `:bar` respectively.
 
 ```ruby
 result = Service.result
-# => "first_kwarg: `:foo`"
-# => "second_kwarg: `:bar`"
+# "first_kwarg: `:foo`"
+# "second_kwarg: `:bar`"
 # => <Service::Result status: :success>
 ```
 
@@ -355,8 +356,8 @@ For this particular case, they return `:baz` and `:qux`, the same values that we
 
 ```ruby
 result = Service.result
-# => "first_data_key: `:baz`"
-# => "second_data_key: `:qux`"
+# "first_data_key: `:baz`"
+# "second_data_key: `:qux`"
 # => <Service::Result status: :success>
 ```
 
@@ -448,7 +449,11 @@ end
 
 Now, the `in` option contains a hash `{elements: :collection}` that can be read as "Pass `elements` as `collection`".
 
+:::tip
+
 As a rule of thumb, try to memorize that the alias is always on the right side of the hash 😎.
+
+:::
 
 Traditionally, to simplify the understanding of the steps-related stuff, input aliases at this particular time, let's have a closer look at the `step` directive again.
 

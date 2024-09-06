@@ -158,13 +158,15 @@ It has two entries that are displaying some text on the screen.
 For example:
 
 ```ruby
-Features::SomeFeature.first_entry
-# => "Entry `first_entry` called."
+Features::SomeFeature.some_entry_without_arguments
+# "Entry `some_entry_without_arguments` called."
+# => nil
 ```
 
 ```ruby
-Features::SomeFeature.second_entry
-# => "Entry `second_entry` called."
+Features::SomeFeature.some_entry_with_arguments
+# "Entry `some_entry_with_arguments` called."
+# => nil
 ```
 
 Now, let's define a simple middleware.
@@ -216,14 +218,16 @@ This is how it looks in practice.
 
 ```ruby
 Features::SomeFeature.some_entry_without_arguments
-# => "`TestMiddleware` called for entry `some_entry_without_arguments` with args `[]`, kwargs `{}` and block `nil`."
-# => "Entry `some_entry_without_arguments` called."
+# "`TestMiddleware` called for entry `some_entry_without_arguments` with args `[]`, kwargs `{}` and block `nil`."
+# "Entry `some_entry_without_arguments` called."
+# => nil
 ```
 
 ```ruby
 Features::SomeFeature.some_entry_with_arguments(:foo, foo: :bar) { :foo }
-# => "`TestMiddleware` called for entry `some_entry_with_arguments` with args `[:foo]`, kwargs `{:foo=>:bar}` and block `#<Proc:0x00000001227756c8.>`."
-# => "Entry `some_entry_with_arguments` called."
+# "`TestMiddleware` called for entry `some_entry_with_arguments` with args `[:foo]`, kwargs `{:foo=>:bar}` and block `#<Proc:0x00000001227756c8.>`."
+# "Entry `some_entry_with_arguments` called."
+# => nil
 ```
 
 ## How to add a middleware for the specific entry?
@@ -279,13 +283,15 @@ Thus the `TestMiddleware` is executed only before specific entry invocation.
 
 ```ruby
 Features::SomeFeature.some_entry(:foo, :bar)
-# => "`TestMiddleware` called for entry `some_entry` with args `[:foo, :bar]`, kwargs `{}` and block `nil`."
-# => "Entry `some_entry` called."
+# "`TestMiddleware` called for entry `some_entry` with args `[:foo, :bar]`, kwargs `{}` and block `nil`."
+# "Entry `some_entry` called."
+# => nil
 ```
 
 All the other entries stay unaffected.
 
 ```ruby
 Features::SomeFeature.some_other_entry
-# => "Entry `some_other_entry` called."
+# "Entry `some_other_entry` called."
+# => nil
 ```
