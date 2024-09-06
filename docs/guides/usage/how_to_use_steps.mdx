@@ -387,3 +387,83 @@ Having this information, avoid defining instance methods with the same names as 
 Otherwise, your methods will be silently overridden.
 
 More examples of the `out` option usage may be found in [the so-called translation table](/basics/step_to_result_translation_table).
+
+## How to create a step input alias?
+
+There are cases when the organizer service does not have the corresponding method defined with the same name as a step input.
+
+Or that method is already reserved for some other purpose and can not be reused.
+
+Consider the example, when the `RemoveNilElements` service expects the `elements` keyword argument as its input.
+
+```ruby
+class RemoveNilElements
+  include ConvenientService::Standard::Config
+
+  attr_reader :elements
+
+  def initialize(elements:)
+    @elements = elements
+  end
+
+  def result
+    success(elements: elements.compact)
+  end
+end
+```
+
+The `PrepareCollection` service tries to register `RemoveNilElements` as its step.
+
+```ruby
+class PrepareCollection
+  include ConvenientService::Standard::Config
+
+  step RemoveNilElements, in: [:elements]
+
+  def collection
+    [42, nil, "foo"]
+  end
+end
+```
+
+Since it does not have the `elements` method defined, the usual `in: [:elements]` declaration won't work.
+
+But it has the `collection` method instead.
+
+In order to utilize its return value as the `:elements` input, the `PrepareCollection` should be updated as follows.
+
+```ruby
+class PrepareCollection
+  include ConvenientService::Standard::Config
+
+  # highlight-start
+  step RemoveNilElements, in: [{elements: :collection}]
+  # highlight-end
+
+  def collection
+    [42, nil, "foo"]
+  end
+end
+```
+
+Now, the `in` option contains a hash `{elements: :collection}` that can be read as "Pass `elements` as `collection`".
+
+As a rule of thumb, try to memorize that the alias is always on the right side of the hash 😎.
+
+Traditionally, to simplify the understanding of the steps-related stuff, input aliases at this particular time, let's have a closer look at the `step` directive again.
+
+```ruby
+step RemoveNilElements, in: [{elements: :collection}]
+```
+
+Whenever you have trouble with its meaning, please, remember that it can be always [mentally translated](/basics/step_to_result_translation_table) like so:
+
+```ruby
+def first_step_result
+  @first_step_result ||= RemoveNilElements.result(elements: collection)
+end
+```
+
+As you can see, creating an alias is just passing a different method return value to the underlying service.
+
+More examples of the `in` option aliases usage may be found in [the so-called translation table](/basics/step_to_result_translation_table).
