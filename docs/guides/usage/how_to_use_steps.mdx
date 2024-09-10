@@ -298,7 +298,7 @@ In order to simplify the understanding of the step inputs, let's have a closer l
 step NestedService, in: [:first_kwarg, :second_kwarg]
 ```
 
-Whenever you have trouble with its meaning, please, remember that it can be always [mentally translated](/basics/step_to_result_translation_table) like so:
+Whenever you have trouble with its meaning, please, remember that it can be [mentally translated](/basics/step_to_result_translation_table) like so:
 
 ```ruby
 def first_step_result
@@ -367,7 +367,7 @@ In order to simplify the understanding of the step outputs, let's have a closer 
 step NestedService, out: [:first_data_key, :second_data_key]
 ```
 
-Whenever you have trouble with its meaning, please, remember that it can be always [mentally translated](/basics/step_to_result_translation_table) like so:
+Whenever you have trouble with its meaning, please, remember that it can be [mentally translated](/basics/step_to_result_translation_table) like so:
 
 ```ruby
 def first_step_result
@@ -408,7 +408,7 @@ class RemoveNilElements
   end
 
   def result
-    success(elements: elements.compact)
+    success(filtered_elements: elements.compact)
   end
 end
 ```
@@ -447,7 +447,7 @@ class PrepareCollection
 end
 ```
 
-Now, the `in` option contains a hash `{elements: :collection}` that can be read as "Pass `elements` as `collection`".
+Now, the `in` option contains a hash `{elements: :collection}` that can be read as "Pass `elements` to step as `collection`".
 
 :::tip
 
@@ -455,13 +455,13 @@ As a rule of thumb, try to memorize that the alias is always on the right side o
 
 :::
 
-Traditionally, to simplify the understanding of the steps-related stuff, input aliases at this particular time, let's have a closer look at the `step` directive again.
+Traditionally, to simplify the understanding of the steps-related stuff, input aliases this time, let's have a closer look at the `step` directive again.
 
 ```ruby
 step RemoveNilElements, in: [{elements: :collection}]
 ```
 
-Whenever you have trouble with its meaning, please, remember that it can be always [mentally translated](/basics/step_to_result_translation_table) like so:
+Whenever you have trouble with its meaning, please, remember that it can be [mentally translated](/basics/step_to_result_translation_table) like so:
 
 ```ruby
 def first_step_result
@@ -469,6 +469,116 @@ def first_step_result
 end
 ```
 
-As you can see, creating an alias is just passing a different method return value to the underlying service.
+As you can see, creating an input alias is just passing a different method return value to the underlying service.
 
 More examples of the `in` option aliases usage may be found in [the so-called translation table](/basics/step_to_result_translation_table).
+
+## How to create a step output alias?
+
+There are cases when the organizer service already has the corresponding method defined with the same name as a step output.
+
+That method is probably reserved for some other purpose so it is not supposed to be redefined.
+
+Consider the example, when the `RemoveNilElements` service returns the `filtered_elements` key as its output.
+
+```ruby
+class RemoveNilElements
+  include ConvenientService::Standard::Config
+
+  attr_reader :elements
+
+  def initialize(elements:)
+    @elements = elements
+  end
+
+  def result
+    success(filtered_elements: elements.compact)
+  end
+end
+```
+
+The `PrepareCollection` service tries to register `RemoveNilElements` as its step.
+
+```ruby
+class PrepareCollection
+  include ConvenientService::Standard::Config
+
+  step RemoveNilElements,
+    in: [:elements],
+    out: [:filtered_elements]
+
+  def elements
+    [42, nil, "foo"]
+  end
+
+  def filtered_elements
+    elements - ["foo"]
+  end
+end
+```
+
+Since it already has the `filtered_elements` method defined, the usual `out: [:filtered_elements]` declaration overrides its return value.
+
+Whenever you call `filtered_elements` before the `RemoveNilElements` step is executed, it returns `[42, nil]` (raises an exception for versions lower than v0.20).
+
+But when you invoke it after the `RemoveNilElements` step is run, it returns `[42, "foo"]`.
+
+Sometimes such behavior is expected, but most of the time we don't want to lose access to the original `filtered_elements` implementation.
+
+That is why there is an ability to define output aliases.
+
+Let's utilize one in the `PrepareCollection` service.
+
+```ruby
+class PrepareCollection
+  include ConvenientService::Standard::Config
+
+  # highlight-start
+  step RemoveNilElements,
+    in: [:elements],
+    out: [{:filtered_elements: :filtered_collection}]
+  # highlight-end
+
+  def elements
+    [42, nil, "foo"]
+  end
+
+  def filtered_elements
+    elements - ["foo"]
+  end
+end
+```
+
+The `out` option contains a hash `{:filtered_elements: :filtered_collection}` that can be read as "Retrieve `filtered_elements` from step as `filtered_collection`".
+
+Now, the additional `filtered_collection` method is defined that is fully independent of `filtered_elements`.
+
+:::tip
+
+As a rule of thumb, try to memorize that the alias is always on the right side of the hash 😎.
+
+:::
+
+As always, to simplify the understanding of the steps-related stuff, output aliases this time, let's have a closer look at the `step` directive.
+
+```ruby
+step RemoveNilElements,
+  in: [:elements],
+  out: [{:filtered_elements: :filtered_collection}]
+```
+
+Whenever you have trouble with its meaning, please, remember that it can be [mentally translated](/basics/step_to_result_translation_table) like so:
+
+```ruby
+def first_step_result
+  @first_step_result ||= RemoveNilElements.result(elements: elements)
+end
+
+def filtered_collection
+  @filtered_collection ||= first_step_result.data[:filtered_elements]
+end
+```
+
+As you can see, creating an output alias is just retrieving a different key value from the underlying step result.
+
+More examples of the `out` option aliases usage may be found in [the so-called translation table](/basics/step_to_result_translation_table).
