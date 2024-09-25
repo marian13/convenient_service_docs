@@ -523,7 +523,7 @@ Whenever you call `filtered_elements` before the `RemoveNilElements` step is exe
 
 But when you invoke it after the `RemoveNilElements` step is run, it returns `[42, "foo"]`.
 
-Sometimes such behavior is expected, but most of the time we don't want to lose access to the original `filtered_elements` implementation.
+Sometimes such behavior is expected, but typically we don't want to lose access to the original `filtered_elements` implementation.
 
 That is why there is an ability to define output aliases.
 
@@ -593,7 +593,7 @@ class Service
 
   step EscapeRegexp,
     in: [:pattern]
-    out: :escaped
+    out: [:escaped]
 
   # ...
 end
@@ -609,7 +609,7 @@ class Service
 
   step EscapeRegexp,
     in: [:pattern]
-    out: :escaped
+    out: [:escaped]
 
   # ...
 
@@ -621,7 +621,7 @@ end
 
 This is what you would usually do most of the time.
 
-When the `pattern` method is reserved for some other purpose in your organizer service, there is always a possibility to use an alias.
+When the `pattern` method is reserved for some other purpose in your organizer service, there is always a possibility of using an alias.
 
 ```ruby
 class Service
@@ -629,7 +629,7 @@ class Service
 
   step EscapeRegexp,
     in: [{pattern: :template}]
-    out: :escaped
+    out: [:escaped]
 
   # ...
 
@@ -641,25 +641,25 @@ end
 
 In this example the `template` method return value is passed as the `pattern` argument.
 
-But sometimes it may feel redundant or not natural to define a dedicated method for such a simple task.
+But sometimes it may feel redundant or unnatural to define a dedicated method for such a simple task.
 
 That is why there are two additional ways to dynamically pass a value as a step input:
 
-- Using a `raw` step argument.
+- Using a `raw` step input argument.
 
-- Using a `proc` step argument.
+- Using a `proc` step input argument.
 
-## What is a `raw` step argument?
+## What is a `raw` step input argument?
 
-Here is an quick example.
+Here is a quick example.
 
 ```ruby
 step EscapeRegexp,
-  in: {pattern: raw(ENV["PATH_PATTERN"] || ENV["PATH_GLOB"]) },
-  out: :escaped
+  in: [{pattern: raw(ENV["PATH_PATTERN"] || ENV["PATH_GLOB"]) }],
+  out: [:escaped]
 ```
 
-This is how `step` call is "translated" to regular service invocation under the hood:
+This is how the `step` call is "translated" to regular service invocation under the hood:
 
 ```ruby
 def step_result
@@ -673,26 +673,187 @@ The value is forwarded without any intermediate processing.
 
 ```ruby
 step EscapeRegexp,
-  in: {pattern: raw(any_class_method)},
-  out: :escaped
+  in: [{pattern: raw(any_class_method)}],
+  out: [:escaped]
 ```
 
-## What is a `proc` step argument?
+## What is a `proc` step input argument?
 
-Here is an quick example.
+Here is a quick example.
 
 ```ruby
 step EscapeRegexp,
-  in: {pattern: -> { ENV["PATH_PATTERN"] || ENV["PATH_GLOB"] }},
-  out: :escaped
+  in: [{pattern: -> { ENV["PATH_PATTERN"] || ENV["PATH_GLOB"] }}],
+  out: [:escaped]
 ```
 
-Similarly to `raw`, the `proc` form also does not additionally process the passed value, but it is evaluated in the instance scope instead of class scope.
+Similarly to `raw`, the `proc` form also does not additionally process the passed value, but it is evaluated in the instance scope instead of the class scope.
 
 So you can access any service instance methods in it.
 
 ```ruby
 step EscapeRegexp,
-  in: {pattern: -> { any_instance_method }},
-  out: :escaped
+  in: [{pattern: -> { any_instance_method }}],
+  out: [:escaped]
 ```
+
+## What is a `not_step`?
+
+Once your codebase starts to grow, you will notice that it contains a lot of so-called boolean services.
+
+The following list demonstrates some common names.
+
+- `IsAdmin`.
+
+- `HasAccessRights`
+
+- `ShouldGrantPermission`.
+
+- `AssertPolicySatisfied`.
+
+- `EnsureEligibleForRemoval`.
+
+- `ConfirmRuleApplied`.
+
+- `WasPreviouslyChecked`.
+
+- And so on...
+
+Usually, such services are utilized as the precondition steps in organizers.
+
+```ruby
+class PlayAudio
+  include ConvenientService::Standard::Config
+
+  # ...
+
+  step AssertFormatSupported,
+      in: :audio
+
+  step EnsureDriverUpgraded,
+      in: :format
+
+  step ConfirmMaxSizeNotExceeded,
+      in: :size
+
+    # ...
+
+  step :result
+
+  def result
+    # ...
+  end
+end
+```
+
+After a while it is just a matter of time when some of those preconditions are required to be used in some other contexts, but in the negated form.
+
+In other words, negative counterparts are created.
+
+- `IsAdmin` -> `IsNotAdmin`.
+
+- `HasAccessRights` -> `DoesNotHaveAccessRights`.
+
+- `ShouldGrantPermission` -> `ShouldNotGrantPermission`.
+
+- `AssertPolicySatisfied` -> `RefutePolicySatisfied`.
+
+- `EnsureEligibleForRemoval` -> `EnsureNotEligibleForRemoval`.
+
+- `ConfirmRuleApplied` -> `DenyRuleApplied`.
+
+- `WasPreviouslyChecked` -> `WasNotPreviouslyChecked`.
+
+- And so on...
+
+A majority of the time those services have very similar implementations.
+
+The only difference is that `success` and `failure` results are switched.
+
+For example, consider the `AssertFormatSupported` service.
+
+```ruby
+class AssertFormatSupported
+  include ConvenientService::Standard::Config
+
+  attr_reader :audio
+
+  def initialize(audio:)
+    @audio = audio
+  end
+
+  def result
+    return error("Audio is nil") if audio.nil?
+
+    if !supported_formats.include?(audio.format)
+      return failure("Audio `#{audio.name}` format `#{audio.format}` is NOT supported")
+    end
+
+    success
+  end
+end
+```
+
+Its opposite service `RefuteFormatSupported` has a slighlty distinctive definition.
+
+```ruby
+class RefuteFormatSupported
+  include ConvenientService::Standard::Config
+
+  attr_reader :audio
+
+  def initialize(audio:)
+    @audio = audio
+  end
+
+  def result
+    return error("Audio is nil") if audio.nil?
+
+    if supported_formats.include?(audio.format)
+      return failure("Audio `#{audio.name}` format `#{audio.format}` is supported")
+    end
+
+    success
+  end
+end
+```
+
+If you look precisely, only `!` and `NOT` are removed compared to the original `AssertFormatSupported` service.
+
+As a consequence, it may seem not logical to maintain two almost identical solutions.
+
+That is why the `not_step` directive is available.
+
+It works similarly to the regular `step` directive.
+
+It also has `in` and `out` options, supports `alias`, `raw`, and `proc` input arguments, etc, but it calls the `negated_result` under the hood.
+
+Having that said, a `not_step` usage like in the following snippet:
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  not_step AssertFormatSupported,
+    in: :audio
+
+  # ...
+end
+```
+
+Can be mentally translated to:
+
+```ruby
+def first_step_result
+  @first_step_result ||= AssertFormatSupported.negated_result(audio: audio)
+end
+```
+
+When the original `result` returns `success`, the `negated_result` returns `failure`.
+
+When the original `result` returns `failure`, the `negated_result` returns `success`.
+
+The `error` is always an `error`, so both the original `result` and `negated_result` return the same status.
+
+Thus, the `not_step` directive (and `negated_result`) eliminates the need to maintain the opposite services when negated implementations are almost identical to the original.
+
