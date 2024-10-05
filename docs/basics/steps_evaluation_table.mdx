@@ -1,0 +1,1136 @@
+---
+slug: /basics/steps_evaluation_table
+sidebar_position: 9
+title: Steps evaluation table
+---
+
+This page contains a table of demonstrative examples of how different step combinations are evaluated in services.
+
+It is especially useful for newcomers who are not familiar with the Convenient Service DSL yet.
+
+Before moving to the concrete examples, let's define some simple services that we are going to reuse.
+
+```ruby
+class SuccessService
+  include ConvenientService::Standard::Config
+
+  def result
+    success
+  end
+end
+```
+
+As you can see, the `SuccessService` is just a regular service that always returns a `success` result.
+
+```ruby
+class FailureService
+  include ConvenientService::Standard::Config
+
+  def result
+    failure
+  end
+end
+```
+
+In turn, the `FailureService` returns a `failure` result all the time.
+
+```ruby
+class ErrorService
+  include ConvenientService::Standard::Config
+
+  def result
+    error
+  end
+end
+```
+
+And finally, the `ErrorService` returns an `error` result whenever it is invoked.
+
+:::info
+
+All the examples on this page are using service steps.
+
+But it is also perfectly valid to use corresponding method steps in them.
+
+The behavior stays the same for both cases.
+
+Consider the following snippet.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step SuccessService # 0 - Evaluated.
+
+  step FailureService # 1 - Evaluated.
+
+  step ErrorService # 2 - Skipped.
+end
+
+Service.result
+# => <Service::Result status: :failure>
+
+Service.result.step
+# => <Service::Step service: FailureService>
+
+Service.result.step.index
+# => 1
+```
+
+Its "equivalent" with the methods steps is the code below.
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step :success_method # 0 - Evaluated.
+
+  step :failure_method # 1 - Evaluated.
+
+  step :error_method # 2 - Skipped.
+
+  def success_method
+    success
+  end
+
+  def failure_method
+ failure
+  end
+
+  def error_method
+ error
+  end
+end
+
+Service.result
+# => <Service::Result status: :failure>
+
+Service.result.step
+# => <Service::Step method: :failure_method>
+
+Service.result.step.index
+# => 1
+```
+
+Both of them have the same evaluated and skipped steps.
+
+:::
+
+### Service without steps
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  def result # Evaluated.
+    success
+  end
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :success>
+```
+
+```ruby
+Service.result.step
+# => nil
+```
+
+### Service with a step that has a `success` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step SuccessService # Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :success>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: SuccessService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+### Service with a step that has a `failure` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step FailureService # Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :failure>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: FailureService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+### Service with a step that has an `error` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step ErrorService # Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+### Service with a negated step that has a `success` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  not_step  SuccessService # Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :failure message: "Original `result` is `success`">
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: SuccessService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+:::info
+
+Negation of a `success` result is a `failure` result.
+
+:::
+
+### Service with a negated step that has a `failure` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  not_step  FailureService # Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :success message: "Original `result` is `failure`">
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: FailureService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+:::info
+
+Negation of a `failure` result is a `success` result.
+
+:::
+
+### Service with a negated step that has an `error` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  not_step  ErrorService # Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+:::info
+
+The `error` results are semantically close to the exceptions.
+
+That is why they do not have negated results.
+
+:::
+
+### Service with multiple consecutive steps, all with a `success` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step SuccessService # 0 - Evaluated.
+
+  step SuccessService # 1 - Evaluated.
+
+  step SuccessService # 2 - Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :success>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: SuccessService>
+```
+
+```ruby
+Service.result.step.index
+# => 2
+```
+
+### Service with multiple consecutive steps, last with `failure` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step SuccessService # 0 - Evaluated.
+
+  step SuccessService # 1 - Evaluated.
+
+  step FailureService # 2 - Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :failure>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: FailureService>
+```
+
+```ruby
+Service.result.step.index
+# => 2
+```
+
+### Service with multiple consecutive steps, last with `error` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step SuccessService # 0 - Evaluated.
+
+  step SuccessService # 1 - Evaluated.
+
+  step ErrorService # 2 - Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 2
+```
+
+### Service with multiple consecutive steps, intermediate with `failure` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step SuccessService # 0 - Evaluated.
+
+  step FailureService # 1 - Evaluated.
+
+  step SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :failure>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: FailureService>
+```
+
+```ruby
+Service.result.step.index
+# => 1
+```
+
+:::info
+
+For the consecutive steps, there are no differences between the steps that have `failure` and `error` results.
+
+Both of them stop the sequence immediately and skip the rest of the steps.
+
+:::
+
+### Service with multiple consecutive steps, intermediate with `error` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step SuccessService # 0 - Evaluated.
+
+  step ErrorService # 1 - Evaluated.
+
+  step SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 1
+```
+
+:::info
+
+For the consecutive steps, there are no differences between the steps that have `failure` and `error` results.
+
+Both of them stop the sequence immediately and skip the rest of the steps.
+
+:::
+
+### Service with multiple consecutive steps, first with a `failure` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step FailureService # 0 - Evaluated.
+
+  step SuccessService # 1 - Skipped.
+
+  step SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :failure>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: FailureService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+:::info
+
+For the consecutive steps, there are no differences between the steps that have `failure` and `error` results.
+
+Both of them stop the sequence immediately and skip the rest of the steps.
+
+:::
+
+### Service with multiple consecutive steps, first with an `error` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step ErrorService # 0 - Evaluated.
+
+  step SuccessService # 1 - Skipped.
+
+  step SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+:::info
+
+For the consecutive steps, there are no differences between the steps that have `failure` and `error` results.
+
+Both of them stop the sequence immediately and skip the rest of the steps.
+
+:::
+
+### Service with multiple alternative steps, all with a `success` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step SuccessService # 0 - Evaluated.
+
+  or_step  SuccessService # 1 - Skipped.
+
+  or_step  SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :success>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: SuccessService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+### Service with multiple alternative steps, first with `failure` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step FailureService # 0 - Evaluated.
+
+  or_step  SuccessService # 1 - Evaluated.
+
+  or_step  SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :success>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: SuccessService>
+```
+
+```ruby
+Service.result.step.index
+# => 1
+```
+
+:::info
+
+For the alternative steps, only the steps with `error` results stop the sequence.
+
+The `failure` steps initiate the next available `or_step`.
+
+:::
+
+### Service with multiple alternative steps, first with an `error` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step ErrorService # 0 - Evaluated.
+
+  or_step  SuccessService # 1 - Skipped.
+
+  or_step  SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+:::info
+
+For the alternative steps, only the steps with `error` results stop the sequence.
+
+The `failure` steps initiate the next available `or_step`.
+
+:::
+
+### Service with multiple alternative steps, first and intermediate with `failure` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step FailureService # 0 - Evaluated.
+
+  or_step  FailureService # 1 - Evaluated.
+
+  or_step  SuccessService # 2 - Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :success>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: SuccessService>
+```
+
+```ruby
+Service.result.step.index
+# => 2
+```
+
+:::info
+
+For the alternative steps, only the steps with `error` results stop the sequence.
+
+The `failure` steps initiate the next available `or_step`.
+
+:::
+
+### Service with multiple alternative steps, first and intermediate with `error` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step ErrorService # 0 - Evaluated.
+
+  or_step  ErrorService # 1 - Skipped.
+
+  or_step  SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+:::info
+
+For the alternative steps, only the steps with `error` results stop the sequence.
+
+The `failure` steps initiate the next available `or_step`.
+
+:::
+
+### Service with multiple alternative steps, first with `failure` result, intermediate with `error` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step FailureService # 0 - Evaluated.
+
+  or_step  ErrorService # 1 - Evaluated.
+
+  or_step  SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 1
+```
+
+:::info
+
+For the alternative steps, only the steps with `error` results stop the sequence.
+
+The `failure` steps initiate the next available `or_step`.
+
+:::
+
+### Service with multiple alternative steps, first with `error` result, intermediate with `failure` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step ErrorService # 0 - Evaluated.
+
+  or_step  FailureService # 1 - Skipped.
+
+  or_step  SuccessService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+:::info
+
+For the alternative steps, only the steps with `error` results stop the sequence.
+
+The `failure` steps initiate the next available `or_step`.
+
+:::
+
+### Service with multiple alternative steps, all with a `failure` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step FailureService # 0 - Evaluated.
+
+  or_step  FailureService # 1 - Evaluated.
+
+  or_step  FailureService # 2 - Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :failure>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: FailureService>
+```
+
+```ruby
+Service.result.step.index
+# => 2
+```
+
+:::info
+
+For the alternative steps, only the steps with `error` results stop the sequence.
+
+The `failure` steps initiate the next available `or_step`.
+
+:::
+
+### Service with multiple alternative steps, all with an `error` result
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step ErrorService # 0 - Evaluated.
+
+  or_step  ErrorService # 1 - Skipped.
+
+  or_step  ErrorService # 2 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 0
+```
+
+:::info
+
+For the alternative steps, only the steps with `error` results stop the sequence.
+
+The `failure` steps initiate the next available `or_step`.
+
+:::
+
+### Complex combination of consecutive steps, negated steps, and alternative steps without evaluated `errors`.
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step FailureService # 0 - Evaluated.
+
+  or_step  FailureService # 1 - Evaluated.
+
+  or_step  SuccessService # 2 - Evaluated.
+
+  step SuccessService # 3 - Evaluated.
+
+  and_step SuccessService # 4 - Evaluated.
+
+  and_not_step FailureService # 5 - Evaluated.
+
+  step FailureService # 6 - Evaluated.
+
+  or_step  SuccessService # 7 - Evaluated.
+
+  step FailureService # 8 - Evaluated.
+
+  or_step  FailureService # 9 - Evaluated.
+
+  or_not_step FailureService # 10 - Evaluated.
+
+  or_step  ErrorService # 11 - Skipped.
+
+  step SuccessService # 12 - Evaluated.
+
+  not_step  SuccessService # 13 - Evaluated.
+
+  or_step  FailureService # 14 - Evaluated.
+
+  or_not_step FailureService # 15 - Evaluated.
+
+  or_step  FailureService # 16 - Skipped.
+
+  or_step  ErrorService # 17 - Skipped.
+
+  or_step  SuccessService # 18 - Skipped.
+
+  step SuccessService # 19 - Evaluated.
+
+  and_step SuccessService # 20 - Evaluated.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :success>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: SuccessService>
+```
+
+```ruby
+Service.result.step.index
+# => 20
+```
+
+:::info
+
+The `and_step` directive is just an alias to the usual `step`.
+
+The only difference is that it can not be used as the first step.
+
+:::
+
+:::info
+
+The `and_not_step` directive is just an alias to the usual `not_step`.
+
+The only difference is that it can not be used as the first step.
+
+:::
+
+:::info
+
+The `or_not_step` directive works like the `or_step`, but it firstly negates its result.
+
+:::
+
+
+### Complex combination of consecutive steps, negated steps, and alternative steps with evaluated `errors`.
+
+**Example:**
+
+```ruby
+class Service
+  include ConvenientService::Standard::Config
+
+  step FailureService # 0 - Evaluated.
+
+  or_step  FailureService # 1 - Evaluated.
+
+  or_step  SuccessService # 2 - Evaluated.
+
+  step SuccessService # 3 - Evaluated.
+
+  and_step SuccessService # 4 - Evaluated.
+
+  and_not_step FailureService # 5 - Evaluated.
+
+  step FailureService # 6 - Evaluated.
+
+  or_step  ErrorService # 7 - Evaluated.
+
+  step FailureService # 8 - Skipped.
+
+  or_step  FailureService # 9 - Skipped.
+
+  or_not_step FailureService # 10 - Skipped.
+
+  or_step  ErrorService # 11 - Skipped.
+
+  step SuccessService # 12 - Skipped.
+
+  not_step  SuccessService # 13 - Skipped.
+
+  or_step  FailureService # 14 - Skipped.
+
+  or_not_step FailureService # 15 - Skipped.
+
+  or_step  FailureService # 16 - Skipped.
+
+  or_step  ErrorService # 17 - Skipped.
+
+  or_step  SuccessService # 18 - Skipped.
+
+  step SuccessService # 19 - Skipped.
+
+  and_step SuccessService # 20 - Skipped.
+end
+```
+
+**Outcome:**
+
+```ruby
+Service.result
+# => <Service::Result status: :error>
+```
+
+```ruby
+Service.result.step
+# => <Service::Step service: ErrorService>
+```
+
+```ruby
+Service.result.step.index
+# => 7
+```
+
+:::info
+
+The first evaluated `error` step is always a sequence stopper.
+
+No matter how many other steps are coming after it.
+
+No matter which exact types they have.
+
+None of them are executed, they are just skipped.
+
+In other words, the first evaluated `error` step is always the whole service's last evaluated step in any circumstances.
+
+:::

@@ -21,6 +21,7 @@ const sidebars = {
         'basics/results_are_ducks',
         'basics/steps',
         'basics/step_to_result_translation_table',
+        'basics/steps_evaluation_table',
       ],
     },
     {
