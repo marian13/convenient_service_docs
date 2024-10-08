@@ -1,0 +1,394 @@
+---
+slug: /guides/testing/how_to_test_regular_service
+sidebar_position: 1
+title: How to test a regular service?
+---
+
+Consider a simple regular service - `AssertFileExists`.
+
+As its name states, it ensures that a file with a specific `path` exists.
+
+```ruby
+class AssertFileExists
+  include ConvenientService::Standard::Config
+
+  attr_reader :path
+
+  def initialize(path:)
+    @path = path
+  end
+
+  def result
+    return error("Path is `nil`") if path.nil?
+    return error("Path is empty") if path.empty?
+
+    return failure("File with path `#{path}` does NOT exist") unless ::File.exist?(path)
+
+    success
+  end
+end
+```
+
+To be more precise, it returns the `success` result when we are 100% sure that the corresponding file actually exists in the underlying operation system.
+
+When we are totally confident in the opposite, it returns the `failure` result.
+
+Last but not least, the `error` result is returned when there is NO way to confirm or deny the file's existence.
+
+Together, all those results define the overall behavior of the `AssertFileExists` service.
+
+Having this information we are ready to start the testing process.
+
+## How to test a regular service with RSpec?
+
+First of all, let's create a spec file.
+
+Imagine the original service is stored in `app/services/assert_file_exists.rb`.
+
+Then its specs are usually living in `spec/services/assert_file_exists_spec.rb` by [convention](https://rspec.info/features/7-0/rspec-rails/directory-structure).
+
+This is a quick command of how to create it.
+
+```bash
+mkdir -p spec/services && touch spec/services/assert_file_exists_spec.rb
+```
+
+Now, let's require a [spec_helper](https://medium.com/@brett_codes/rspecs-spec-helper-vs-rails-helper-explained-2337282d14ce) and add top-level [describe](https://rspec.info/features/3-12/rspec-core/example-groups/basic-structure) with the service class into it.
+
+```ruby title="spec/services/assert_file_exists_spec.rb"
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+
+end
+```
+
+As the next step, we introduce a so-called [example group](https://rspec.info/documentation/3.0/rspec-core/RSpec/Core/ExampleGroup.html#context-class_method) for the class methods.
+
+:::info
+
+RSpec [example_group](https://rspec.info/documentation/3.0/rspec-core/RSpec/Core/ExampleGroup.html#context-class_method) and [context](https://rspec.info/documentation/3.0/rspec-core/RSpec/Core/ExampleGroup.html#context-class_method) are just aliases.
+
+:::
+
+```ruby title="spec/services/assert_file_exists_spec.rb"
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  example_group "class methods" do
+
+  end
+end
+```
+
+It may seem redundant to define such an example group, but it is already kind of a pattern in specs for services created by the [Convenient Service](/).
+
+We will skip the details for now, but you will see the benefit of it once we review the testing of more complex services.
+
+Let's come back to the `AssertFileExists`.
+
+Most of the time we interact with it using its `result` class method, which why we add a corresponding [context](https://www.betterspecs.org/#describe) for it.
+
+```ruby title="spec/services/assert_file_exists_spec.rb"
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  example_group "class methods" do
+    context ".result" do
+
+    end
+  end
+end
+```
+
+From the most narrow perspective, a service is either successful or not successful.
+
+This is how we reflect that point with two more contexts.
+
+```ruby title="spec/services/assert_file_exists_spec.rb"
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  example_group "class methods" do
+    describe ".result" do
+      context "when `AssertFileExists` is NOT successful" do
+
+      end
+
+      context "when `AssertFileExists` is successful" do
+
+      end
+    end
+  end
+end
+```
+
+[Convenient Service](/) provides custom [RSpec matchers](https://rspec.info/features/3-12/rspec-expectations/built-in-matchers) to verify service results.
+
+They can be included in the following way.
+
+```ruby title="spec/services/assert_file_exists_spec.rb"
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      context "when `AssertFileExists` is NOT successful" do
+
+      end
+
+      context "when `AssertFileExists` is successful" do
+
+      end
+    end
+  end
+end
+```
+
+We have just finished with the basic service specs boilerplate code.
+
+It will be almost the same in most of the cases, so feel free to come back to this page and copy this template whenever you test a new service.
+
+:::info
+
+Specs boilerplate [generators](https://guides.rubyonrails.org/generators.html#creating-generators-with-generators) are planned for the future [Convenient Service](/) versions.
+
+```bash
+bundle exec rails generate convenient_service service AssertFileExists
+#     create  lib/services/assert_file_exists.rb
+#     invoke  rspec
+#       create    spec/lib/services/assert_file_exists_spec.rb
+```
+
+:::
+
+Let's have a look at the `AssertFileExists` service one more time.
+
+```ruby
+class AssertFileExists
+  include ConvenientService::Standard::Config
+
+  attr_reader :path
+
+  def initialize(path:)
+    @path = path
+  end
+
+  def result
+    return error("Path is `nil`") if path.nil?
+    return error("Path is empty") if path.empty?
+
+    return failure("File with path `#{path}` does NOT exist") unless ::File.exist?(path)
+
+    success
+  end
+end
+```
+
+This is how an `it` example is added for the case when `path` is `nil`.
+
+```ruby title="spec/services/assert_file_exists_spec.rb"
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      # highlight-start
+      let(:result) { described_class.result(path: path) }
+      # highlight-end
+
+      context "when `AssertFileExists` is NOT successful" do
+        # highlight-start
+        context "when `path` is `nil`" do
+          let(:path) { nil }
+
+          it "returns `error`" do
+            expect(result).to be_error.with_message("Path is `nil`")
+          end
+        end
+        # highlight-end
+      end
+
+      context "when `AssertFileExists` is successful" do
+
+      end
+    end
+  end
+end
+```
+
+We have utilized RSpec [let](https://rspec.info/features/3-12/rspec-core/helper-methods/let) and [described_class](https://rspec.info/features/3-12/rspec-core/metadata/described-class) to define the service result.
+
+After that we verified it by a custom matcher `be_error` and its `with_message` chaining.
+
+:::info
+
+The `be_error` matcher also has `and_message`, `with_code`, and `and_code` chainings.
+
+:::
+
+An `it` for the case when `path` is an empty string is very similar.
+
+```ruby title="spec/services/assert_file_exists_spec.rb"
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      let(:result) { described_class.result(path: path) }
+
+      context "when `AssertFileExists` is NOT successful" do
+        context "when `path` is `nil`" do
+          let(:path) { nil }
+
+          it "returns `error`" do
+            expect(result).to be_error.with_message("Path is `nil`")
+          end
+        end
+
+        # highlight-start
+        context "when `path` is empty" do
+          let(:path) { nil }
+
+          it "returns `error`" do
+            expect(result).to be_error.with_message("Path is empty")
+          end
+        end
+        # highlight-end
+      end
+
+      context "when `AssertFileExists` is successful" do
+
+      end
+    end
+  end
+end
+```
+
+:::info
+
+You may be curious, why custom matchers?
+
+```ruby
+expect(result).to be_error.with_message("Path is empty")
+```
+
+Instead of RSpec built-in alternatives?
+
+```ruby
+expect(result).to be_error?
+expect(result.message).to eq("Path is empty")
+```
+
+Usage of the custom matchers helps avoid paying too much attention to unnecessary technical details when they are not so important.
+
+For example, it is common to forget that `expect(result.message)` raises an exception since `message` is accessed before the `result` status is checked.
+
+Moreover `result.message` is not a string, it is a string-like object, so even when the status is already checked, `expect(result.message).to eq("Path is empty")` will still not work.
+
+:::
+
+The `failure` when the file does not exist is checked as follows.
+
+```ruby title="spec/services/assert_file_exists_spec.rb"
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      let(:result) { described_class.result(path: path) }
+
+      context "when `AssertFileExists` is NOT successful" do
+        context "when `path` is `nil`" do...
+        end
+
+        context "when `path` is empty" do...
+        end
+
+        # highlight-start
+        context "when file with `path` does NOT exist" do
+          let(:path) { "non_existing_path" }
+
+          it "returns `failure`" do
+            expect(result).to be_failure.with_message("File with path `#{path}` does NOT exist")
+          end
+        end
+        # highlight-end
+      end
+
+      context "when `AssertFileExists` is successful" do
+
+      end
+    end
+  end
+end
+```
+
+:::info
+
+The `be_failure` matcher also has `and_message`, `with_code`, and `and_code` chainings.
+
+:::
+
+And finally, the `success` case.
+
+```ruby title="spec/services/assert_file_exists_spec.rb"
+require "spec_helper"
+
+RSpec.describe AssertFileExists do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      let(:result) { described_class.result(path: path) }
+
+      context "when `AssertFileExists` is NOT successful" do
+        context "when `path` is `nil`" do...
+        end
+
+        context "when `path` is empty" do...
+        end
+
+        context "when file with `path` does NOT exist" do...
+        end
+      end
+
+      context "when `AssertFileExists` is successful" do
+        # highlight-start
+        ##
+        # NOTE: Tempfile uses its own `let` in order to prevent its premature garbage collection.
+        #
+        let(:tempfile) { Tempfile.new }
+        let(:path) { tempfile.path }
+
+        it "returns `success`" do
+          expect(result).to be_success.without_data
+        end
+        # highlight-end
+      end
+    end
+  end
+end
+```
+
+:::info
+
+The `be_success` matcher also has `with_data` chaining.
+
+:::
+
+As you can see, there is nothing extraordinary in writing specs for the regular [Convenient Service](/) services.
+
+Custom matchers like `be_success.without_data`, `be_failure.with_message`, `be_error.with_code` are intuitive.
+
+The enclosing boilerplate blocks like `example_group "class methods"`, `describe ".result"`, `context "when Service is successful"` are repetitive.
+
+So once you get familiar with them - reading or adding new service specs becomes a simple routine.

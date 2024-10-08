@@ -61,6 +61,17 @@ const sidebars = {
         },
         {
           type: 'category',
+          label: 'Testing',
+          link: {
+            type: 'generated-index',
+          },
+          collapsed: true,
+          items: [
+            'guides/testing/how_to_test_regular_service',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Debugging',
           link: {
             type: 'generated-index',
