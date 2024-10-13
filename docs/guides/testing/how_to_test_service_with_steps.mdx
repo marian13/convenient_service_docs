@@ -1,0 +1,363 @@
+---
+slug: /guides/testing/how_to_test_service_with_steps
+sidebar_position: 2
+title: How to test a service with steps?
+---
+
+Consider a simple service with steps - `ReadFileContent`.
+
+:::info
+
+Services with steps are often called organizers.
+
+:::
+
+As its name states, it reads the content from a file with a specific `path`.
+
+```ruby
+class ReadFileContent
+  include ConvenientService::Standard::Config
+
+  attr_reader :path
+
+  step :validate_path, in: :path
+  step AssertFileExists, in: :path
+  step AssertFileNotEmpty, in: :path
+  step :result, in: :path, out: :content
+
+  def initialize(path:)
+    @path = path
+  end
+
+  def result
+    success(content: ::File.read(path))
+  end
+
+  private
+
+  def validate_path
+    return error("Path is `nil`") if path.nil?
+    return error("Path is empty") if path.empty?
+
+    success
+  end
+end
+```
+
+It has four steps, each of which may provide different results depending on the input arguments.
+
+They are executed sequentially, from the top to the bottom.
+
+When all of them are successful, the whole `ReadFileContent` service returns the `success` result from its last step.
+
+When any intermediate step is NOT successful, then the rest of the steps are skipped, and the `ReadFileContent` organizer returns that first `failure` or `error` step result.
+
+For example, the first step is a method step called `validate_path`.
+
+When the path is `nil` or empty, it returns the `error` result.
+
+Consequently, the following `AssertFileExists`, `AssertFileNotEmpty`, and `result` steps are not even evaluated.
+
+The whole `ReadFileContent` service returns that same `error` result created by the `validate_path` step.
+
+Now, for the sake of completeness, let's also have `AssertFileExists`, and `AssertFileNotEmpty` implementations in front of our eyes.
+
+```ruby
+class AssertFileExists
+  include ConvenientService::Standard::Config
+
+  attr_reader :path
+
+  def initialize(path:)
+    @path = path
+  end
+
+  def result
+    return error("Path is `nil`") if path.nil?
+    return error("Path is empty") if path.empty?
+
+    return failure("File with path `#{path}` does NOT exist") unless ::File.exist?(path)
+
+    success
+  end
+end
+```
+
+```ruby
+class AssertFileNotEmpty
+  include ConvenientService::Standard::Config
+
+  attr_reader :path
+
+  def initialize(path:)
+    @path = path
+  end
+
+  def result
+    return error("Path is `nil`") if path.nil?
+    return error("Path is empty") if path.empty?
+
+    return failure("File with path `#{path}` is empty") if ::File.zero?(path)
+
+    success
+  end
+end
+```
+
+## How to test a service with steps using RSpec?
+
+We are already aware of the service specs boilerplate, so we will just copy it from the previous guide.
+
+```ruby
+require "spec_helper"
+
+RSpec.describe ReadFileContent do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      context "when `ReadFileContent` is NOT successful" do
+
+      end
+
+      context "when `ReadFileContent` is successful" do
+
+      end
+    end
+  end
+end
+```
+
+The process of writing `it` examples for the method steps is very similar to what we do with regular services.
+
+We also apply `be_success`, `be_failure`, `be_error` matchers and their chainings like `with_data`, `and_data`, `with_message`, `and_message`, `with_code`, `and_code`.
+
+Let's add specs for the `validate_path` step.
+
+```ruby
+require "spec_helper"
+
+RSpec.describe ReadFileContent do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      let(:result) { described_class.result(path: path) }
+
+      context "when `ReadFileContent` is NOT successful" do
+        context "when `path` is `nil`" do
+          let(:path) { nil }
+
+          it "returns `error` with `message`" do
+            expect(result).to be_error.with_message("Path is `nil`").of_step(:validate_path)
+          end
+        end
+
+        context "when `path` is empty" do
+          let(:path) { "" }
+
+          it "returns `error` with `message`" do
+            expect(result).to be_error.with_message("Path is empty").of_step(:validate_path)
+          end
+        end
+      end
+
+      context "when `ReadFileContent` is successful" do
+
+      end
+    end
+  end
+end
+```
+
+They look familiar but with one new addition - the `of_step` chaining.
+
+It allows us to confirm that the returned result originates from the concrete step.
+
+:::info
+
+Regular services does not have steps.
+
+To emphasize that in specs `without_step` chaining can be used.
+
+```ruby
+context "when `AssertFileNotEmpty` is successful" do
+  # ...
+
+  it "returns `success`" do
+    expect(result).to be_success.without_data.without_step
+  end
+end
+```
+
+:::
+
+In turn, the process of writing `it` examples for the service steps is different from what we do with regular services.
+
+Why? Because we can rely on the fact the corresponding step service already has its own specs.
+
+What does it give us in practice? We can change our focus.
+
+Let's demonsrate it with the `AssertFileExists` step.
+
+From the `ReadFileContent` point of view, it is redundant to verify every single possible result, data, message, and code variation for the `AssertFileExists` step.
+
+The corresponding `AssertFileExists` service already has its dedicated and comprehensive specs that we developed in the previous article.
+
+So it is not efficient to duplicate them in multiple places.
+
+Instead, we need to pay attention to what is specific from the `ReadFileContent` perspective:
+
+- When the `AssertFileExists` service is NOT successful, then the flow is stopped.
+
+- Otherwise, it is continued with the next step.
+
+Let's reflect that behaviour in the specs.
+
+```ruby
+require "spec_helper"
+
+RSpec.describe ReadFileContent do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      let(:result) { described_class.result(path: path) }
+
+      context "when `ReadFileContent` is NOT successful" do
+        context "when `path` is `nil`" do...
+        end
+
+        context "when `path` is empty" do...
+        end
+
+        # highlight-start
+        context "when `AssertFileExists` is NOT successful" do
+          let(:path) { "not_existing_path" }
+
+          it "returns intermediate step result" do
+            expect(result).to be_not_success.of_step(AssertFileExists)
+          end
+        end
+        # highlight-end
+      end
+
+      context "when `ReadFileContent` is successful" do
+
+      end
+    end
+  end
+end
+```
+
+As you can see, we just took a path that passes the `verify_path` step but makes the `AssertFileExists` step not succeed.
+
+Also, we used the `be_not_success` matcher and `of_step` chaining to verify the returned result.
+
+It is NOT actually important for the organizer if that result is a `failure` or `error`.
+
+But it is essential for it to know whether to proceed with the flow.
+
+:::info
+
+The `be_not_failure` and `be_not_error` matchers also exist, but they are used in very rare cases.
+
+:::
+
+For the `AssertFileNotEmpty` service step the new spec is very similar.
+
+```ruby
+require "spec_helper"
+
+RSpec.describe ReadFileContent do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      let(:result) { described_class.result(path: path) }
+
+      context "when `ReadFileContent` is NOT successful" do
+        context "when `path` is `nil`" do...
+        end
+
+        context "when `path` is empty" do...
+        end
+
+        context "when `AssertFileExists` is NOT successful" do...
+        end
+
+        # highlight-start
+        context "when `AssertFileNotEmpty` is NOT successful" do
+          let(:temfile) { Tempfile.new }
+          let(:path) { temfile.path }
+
+          it "returns intermediate step result" do
+            expect(result).to be_not_success.of_step(AssertFileNotEmpty)
+          end
+        end
+        # highlight-end
+      end
+
+      context "when `ReadFileContent` is successful" do
+
+      end
+    end
+  end
+end
+```
+
+Input path is taken in a way to pass the `validate_path` and `AssertFileExist` steps, but to stop the flow in `AssertFileNotEmpty` step.
+
+:::danger
+
+The idea of switching the focus and omitting duplicated specs only makes sense when the step-corresponding service is fully tested by its own specs.
+
+Otherwise, it becomes the organizer's responsibility to verify all its internal results.
+
+That violates the ["Tell, Don't Ask"](https://thoughtbot.com/blog/tell-dont-ask) principle, making the organizer specs significantly harder to maintain.
+
+:::
+
+And finally, the `success` case.
+
+```ruby
+require "spec_helper"
+
+RSpec.describe ReadFileContent do
+  include ConvenientService::RSpec::Matchers::Results
+
+  example_group "class methods" do
+    describe ".result" do
+      let(:result) { described_class.result(path: path) }
+
+      context "when `ReadFileContent` is NOT successful" do
+        context "when `path` is `nil`" do...
+        end
+
+        context "when `path` is empty" do...
+        end
+
+        context "when `AssertFileExists` is NOT successful" do...
+        end
+
+        context "when `AssertFileNotEmpty` is NOT successful" do...
+        end
+      end
+
+      context "when `ReadFileContent` is successful" do
+        # highlight-start
+        let(:temfile) { Tempfile.new.tap { |tempfile| tempfile.write(content) }.tap(&:close) }
+        let(:path) { temfile.path }
+        let(:content) { "some content" }
+
+        it "returns `success` with content" do
+          expect(result).to be_success.with_data(content: content).of_step(:result)
+        end
+        # highlight-end
+      end
+    end
+  end
+end
+```
+
+As a summary, once you learn of how to properly define and utilize the `"returns intermediate step result"` specs, the testing of services with steps becomes an ordinary "boring" day-to-day activity.

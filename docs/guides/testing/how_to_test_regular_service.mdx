@@ -31,7 +31,7 @@ end
 
 To be more precise, it returns the `success` result when we are 100% sure that the corresponding file actually exists in the underlying operation system.
 
-When we are totally confident in the opposite, it returns the `failure` result.
+When it returns the `failure` result, then we are totally confident in the opposite.
 
 Last but not least, the `error` result is returned when there is NO way to confirm or deny the file's existence.
 
@@ -53,7 +53,7 @@ This is a quick command of how to create it.
 mkdir -p spec/services && touch spec/services/assert_file_exists_spec.rb
 ```
 
-Now, let's require a [spec_helper](https://medium.com/@brett_codes/rspecs-spec-helper-vs-rails-helper-explained-2337282d14ce) and add top-level [describe](https://rspec.info/features/3-12/rspec-core/example-groups/basic-structure) with the service class into it.
+As the next step, we are going to require a [spec_helper](https://medium.com/@brett_codes/rspecs-spec-helper-vs-rails-helper-explained-2337282d14ce) and add a top-level [describe](https://rspec.info/features/3-12/rspec-core/example-groups/basic-structure) with the service class into it.
 
 ```ruby title="spec/services/assert_file_exists_spec.rb"
 require "spec_helper"
@@ -63,7 +63,7 @@ RSpec.describe AssertFileExists do
 end
 ```
 
-As the next step, we introduce a so-called [example group](https://rspec.info/documentation/3.0/rspec-core/RSpec/Core/ExampleGroup.html#context-class_method) for the class methods.
+Then, we introduce a so-called [example group](https://rspec.info/documentation/3.0/rspec-core/RSpec/Core/ExampleGroup.html#context-class_method) for the class methods.
 
 :::info
 
@@ -81,13 +81,11 @@ RSpec.describe AssertFileExists do
 end
 ```
 
-It may seem redundant to define such an example group, but it is already kind of a pattern in specs for services created by the [Convenient Service](/).
+It may seem redundant to define such an example group, but it is already kind of a pattern in specs for services created by the [Convenient Servive](/).
 
-We will skip the details for now, but you will see the benefit of it once we review the testing of more complex services.
+You will see the real benefit of it once we review the testing of more complex services.
 
-Let's come back to the `AssertFileExists`.
-
-Most of the time we interact with it using its `result` class method, which why we add a corresponding [context](https://www.betterspecs.org/#describe) for it.
+Coming back to the `AssertFileExists`, most of the time we interact with it using its `result` class method, which is why we add a corresponding [context](https://www.betterspecs.org/#describe) for it.
 
 ```ruby title="spec/services/assert_file_exists_spec.rb"
 require "spec_helper"
@@ -101,9 +99,9 @@ RSpec.describe AssertFileExists do
 end
 ```
 
-From the most narrow perspective, a service is either successful or not successful.
+Next, when looking from the most narrow perspective, a service is either successful or not successful.
 
-This is how we reflect that point with two more contexts.
+So we reflect that point with two more contexts.
 
 ```ruby title="spec/services/assert_file_exists_spec.rb"
 require "spec_helper"
@@ -123,9 +121,9 @@ RSpec.describe AssertFileExists do
 end
 ```
 
-[Convenient Service](/) provides custom [RSpec matchers](https://rspec.info/features/3-12/rspec-expectations/built-in-matchers) to verify service results.
+Also [Convenient Service](/) provides some ready-to-use custom [RSpec matchers](https://rspec.info/features/3-12/rspec-expectations/built-in-matchers) to verify service results.
 
-They can be included in the following way.
+They can be included as follows.
 
 ```ruby title="spec/services/assert_file_exists_spec.rb"
 require "spec_helper"
@@ -147,7 +145,7 @@ RSpec.describe AssertFileExists do
 end
 ```
 
-We have just finished with the basic service specs boilerplate code.
+Now, we have just built the basic service specs boilerplate code.
 
 It will be almost the same in most of the cases, so feel free to come back to this page and copy this template whenever you test a new service.
 
@@ -164,7 +162,7 @@ bundle exec rails generate convenient_service service AssertFileExists
 
 :::
 
-Let's have a look at the `AssertFileExists` service one more time.
+Having the boilerplate already set, let's recall the `AssertFileExists` source to decide which exact tests we need to implement.
 
 ```ruby
 class AssertFileExists
@@ -187,7 +185,7 @@ class AssertFileExists
 end
 ```
 
-This is how an `it` example is added for the case when `path` is `nil`.
+This is how an `it` example can be added for the case when `path` is `nil`.
 
 ```ruby title="spec/services/assert_file_exists_spec.rb"
 require "spec_helper"
@@ -294,7 +292,7 @@ Moreover `result.message` is not a string, it is a string-like object, so even w
 
 :::
 
-The `failure` when the file does not exist is checked as follows.
+The `failure` when the file does not exist may be checked as follows.
 
 ```ruby title="spec/services/assert_file_exists_spec.rb"
 require "spec_helper"
@@ -389,6 +387,6 @@ As you can see, there is nothing extraordinary in writing specs for the regular 
 
 Custom matchers like `be_success.without_data`, `be_failure.with_message`, `be_error.with_code` are intuitive.
 
-The enclosing boilerplate blocks like `example_group "class methods"`, `describe ".result"`, `context "when Service is successful"` are repetitive.
+The enclosing boilerplate blocks like `example_group "class methods"`, `describe ".result"`, <code>context "when \`Service\` is successful"</code> are straightforward.
 
 So once you get familiar with them - reading or adding new service specs becomes a simple routine.

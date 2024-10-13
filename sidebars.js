@@ -68,6 +68,7 @@ const sidebars = {
           collapsed: true,
           items: [
             'guides/testing/how_to_test_regular_service',
+            'guides/testing/how_to_test_service_with_steps',
           ],
         },
         {
