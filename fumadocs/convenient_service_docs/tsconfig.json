@@ -38,7 +38,7 @@
      * NOTE:
      *   TypeScript also looks for types in the parent folders.
      *   The config below disables that behaviour.
-     *   Otherwise `yarn build` does NOT work.
+     *   Otherwise, `yarn build` does NOT work.
      */
     "../**/*"
   ]
