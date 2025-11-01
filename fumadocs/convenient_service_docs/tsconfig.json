@@ -32,5 +32,14 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    /**
+     * NOTE:
+     *   TypeScript also looks for types in the parent folders.
+     *   The config below disables that behaviour.
+     *   Otherwise `yarn build` does NOT work.
+     */
+    "../**/*"
+  ]
 }
