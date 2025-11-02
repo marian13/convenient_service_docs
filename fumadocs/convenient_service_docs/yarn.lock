@@ -1080,6 +1080,11 @@ bail@^2.0.0:
   resolved "https://registry.yarnpkg.com/bail/-/bail-2.0.2.tgz#d26f5cd8fe5d6f832a31517b9f7c356040ba6d5d"
   integrity sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==
 
+basecoat-css@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/basecoat-css/-/basecoat-css-0.3.2.tgz#e4c750fbb23680b078256dfa7570fc0059343de6"
+  integrity sha512-WLdyYnyLU4kr3rZNl5n4YG0i3YUamYIISjpip0ipah9l4wwbmEEB/3v/K3l4tKCYg3PaEaallnvs04ZfxHZ7YQ==
+
 caniuse-lite@^1.0.30001579:
   version "1.0.30001752"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001752.tgz#afa28d0830709507162bc6ed3f7cb23b00926a99"

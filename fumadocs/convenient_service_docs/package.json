@@ -9,6 +9,7 @@
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
+    "basecoat-css": "^0.3.2",
     "fumadocs-core": "16.0.7",
     "fumadocs-mdx": "13.0.4",
     "fumadocs-ui": "16.0.7",
