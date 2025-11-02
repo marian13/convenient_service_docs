@@ -1,6 +1,3 @@
-import { HomeLayout } from 'fumadocs-ui/layouts/home';
-import { baseOptions } from '@/lib/layout.shared';
-
 /**
  * NOTE: Adds `<title>Convenient Service</title>` and `<meta name="description" content="Convenient Service User Docs">`.
  * - https://nextjs.org/learn/dashboard-app/adding-metadata#page-title-and-descriptions
@@ -13,6 +10,14 @@ export const metadata = {
   description: "Convenient Service User Docs",
 };
 
+/**
+ * NOTE: Use the lines below to bring back the default layout.
+ *
+ *  import { HomeLayout } from 'fumadocs-ui/layouts/home';
+ *  import { baseOptions } from '@/lib/layout.shared';
+ *  // ...
+ *  return <HomeLayout {...baseOptions()}>{children}</HomeLayout>;
+ */
 export default function Layout({ children }: LayoutProps<'/'>) {
-  return <HomeLayout {...baseOptions()}>{children}</HomeLayout>;
+  return <>{children}</>;
 }
