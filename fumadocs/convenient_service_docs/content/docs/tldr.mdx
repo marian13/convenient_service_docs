@@ -1,0 +1,440 @@
+---
+title: TL;DR
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+> I have no time to read tons of docs. <br/>
+> Just show me an example use case and I'll quickly craft something similar 😎.
+>
+> — A lazy and productive developer.
+
+```ruby
+# Any source code in the project.
+def read_file_content(path)
+  result = ReadFileContent.result(path: path)
+
+  if result.success?
+    ##
+    # Service tried to read the file content and completed it.
+    #
+    result.data[:content] # File content.
+  elsif result.failure?
+    ##
+    # Service tried to read file content, but did NOT complete it due to some expected reason.
+    #
+    App.logger.warn { result.message.to_s }
+
+    "" # Fallback value or any other reasonable fallback behavior.
+  else # result.error?
+    ##
+    # Service NOT even tried to read file content due to an exception.
+    #
+    App.logger.error { result.message.to_s }
+
+    raise VerboseException, result.message.to_s # Self-explanatory exception or any other reasonable exception handling behavior.
+  end
+end
+```
+
+```ruby
+gem "convenient_service", "1.0.0"
+```
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    require "convenient_service"
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    require "active_model" # NOTE: Minimal `active_model` version - `5.2.0`.
+
+    require "convenient_service"
+
+    require "convenient_service/extras/standard/config/options/active_model_attribute_assignment"
+    require "convenient_service/extras/standard/config/options/active_model_attributes"
+    require "convenient_service/extras/standard/config/options/active_model_validations"
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    require "dry-initializer" # NOTE: Minimal `dry-initializer` version - `3.0.0`.
+    require "dry-validation" # NOTE: Minimal `dry-validation` version - `1.5.0`.
+
+    require "convenient_service"
+
+    require "convenient_service/extras/standard/config/options/dry_initializer"
+    require "convenient_service/extras/standard/config/options/dry_validation"
+    ```
+  </Tab>
+
+  <Tab value="Custom">
+    ```ruby
+    require "active_model" # NOTE: Minimal `active_model` version - `5.2.0`.
+    require "dry-initializer" # NOTE: Minimal `dry-initializer` version - `3.0.0`.
+    require "awesome_print" # NOTE: Minimal `awesome_print` version - `1.0.0`.
+
+    require "convenient_service"
+
+    require "convenient_service/extras/standard/config/options/active_model_validations"
+    require "convenient_service/extras/standard/config/options/dry_initializer"
+    require "convenient_service/extras/standard/config/options/awesome_print_inspect" if Rails.env.development? || Rails.env.test?
+    ```
+  </Tab>
+</Tabs>
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    module ApplicationService
+      module Config
+        include ConvenientService::Config
+
+        included do
+          include ConvenientService::Standard::Config
+        end
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    module RailsService
+      module Config
+        include ConvenientService::Config
+
+        included do
+          include ConvenientService::Standard::Config
+            .with(
+              :active_model_attribute_assignment,
+              :active_model_attributes,
+              :active_model_attributes
+            )
+        end
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    module DryService
+      module Config
+        include ConvenientService::Concern
+
+        included do
+          include ConvenientService::Standard::Config
+            .with(
+              :using_dry_initializer,
+              :using_dry_validation
+            )
+        end
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Custom">
+    ```ruby
+    module CustomService
+      module Config
+        include ConvenientService::Config
+
+        included do
+          include ConvenientService::Standard::Config
+            .with(
+              :using_dry_initializer,
+              :using_active_model_validations
+              awesome_print_inspect: Rails.env.local?
+            )
+            .without(
+              fault_tolerance: Rails.env.test?
+            )
+        end
+      end
+    end
+    ```
+  </Tab>
+</Tabs>
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    class AssertFileExists
+      include ApplicationService::Config
+
+      attr_reader :path
+
+      def initialize(path:)
+        @path = path
+      end
+
+      def result
+        return error("Path is `nil`") if path.nil?
+        return error("Path is empty") if path.empty?
+
+        return failure("File does not exist at path `#{path}`") unless File.exist?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    class AssertFileExists
+      include RailsService::Config
+
+      attribute :path, :string
+
+      validates :path, presence: true
+
+      def result
+        return failure("File does not exist at path `#{path}`") unless File.exist?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    class AssertFileExists
+      include DryService::Config
+
+      option :path
+
+      contract do
+        schema do
+          required(:path).value(:string)
+        end
+      end
+
+      def result
+        return failure("File does not exist at path `#{path}`") unless File.exist?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+  <Tab value="Custom">
+    ```ruby
+    class AssertFileExists
+      include CustomService::Config
+
+      option :path
+
+      validates :path, presence: true
+
+      def result
+        return failure("File does not exist at path `#{path}`") unless File.exist?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+</Tabs>
+
+```ruby
+result = AssertFileExists.result(path: "Gemfile")
+```
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    class AssertFileNotEmpty
+      include ApplicationService::Config
+
+      attr_accessor :path
+
+      def initialize(path:)
+        @path = path
+      end
+
+      def result
+        return error("Path is `nil`") if path.nil?
+        return error("Path is empty") if path.empty?
+
+        return failure("File is empty at path `#{path}`") if File.zero?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    class AssertFileNotEmpty
+      include RailsService::Config
+
+      attribute :path, :string
+
+      validates :path, presence: true
+
+      def result
+        return failure("File is empty at path `#{path}`") if File.zero?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    class AssertFileNotEmpty
+      include DryService::Config
+
+      option :path
+
+      contract do
+        schema do
+          required(:path).value(:string)
+        end
+      end
+
+      def result
+        return failure("File is empty at path `#{path}`") if File.zero?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Custom">
+    ```ruby
+    class AssertFileNotEmpty
+      include CustomService::Config
+
+      option :path
+
+      validates :path, presence: true
+
+      def result
+        return failure("File is empty at path `#{path}`") if File.zero?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+</Tabs>
+
+```ruby
+result = AssertFileNotEmpty.result(path: "Gemfile")
+```
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    class ReadFileContent
+      include ApplicationService::Config
+
+      attr_reader :path
+
+      step :validate_path
+      step AssertFileExists, in: :path
+      step AssertFileNotEmpty, in: :path
+      step :result, in: :path, out: :content
+
+      def initialize(path:)
+        @path = path
+      end
+
+      def result
+        success(content: File.read(path))
+      end
+
+      private
+
+      def validate_path
+        return error("Path is `nil`") if path.nil?
+        return error("Path is empty") if path.empty?
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    class ReadFileContent
+      include RailsService::Config
+
+      attribute :path, :string
+
+      validates :path, presence: true
+
+      step AssertFileExists, in: :path
+      step AssertFileNotEmpty, in: :path
+      step :result, in: :path, out: :content
+
+      def result
+        success(content: File.read(path))
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    class ReadFileContent
+      include DryService::Config
+
+      option :path
+
+      contract do
+        schema do
+          required(:path).value(:string)
+        end
+      end
+
+      step AssertFileExists, in: :path
+      step AssertFileNotEmpty, in: :path
+      step :result, in: :path, out: :content
+
+      def result
+        success(content: File.read(path))
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Custom">
+    ```ruby
+    class ReadFileContent
+      include CustomService::Config
+
+      option :path
+
+      validates :path, presence: true
+
+      step AssertFileExists, in: :path
+      step AssertFileNotEmpty, in: :path
+      step :result, in: :path, out: :content
+
+      def result
+        success(content: File.read(path))
+      end
+    end
+    ```
+  </Tab>
+</Tabs>
+
+```ruby
+result = ReadFileContent.result(path: "Gemfile")
+```
+
+See more [examples](https://github.com/marian13/convenient_service/tree/main/lib/convenient_service/examples) with [specs](https://github.com/marian13/convenient_service/tree/main/spec/lib/convenient_service/examples) in the Convenient Service [repo](https://github.com/marian13/convenient_service).

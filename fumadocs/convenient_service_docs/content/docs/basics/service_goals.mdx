@@ -1,0 +1,78 @@
+---
+title: Service goals
+---
+
+To get an idea of the result types even better, let's introduce an auxiliary term - *service goal*.
+
+## What is the service goal?
+
+The *service goal* is the desired effect of an action/operation.
+
+What does it mean in practise?
+
+Imagine the service below:
+
+```ruby
+class FindUser
+  # ...
+
+  def initialize(user_id:)
+    @user_id = user_id
+  end
+
+  def result
+    # ...
+  end
+end
+```
+
+Its desired effect is the found user record.
+
+Simple and straightforward.
+
+So, if you are a developer who wants to utilize this service, the only reason why you would decide to do it is to get the user record.
+
+Thus the following conclusion can be made.
+
+We always invoke a service to achieve some concrete goal defined by the service author.
+
+In other words, we call a service to resolve some specific problem stated by the service name.
+
+## Service problem resolutions
+
+Let's come back to the `FindUser` service and add some basic implementation for it.
+
+```ruby
+class FindUser
+  include ::ConvenientService::Standard::Config
+
+  def initialize(user_id:)
+    @user_id = user_id
+  end
+
+  def result
+    return error("User id in NOT an integer") unless user_id.instance_of?(::Integer)
+
+    user = ::User.find_by(id: user_id)
+
+    return failure("NO user with id `#{user_id}`") unless user
+
+    success(user: user)
+  end
+end
+```
+
+```ruby
+result = FindUser.result(user_id: user_id)
+# => `success`, `failure` or `error`.
+```
+
+As you can see, it may return one of the three possible result types that represent different resolutions.
+
+Each of them has a specific meaning.
+
+The `success` result communicates to its caller the positive service problem resolution, since the found user record is returned as expected.
+
+The `failure` result provides the negative resolution, because the user record does not exist in database.
+
+The `error` result gives no resolution at all, since the service no even tried to complete the user lookup.

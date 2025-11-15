@@ -1,4 +1,4 @@
-import { ThemeToggle } from '../../components/themeToggle';
+import { ThemeToggle } from '../../custom/components/themeToggle';
 
 export default function HomePage() {
   return (
@@ -14,7 +14,7 @@ export default function HomePage() {
       </p>
 
       <p>
-        Hide techical details with Configs and Middlewares.
+        Hide technical details with Configs and Middlewares.
       </p>
 
       <p>
@@ -22,9 +22,9 @@ export default function HomePage() {
       </p>
 
       <div className="mt-4 flex justify-center gap-3">
-        <a type="button" className="btn" href="/docs">TL;DR</a>
+        <a type="button" className="btn" href="/docs/tldr">TL;DR</a>
 
-        <a type="button" className="btn" href="/docs">User Docs</a>
+        <a type="button" className="btn" href="/docs/basics">User Docs</a>
 
         <a type="button" className="btn" href="https://apidocs.convenientservice.org" target="_blank" rel="noopener noreferrer" >API Docs</a>
 

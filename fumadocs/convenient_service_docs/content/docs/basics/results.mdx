@@ -1,0 +1,86 @@
+---
+title: Results
+---
+
+## Motivation behind results
+
+[Usually](https://www.toptal.com/ruby-on-rails/rails-service-objects-tutorial), the service exposes a sole public method, let it be `call` for this case.
+
+```ruby
+class Service
+  def call
+    # ...
+  end
+end
+```
+
+Since Ruby is a [dynamic language](https://en.wikipedia.org/wiki/Dynamic_programming_language), `call` may return any type of value.
+
+Sometimes it is advantageous, for things like [Duck Typing](https://en.wikipedia.org/wiki/Duck_typing), [Abstract Factories](https://refactoring.guru/design-patterns/abstract-factory), [Null Objects](https://sourcemaking.com/design_patterns/null_object), etc.
+
+But occasionally it may also become problematic.
+
+For example, you can not implement a unified way to check whether the value was calculated correctly (as it was intended by its author).
+
+```ruby
+value = service.call
+
+if value.any? # When an array.
+if value.cover?(0...100) # Range.
+if value.match(/^[0-9]*$/) # Regexp.
+if value.dig(:user, :address) # Hash.
+if value.nozero? # Integer....
+```
+
+<Callout>
+
+Someone may consider [Object#blank?](https://api.rubyonrails.org/classes/Object.html#method-i-blank-3F) and its opposite [Object#present?](https://api.rubyonrails.org/classes/Object.html#method-i-present-3F) from [ActiveSupport](https://guides.rubyonrails.org/active_support_core_extensions.html) as an attempt, but they detect [truthiness](https://stackoverflow.com/a/20663389/12201472) in the Rails sense.
+
+</Callout>
+
+Also it is common to forget to verify if the returned value is actually what you need:
+
+```ruby
+hash = service.call
+
+hash.merge(other_hash)
+# Expected a merge, but it raises since hash is nil...
+```
+
+[Convenient Service](/) suggests utilizing Result objects as a way to overcome the problems listed above.
+
+Practically speaking, to return results from all services.
+
+To express this idea, let's create a different public method instead of `call` and name it `result`.
+
+```ruby
+class Service
+  def result
+    # ...
+  end
+end
+```
+
+Now, we have the following invocation:
+
+```ruby
+result = service.result
+
+if result.success?
+  result.data
+else
+  result.message
+end
+```
+
+## So what is a Result? Its benefits?
+
+_Result_ is a data structure that satisfies the following properties:
+
+- Firstly, it has a consolidated way to detect its state (`success?`, `failure?`, `error?`, and their counterparts with `not` like `not_success?`).
+
+- Secondly, when the result is successful, you can be 100% sure that its data is correct, no additional verifications are needed (the notion of correctness is defined by the service author).
+
+- Moveover, results induce you to always check them, before accessing their attributes, otherwise an exception is raised.
+
+- Also, when something goes wrong, the result contains a description of the reason (`result.message`), which simplifies finding the source of the problem.

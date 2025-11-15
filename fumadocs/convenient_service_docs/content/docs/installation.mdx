@@ -1,0 +1,31 @@
+---
+title: Installation
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { version } from '../../custom/constants';
+import { CodeBlock } from '../../custom/components/codeBlock';
+
+There are multiple installation methods. Pick the one that best fits your needs.
+
+## Bundler
+
+Add the following line to your Gemfile:
+
+<CodeBlock lang="ruby" code={`gem "convenient_service", "~> ${version}"`} />
+
+And then run:
+
+```bash
+bundle install
+```
+
+## Without Bundler
+
+Execute the command below:
+
+<CodeBlock lang="bash" code={`gem install convenient_service -v ${version}`} />
+
+<Callout>
+  Convenient Service follows the [Semantic Versioning](https://semver.org/) standard.
+</Callout>

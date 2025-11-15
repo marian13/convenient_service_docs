@@ -1,0 +1,45 @@
+---
+title: Services
+---
+
+## What is a service?
+
+_Service_ is an object that does only one operation, [nothing more, nothing less](https://ludwig.guru/s/nothing+more+and+nothing+less).
+
+Service may usually be implemented as follows:
+
+```ruby
+class Service
+  def call
+    # ...
+  end
+end
+```
+
+It has a single public method, often named [`call`](https://blog.eq8.eu/article/ruby-call-method.html) or `run`, `process`, `perform`, `execute`, etc, that is used to invoke its logic.
+
+```ruby
+service = Service.new
+
+service.call
+```
+
+## Why do we need services?
+
+> Hang on a minute!  According to the definition above, a service is almost the same as a regular function/method. Why do we need a new concept?
+>
+> — A curious developer
+
+Usual Ruby methods may solve similar problems as services most of the time.
+
+Moreover, when it is possible to achieve the task only by using plain methods, it is almost always preferable.
+
+As a result, services should NOT be considered competitors or replacements for methods, they are additions to them.
+
+It is like a new option in the development toolbox.
+
+You have primitives, methods, classes, etc, and now there is an ability to use a service.
+
+For example, removing duplicates from an array can be implemented in multiple ways, you decide whether to utilize an [array](https://www.geeksforgeeks.org/remove-duplicates-sorted-array/?ref=lbp), [hash](https://www.geeksforgeeks.org/remove-duplicates-from-unsorted-array-using-map-data-structure/?ref=lbp) or a [set](https://www.geeksforgeeks.org/remove-duplicates-from-unsorted-array-using-set-data-structure/), depending on your environment limitations.
+
+The same case is with services. Just use them when you feel they bring advantages compared to other approaches.

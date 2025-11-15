@@ -1,0 +1,247 @@
+---
+title: Result Types
+---
+
+## Success, failure, and error
+
+The are 3 types of results in Convenient Service - `success`, `failure`, and `error`.
+
+The simplest way to explain them is based on a comparison to the regular methods.
+
+Therefore, the definition may be the following:
+
+- The `success` results are returned from services exactly at the same cases when the expected values are returned from the regular methods.
+
+- The `failure` results are returned from services exactly at the same cases when the fallback values are returned from the regular methods.
+
+- The `error` results are returned from services exactly at the same cases when the exceptions are raised from the regular methods.
+
+So, basically, the main difference between the `failure` and `error` results is whether to continue or stop the process when something is not successful just like between fallbacks and exceptions in the regular methods.
+
+<Callout>
+  For boolean methods "fallback" values are `false` and `nil`.
+</Callout>
+
+<Callout>
+  For void methods "fallbacks" are returns before the desired side-effect is applied.
+</Callout>
+
+## Results in the wild
+
+Let's check some real-world examples of the methods with both fallbacks and exceptions and see how they may look like with Convenient Service results.
+
+- [Context#context_superclass](https://github.com/hanami/hanami/blob/v2.3.1/lib/hanami/extensions/view/context.rb#L36) method taken from [Hanami](http://github.com/hanami/hanami).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def context_superclass(slice)
+        return Hanami::View::Context if Hanami.app.equal?(slice)
+
+        begin
+          slice.inflector.constantize(
+            slice.inflector.camelize("#{slice.app.slice_name.name}/views/context")
+          )
+        rescue NameError => e
+          raise e unless %i[Views Context].include?(e.name)
+
+          Hanami::View::Context
+        end
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def context_superclass(slice)
+        return failure("Hanami app is equal to slice `#{slice}`") if Hanami.app.equal?(slice)
+
+        begin
+          success(superclass: slice.inflector.constantize(
+            slice.inflector.camelize("#{slice.app.slice_name.name}/views/context")
+          ))
+        rescue NameError => e
+          return error("Name `#{e.name}` does NOT include `Views` or `Context`") unless %i[Views Context].include?(e.name)
+
+          failure("Invalid name `#{e.name}`")
+        end
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+- [CommentVisitor#process?](https://github.com/rails/rails/blob/v8.1.1/tools/rdoc-to-md#L120) method taken from [Rails](https://github.com/rails/rails).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def process?(comments)
+        return false if comments.empty?
+
+        if comments.any?(&:trailing?)
+          return false if comments.all?(&:trailing?)
+
+          raise "only some comments are trailing?"
+        end
+
+        true
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def process?(comments)
+        return failure("Comments are empty") if comments.empty?
+
+        if comments.any?(&:trailing?)
+          return failure("All comments are trailing") if comments.all?(&:trailing?)
+
+          return error("only some comments are trailing?")
+        end
+
+        success
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+- [ResponseBuilder#perform](https://github.com/chatwoot/chatwoot/blob/v4.7.0/app/builders/csat_surveys/response_builder.rb#L4) method taken from [Chatwood](https://github.com/chatwoot/chatwoot).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def perform
+        raise 'Invalid Message' unless message.input_csat?
+
+        conversation = message.conversation
+        rating = message.content_attributes.dig('submitted_values', 'csat_survey_response', 'rating')
+        feedback_message = message.content_attributes.dig('submitted_values', 'csat_survey_response', 'feedback_message')
+
+        return if rating.blank?
+
+        process_csat_response(conversation, rating, feedback_message)
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def perform
+        return error("Invalid Message") unless message.input_csat?
+
+        conversation = message.conversation
+        rating = message.content_attributes.dig('submitted_values', 'csat_survey_response', 'rating')
+        feedback_message = message.content_attributes.dig('submitted_values', 'csat_survey_response', 'feedback_message')
+
+        return failure("Rating is blank") if rating.blank?
+
+        success(csat_survey_response: process_csat_response(conversation, rating, feedback_message))
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+- [Entry#extract](https://gitlab.com/gitlab-org/gitlab/-/blob/v18.5.0-ee/lib/safe_zip/entry.rb?ref_type=tags#L27) method taken from [GitLab](https://gitlab.com/gitlab-org/gitlab).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def extract
+        # do not extract if file is not part of target directory or target file
+        return false unless matching_target_directory || matching_target_file
+
+        # do not overwrite existing file
+        raise SafeZip::Extract::AlreadyExistsError, "File already exists #{zip_entry.name}" if exist?
+
+        create_path_dir
+
+        if zip_entry.file?
+          extract_file
+        elsif zip_entry.directory?
+          extract_dir
+        elsif zip_entry.symlink?
+          extract_symlink
+        else
+          raise SafeZip::Extract::UnsupportedEntryError, "File #{zip_entry.name} cannot be extracted"
+        end
+      rescue SafeZip::Extract::Error
+        raise
+      rescue Zip::EntrySizeError => e
+        raise SafeZip::Extract::EntrySizeError, e.message
+      rescue StandardError => e
+        raise SafeZip::Extract::ExtractError, e.message
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def extract
+        # do not extract if file is not part of target directory or target file
+        return failure("file is not part of target directory or target file") unless matching_target_directory || matching_target_file
+
+        # do not overwrite existing file
+        return error("File already exists #{zip_entry.name}", :already_exists_error) if exist?
+
+        create_path_dir
+
+        if zip_entry.file?
+          success(entry: extract_file)
+        elsif zip_entry.directory?
+          success(entry: extract_dir)
+        elsif zip_entry.symlink?
+          success(entry: extract_symlink)
+        else
+          return error("File #{zip_entry.name} cannot be extracted", :unsupported_entry_error)
+        end
+      rescue SafeZip::Extract::Error
+        return error("Extract error", :extract_error)
+      rescue Zip::EntrySizeError => e
+        return error("Entry size error `#{e.message}`", :entry_size_error)
+      rescue StandardError => e
+        return error("Extract error `#{e.message}`", :extract_error)
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+- [DistributedCache#defer_get_set](https://github.com/discourse/discourse/blob/v3.5.2/lib/distributed_cache.rb#L16) from [Discourse](https://github.com/discourse/discourse).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def defer_get_set(k, &block)
+        raise TypeError if !Rails.env.production? && !k.is_a?(String)
+
+        return self[k] if hash.key? k
+        value = block.call
+        self.defer_set(k, value)
+        value
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def defer_get_set(k, &block)
+        return error("Production Rails env or key is NOT string") if !Rails.env.production? && !k.is_a?(String)
+
+        return success(value: self[k]) if hash.key? k
+        value = block.call
+        self.defer_set(k, value)
+        success(value: value)
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+After a careful review of all those methods:
+
+- Can you see a common pattern of how people decide between fallbacks and exceptions?
+
+- Does this pattern look uniformly reproducible?
+
+- Can you explain it to the beginner devs so that they can apply it the same way all the time?
+
+That is why Convenient Service uses the notion of the service goals.
