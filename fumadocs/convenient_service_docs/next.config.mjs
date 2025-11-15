@@ -19,7 +19,14 @@ const config = {
      *   Otherwise, `yarn build` has warnings.
      */
     root: __dirname
-  }
+  },
+
+  /**
+   * - https://fumadocs.dev/docs/ui/static-export
+   * - https://nextjs.org/docs/pages/guides/static-exports
+   */
+  output: 'export',
+  distDir: 'build/v1',
 };
 
 export default withMDX(config);
