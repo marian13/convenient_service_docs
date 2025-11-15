@@ -1,5 +1,7 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 
+import { publicLinkUrlWithPrefix } from "../custom/links";
+
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
@@ -10,7 +12,7 @@ export function baseOptions(): BaseLayoutProps {
       title: (
         <>
           <img
-            src="/logo.png"
+            src={publicLinkUrlWithPrefix("/logo.png")}
             alt="Convenient Service Logo"
             className="h-8 w-auto"
           />

@@ -27,6 +27,13 @@ const config = {
    */
   output: 'export',
   distDir: 'build/v1',
+
+  /**
+   * - https://nextjs.org/docs/pages/api-reference/config/next-config-js/basePath
+   * - http://nextjs.org/docs/app/api-reference/config/next-config-js/assetPrefix
+   */
+  basePath: "/v1",
+  assetPrefix: "/v1"
 };
 
 export default withMDX(config);

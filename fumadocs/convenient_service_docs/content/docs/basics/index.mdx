@@ -4,12 +4,14 @@ description: Convenient Service Basics.
 index: true
 ---
 
+import { docsLinkUrlWithPrefix } from "../../../custom/links"
+
 <Cards>
-  <Card href="/docs/basics/services" title="Services">
+  <Card href={docsLinkUrlWithPrefix("basics/services")} title="Services">
     What is a service?
   </Card>
 
-  <Card href="/docs/basics/results" title="Results">
+  <Card href={docsLinkUrlWithPrefix("basics/results")} title="Results">
     What is a result?
   </Card>
 

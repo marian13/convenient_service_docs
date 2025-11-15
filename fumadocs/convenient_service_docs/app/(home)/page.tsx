@@ -1,12 +1,14 @@
 import { ThemeToggle } from '../../custom/components/themeToggle';
 
+import { publicLinkUrlWithPrefix, docsLinkUrlWithPrefix } from '../../custom/links';
+
 export default function HomePage() {
   return (
     <div className="flex flex-col justify-center text-center flex-1">
       <h1 className="text-2xl font-bold mb-4">Convenient Service</h1>
 
       <p className="mb-4 flex justify-center">
-        <img src="/logo.png" width="300" />
+        <img src={publicLinkUrlWithPrefix("/logo.png")} width="300" />
       </p>
 
       <p>
@@ -22,9 +24,9 @@ export default function HomePage() {
       </p>
 
       <div className="mt-4 flex justify-center gap-3">
-        <a type="button" className="btn" href="/docs/tldr">TL;DR</a>
+        <a type="button" className="btn" href={docsLinkUrlWithPrefix("tldr")}>TL;DR</a>
 
-        <a type="button" className="btn" href="/docs/basics">User Docs</a>
+        <a type="button" className="btn" href={docsLinkUrlWithPrefix("basics")}>User Docs</a>
 
         <a type="button" className="btn" href="https://apidocs.convenientservice.org" target="_blank" rel="noopener noreferrer" >API Docs</a>
 
