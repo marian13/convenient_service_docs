@@ -1,0 +1,961 @@
+# Installation
+
+import { version } from '../../custom/constants';
+import { CodeBlock } from '../../custom/components/codeBlock';
+
+There are multiple installation methods. Pick the one that best fits your needs.
+
+## Bundler
+
+Add the following line to your Gemfile:
+
+<CodeBlock lang="ruby" code={`gem "convenient_service", "~> ${version}"`} />
+
+And then run:
+
+```bash
+bundle install
+```
+
+## Without Bundler
+
+Execute the command below:
+
+<CodeBlock lang="bash" code={`gem install convenient_service -v ${version}`} />
+
+<Callout>
+  Convenient Service follows the [Semantic Versioning](https://semver.org/) standard.
+</Callout>
+
+
+# Requirements
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Convenient Service has exactly the same public API and behavior for all supported Ruby versions.
+
+## Recommended
+
+* [Ruby 3.0 or higher](https://ruby-lang.org/en/documentation/installation/#asdf-vm).
+
+## Minimal
+
+* [Ruby 2.7](https://ruby-lang.org/en/documentation/installation/#asdf-vm).
+
+<Callout>
+  Ruby 3+ provides some [advanced features](https://rubyreferences.github.io/rubychanges/3.0.html) that are used internally to optimize performance.
+</Callout>
+
+
+# TL;DR
+
+> I have no time to read tons of docs. <br />
+> Just show me an example use case and I'll quickly craft something similar 😎.
+>
+> — A lazy and productive developer.
+
+```ruby
+# Any source code in the project.
+def read_file_content(path)
+  result = ReadFileContent.result(path: path)
+
+  if result.success?
+    ##
+    # Service tried to read the file content and completed it.
+    #
+    result.data[:content] # File content.
+  elsif result.failure?
+    ##
+    # Service tried to read file content, but did NOT complete it due to some expected reason.
+    #
+    App.logger.warn { result.message.to_s }
+
+    "" # Fallback value or any other reasonable fallback behavior.
+  else # result.error?
+    ##
+    # Service NOT even tried to read file content due to an exception.
+    #
+    App.logger.error { result.message.to_s }
+
+    raise VerboseException, result.message.to_s # Self-explanatory exception or any other reasonable exception handling behavior.
+  end
+end
+```
+
+```ruby
+gem "convenient_service", "1.0.0"
+```
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    require "convenient_service"
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    require "active_model" # NOTE: Minimal `active_model` version - `5.2.0`.
+
+    require "convenient_service"
+
+    require "convenient_service/extras/standard/config/options/active_model_attribute_assignment"
+    require "convenient_service/extras/standard/config/options/active_model_attributes"
+    require "convenient_service/extras/standard/config/options/active_model_validations"
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    require "dry-initializer" # NOTE: Minimal `dry-initializer` version - `3.0.0`.
+    require "dry-validation" # NOTE: Minimal `dry-validation` version - `1.5.0`.
+
+    require "convenient_service"
+
+    require "convenient_service/extras/standard/config/options/dry_initializer"
+    require "convenient_service/extras/standard/config/options/dry_validation"
+    ```
+  </Tab>
+
+  <Tab value="Custom">
+    ```ruby
+    require "active_model" # NOTE: Minimal `active_model` version - `5.2.0`.
+    require "dry-initializer" # NOTE: Minimal `dry-initializer` version - `3.0.0`.
+    require "awesome_print" # NOTE: Minimal `awesome_print` version - `1.0.0`.
+
+    require "convenient_service"
+
+    require "convenient_service/extras/standard/config/options/active_model_validations"
+    require "convenient_service/extras/standard/config/options/dry_initializer"
+    require "convenient_service/extras/standard/config/options/awesome_print_inspect" if Rails.env.development? || Rails.env.test?
+    ```
+  </Tab>
+</Tabs>
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    module ApplicationService
+      module Config
+        include ConvenientService::Config
+
+        included do
+          include ConvenientService::Standard::Config
+        end
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    module RailsService
+      module Config
+        include ConvenientService::Config
+
+        included do
+          include ConvenientService::Standard::Config
+            .with(
+              :active_model_attribute_assignment,
+              :active_model_attributes,
+              :active_model_attributes
+            )
+        end
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    module DryService
+      module Config
+        include ConvenientService::Concern
+
+        included do
+          include ConvenientService::Standard::Config
+            .with(
+              :using_dry_initializer,
+              :using_dry_validation
+            )
+        end
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Custom">
+    ```ruby
+    module CustomService
+      module Config
+        include ConvenientService::Config
+
+        included do
+          include ConvenientService::Standard::Config
+            .with(
+              :using_dry_initializer,
+              :using_active_model_validations
+              awesome_print_inspect: Rails.env.local?
+            )
+            .without(
+              fault_tolerance: Rails.env.test?
+            )
+        end
+      end
+    end
+    ```
+  </Tab>
+</Tabs>
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    class AssertFileExists
+      include ApplicationService::Config
+
+      attr_reader :path
+
+      def initialize(path:)
+        @path = path
+      end
+
+      def result
+        return error("Path is `nil`") if path.nil?
+        return error("Path is empty") if path.empty?
+
+        return failure("File does not exist at path `#{path}`") unless File.exist?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    class AssertFileExists
+      include RailsService::Config
+
+      attribute :path, :string
+
+      validates :path, presence: true
+
+      def result
+        return failure("File does not exist at path `#{path}`") unless File.exist?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    class AssertFileExists
+      include DryService::Config
+
+      option :path
+
+      contract do
+        schema do
+          required(:path).value(:string)
+        end
+      end
+
+      def result
+        return failure("File does not exist at path `#{path}`") unless File.exist?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Custom">
+    ```ruby
+    class AssertFileExists
+      include CustomService::Config
+
+      option :path
+
+      validates :path, presence: true
+
+      def result
+        return failure("File does not exist at path `#{path}`") unless File.exist?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+</Tabs>
+
+```ruby
+result = AssertFileExists.result(path: "Gemfile")
+```
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    class AssertFileNotEmpty
+      include ApplicationService::Config
+
+      attr_accessor :path
+
+      def initialize(path:)
+        @path = path
+      end
+
+      def result
+        return error("Path is `nil`") if path.nil?
+        return error("Path is empty") if path.empty?
+
+        return failure("File is empty at path `#{path}`") if File.zero?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    class AssertFileNotEmpty
+      include RailsService::Config
+
+      attribute :path, :string
+
+      validates :path, presence: true
+
+      def result
+        return failure("File is empty at path `#{path}`") if File.zero?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    class AssertFileNotEmpty
+      include DryService::Config
+
+      option :path
+
+      contract do
+        schema do
+          required(:path).value(:string)
+        end
+      end
+
+      def result
+        return failure("File is empty at path `#{path}`") if File.zero?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Custom">
+    ```ruby
+    class AssertFileNotEmpty
+      include CustomService::Config
+
+      option :path
+
+      validates :path, presence: true
+
+      def result
+        return failure("File is empty at path `#{path}`") if File.zero?(path)
+
+        success
+      end
+    end
+    ```
+  </Tab>
+</Tabs>
+
+```ruby
+result = AssertFileNotEmpty.result(path: "Gemfile")
+```
+
+<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+  <Tab value="Standard" default>
+    ```ruby
+    class ReadFileContent
+      include ApplicationService::Config
+
+      attr_reader :path
+
+      step :validate_path
+      step AssertFileExists, in: :path
+      step AssertFileNotEmpty, in: :path
+      step :result, in: :path, out: :content
+
+      def initialize(path:)
+        @path = path
+      end
+
+      def result
+        success(content: File.read(path))
+      end
+
+      private
+
+      def validate_path
+        return error("Path is `nil`") if path.nil?
+        return error("Path is empty") if path.empty?
+
+        success
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Rails">
+    ```ruby
+    class ReadFileContent
+      include RailsService::Config
+
+      attribute :path, :string
+
+      validates :path, presence: true
+
+      step AssertFileExists, in: :path
+      step AssertFileNotEmpty, in: :path
+      step :result, in: :path, out: :content
+
+      def result
+        success(content: File.read(path))
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Dry">
+    ```ruby
+    class ReadFileContent
+      include DryService::Config
+
+      option :path
+
+      contract do
+        schema do
+          required(:path).value(:string)
+        end
+      end
+
+      step AssertFileExists, in: :path
+      step AssertFileNotEmpty, in: :path
+      step :result, in: :path, out: :content
+
+      def result
+        success(content: File.read(path))
+      end
+    end
+    ```
+  </Tab>
+
+  <Tab value="Custom">
+    ```ruby
+    class ReadFileContent
+      include CustomService::Config
+
+      option :path
+
+      validates :path, presence: true
+
+      step AssertFileExists, in: :path
+      step AssertFileNotEmpty, in: :path
+      step :result, in: :path, out: :content
+
+      def result
+        success(content: File.read(path))
+      end
+    end
+    ```
+  </Tab>
+</Tabs>
+
+```ruby
+result = ReadFileContent.result(path: "Gemfile")
+```
+
+See more [examples](https://github.com/marian13/convenient_service/tree/main/lib/convenient_service/examples) with [specs](https://github.com/marian13/convenient_service/tree/main/spec/lib/convenient_service/examples) in the Convenient Service [repo](https://github.com/marian13/convenient_service).
+
+
+# Basics
+
+import { docsLinkUrlWithPrefix } from "../../../custom/links"
+
+<Cards>
+  <Card href={docsLinkUrlWithPrefix("basics/services")} title="Services">
+    What is a service?
+  </Card>
+
+  <Card href={docsLinkUrlWithPrefix("basics/results")} title="Results">
+    What is a result?
+  </Card>
+
+  {/* <Card
+      href="/docs/ui/components"
+      title="Components"
+      description="See all available components to enhance your docs"
+    /> */}
+</Cards>
+
+
+# Result Types
+
+## Success, failure, and error
+
+The are 3 types of results in Convenient Service - `success`, `failure`, and `error`.
+
+The simplest way to explain them is based on a comparison to the regular methods.
+
+Therefore, the definition may be the following:
+
+* The `success` results are returned from services exactly at the same cases when the expected values are returned from the regular methods.
+
+* The `failure` results are returned from services exactly at the same cases when the fallback values are returned from the regular methods.
+
+* The `error` results are returned from services exactly at the same cases when the exceptions are raised from the regular methods.
+
+So, basically, the main difference between the `failure` and `error` results is whether to continue or stop the process when something is not successful just like between fallbacks and exceptions in the regular methods.
+
+<Callout>
+  For boolean methods "fallback" values are `false` and `nil`.
+</Callout>
+
+<Callout>
+  For void methods "fallbacks" are returns before the desired side-effect is applied.
+</Callout>
+
+## Results in the wild
+
+Let's check some real-world examples of the methods with both fallbacks and exceptions and see how they may look like with Convenient Service results.
+
+* [Context#context\_superclass](https://github.com/hanami/hanami/blob/v2.3.1/lib/hanami/extensions/view/context.rb#L36) method taken from [Hanami](http://github.com/hanami/hanami).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def context_superclass(slice)
+        return Hanami::View::Context if Hanami.app.equal?(slice)
+
+        begin
+          slice.inflector.constantize(
+            slice.inflector.camelize("#{slice.app.slice_name.name}/views/context")
+          )
+        rescue NameError => e
+          raise e unless %i[Views Context].include?(e.name)
+
+          Hanami::View::Context
+        end
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def context_superclass(slice)
+        return failure("Hanami app is equal to slice `#{slice}`") if Hanami.app.equal?(slice)
+
+        begin
+          success(superclass: slice.inflector.constantize(
+            slice.inflector.camelize("#{slice.app.slice_name.name}/views/context")
+          ))
+        rescue NameError => e
+          return error("Name `#{e.name}` does NOT include `Views` or `Context`") unless %i[Views Context].include?(e.name)
+
+          failure("Invalid name `#{e.name}`")
+        end
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+* [CommentVisitor#process?](https://github.com/rails/rails/blob/v8.1.1/tools/rdoc-to-md#L120) method taken from [Rails](https://github.com/rails/rails).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def process?(comments)
+        return false if comments.empty?
+
+        if comments.any?(&:trailing?)
+          return false if comments.all?(&:trailing?)
+
+          raise "only some comments are trailing?"
+        end
+
+        true
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def process?(comments)
+        return failure("Comments are empty") if comments.empty?
+
+        if comments.any?(&:trailing?)
+          return failure("All comments are trailing") if comments.all?(&:trailing?)
+
+          return error("only some comments are trailing?")
+        end
+
+        success
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+* [ResponseBuilder#perform](https://github.com/chatwoot/chatwoot/blob/v4.7.0/app/builders/csat_surveys/response_builder.rb#L4) method taken from [Chatwood](https://github.com/chatwoot/chatwoot).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def perform
+        raise 'Invalid Message' unless message.input_csat?
+
+        conversation = message.conversation
+        rating = message.content_attributes.dig('submitted_values', 'csat_survey_response', 'rating')
+        feedback_message = message.content_attributes.dig('submitted_values', 'csat_survey_response', 'feedback_message')
+
+        return if rating.blank?
+
+        process_csat_response(conversation, rating, feedback_message)
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def perform
+        return error("Invalid Message") unless message.input_csat?
+
+        conversation = message.conversation
+        rating = message.content_attributes.dig('submitted_values', 'csat_survey_response', 'rating')
+        feedback_message = message.content_attributes.dig('submitted_values', 'csat_survey_response', 'feedback_message')
+
+        return failure("Rating is blank") if rating.blank?
+
+        success(csat_survey_response: process_csat_response(conversation, rating, feedback_message))
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+* [Entry#extract](https://gitlab.com/gitlab-org/gitlab/-/blob/v18.5.0-ee/lib/safe_zip/entry.rb?ref_type=tags#L27) method taken from [GitLab](https://gitlab.com/gitlab-org/gitlab).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def extract
+        # do not extract if file is not part of target directory or target file
+        return false unless matching_target_directory || matching_target_file
+
+        # do not overwrite existing file
+        raise SafeZip::Extract::AlreadyExistsError, "File already exists #{zip_entry.name}" if exist?
+
+        create_path_dir
+
+        if zip_entry.file?
+          extract_file
+        elsif zip_entry.directory?
+          extract_dir
+        elsif zip_entry.symlink?
+          extract_symlink
+        else
+          raise SafeZip::Extract::UnsupportedEntryError, "File #{zip_entry.name} cannot be extracted"
+        end
+      rescue SafeZip::Extract::Error
+        raise
+      rescue Zip::EntrySizeError => e
+        raise SafeZip::Extract::EntrySizeError, e.message
+      rescue StandardError => e
+        raise SafeZip::Extract::ExtractError, e.message
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def extract
+        # do not extract if file is not part of target directory or target file
+        return failure("file is not part of target directory or target file") unless matching_target_directory || matching_target_file
+
+        # do not overwrite existing file
+        return error("File already exists #{zip_entry.name}", :already_exists_error) if exist?
+
+        create_path_dir
+
+        if zip_entry.file?
+          success(entry: extract_file)
+        elsif zip_entry.directory?
+          success(entry: extract_dir)
+        elsif zip_entry.symlink?
+          success(entry: extract_symlink)
+        else
+          return error("File #{zip_entry.name} cannot be extracted", :unsupported_entry_error)
+        end
+      rescue SafeZip::Extract::Error
+        return error("Extract error", :extract_error)
+      rescue Zip::EntrySizeError => e
+        return error("Entry size error `#{e.message}`", :entry_size_error)
+      rescue StandardError => e
+        return error("Extract error `#{e.message}`", :extract_error)
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+* [DistributedCache#defer\_get\_set](https://github.com/discourse/discourse/blob/v3.5.2/lib/distributed_cache.rb#L16) from [Discourse](https://github.com/discourse/discourse).
+
+  <Tabs items={["Original", "With Results"]}>
+    <Tab value="Original" default>
+      ```ruby
+      def defer_get_set(k, &block)
+        raise TypeError if !Rails.env.production? && !k.is_a?(String)
+
+        return self[k] if hash.key? k
+        value = block.call
+        self.defer_set(k, value)
+        value
+      end
+      ```
+    </Tab>
+
+    <Tab value="With Results">
+      ```ruby
+      def defer_get_set(k, &block)
+        return error("Production Rails env or key is NOT string") if !Rails.env.production? && !k.is_a?(String)
+
+        return success(value: self[k]) if hash.key? k
+        value = block.call
+        self.defer_set(k, value)
+        success(value: value)
+      end
+      ```
+    </Tab>
+  </Tabs>
+
+After a careful review of all those methods:
+
+* Can you see a common pattern of how people decide between fallbacks and exceptions?
+
+* Does this pattern look uniformly reproducible?
+
+* Can you explain it to the beginner devs so that they can apply it the same way all the time?
+
+That is why Convenient Service uses the notion of the service goals.
+
+
+# Results
+
+## Motivation behind results
+
+[Usually](https://www.toptal.com/ruby-on-rails/rails-service-objects-tutorial), the service exposes a sole public method, let it be `call` for this case.
+
+```ruby
+class Service
+  def call
+    # ...
+  end
+end
+```
+
+Since Ruby is a [dynamic language](https://en.wikipedia.org/wiki/Dynamic_programming_language), `call` may return any type of value.
+
+Sometimes it is advantageous, for things like [Duck Typing](https://en.wikipedia.org/wiki/Duck_typing), [Abstract Factories](https://refactoring.guru/design-patterns/abstract-factory), [Null Objects](https://sourcemaking.com/design_patterns/null_object), etc.
+
+But occasionally it may also become problematic.
+
+For example, you can not implement a unified way to check whether the value was calculated correctly (as it was intended by its author).
+
+```ruby
+value = service.call
+
+if value.any? # When an array.
+if value.cover?(0...100) # Range.
+if value.match(/^[0-9]*$/) # Regexp.
+if value.dig(:user, :address) # Hash.
+if value.nozero? # Integer....
+```
+
+<Callout>
+  Someone may consider [Object#blank?](https://api.rubyonrails.org/classes/Object.html#method-i-blank-3F) and its opposite [Object#present?](https://api.rubyonrails.org/classes/Object.html#method-i-present-3F) from [ActiveSupport](https://guides.rubyonrails.org/active_support_core_extensions.html) as an attempt, but they detect [truthiness](https://stackoverflow.com/a/20663389/12201472) in the Rails sense.
+</Callout>
+
+Also it is common to forget to verify if the returned value is actually what you need:
+
+```ruby
+hash = service.call
+
+hash.merge(other_hash)
+# Expected a merge, but it raises since hash is nil...
+```
+
+[Convenient Service](/) suggests utilizing Result objects as a way to overcome the problems listed above.
+
+Practically speaking, to return results from all services.
+
+To express this idea, let's create a different public method instead of `call` and name it `result`.
+
+```ruby
+class Service
+  def result
+    # ...
+  end
+end
+```
+
+Now, we have the following invocation:
+
+```ruby
+result = service.result
+
+if result.success?
+  result.data
+else
+  result.message
+end
+```
+
+## So what is a Result? Its benefits?
+
+*Result* is a data structure that satisfies the following properties:
+
+* Firstly, it has a consolidated way to detect its state (`success?`, `failure?`, `error?`, and their counterparts with `not` like `not_success?`).
+
+* Secondly, when the result is successful, you can be 100% sure that its data is correct, no additional verifications are needed (the notion of correctness is defined by the service author).
+
+* Moveover, results induce you to always check them, before accessing their attributes, otherwise an exception is raised.
+
+* Also, when something goes wrong, the result contains a description of the reason (`result.message`), which simplifies finding the source of the problem.
+
+
+# Service goals
+
+To get an idea of the result types even better, let's introduce an auxiliary term - *service goal*.
+
+## What is the service goal?
+
+The *service goal* is the desired effect of an action/operation.
+
+What does it mean in practise?
+
+Imagine the service below:
+
+```ruby
+class FindUser
+  # ...
+
+  def initialize(user_id:)
+    @user_id = user_id
+  end
+
+  def result
+    # ...
+  end
+end
+```
+
+Its desired effect is the found user record.
+
+Simple and straightforward.
+
+So, if you are a developer who wants to utilize this service, the only reason why you would decide to do it is to get the user record.
+
+Thus the following conclusion can be made.
+
+We always invoke a service to achieve some concrete goal defined by the service author.
+
+In other words, we call a service to resolve some specific problem stated by the service name.
+
+## Service problem resolutions
+
+Let's come back to the `FindUser` service and add some basic implementation for it.
+
+```ruby
+class FindUser
+  include ::ConvenientService::Standard::Config
+
+  def initialize(user_id:)
+    @user_id = user_id
+  end
+
+  def result
+    return error("User id in NOT an integer") unless user_id.instance_of?(::Integer)
+
+    user = ::User.find_by(id: user_id)
+
+    return failure("NO user with id `#{user_id}`") unless user
+
+    success(user: user)
+  end
+end
+```
+
+```ruby
+result = FindUser.result(user_id: user_id)
+# => `success`, `failure` or `error`.
+```
+
+As you can see, it may return one of the three possible result types that represent different resolutions.
+
+Each of them has a specific meaning.
+
+The `success` result communicates to its caller the positive service problem resolution, since the found user record is returned as expected.
+
+The `failure` result provides the negative resolution, because the user record does not exist in database.
+
+The `error` result gives no resolution at all, since the service no even tried to complete the user lookup.
+
+
+# Services
+
+## What is a service?
+
+*Service* is an object that does only one operation, [nothing more, nothing less](https://ludwig.guru/s/nothing+more+and+nothing+less).
+
+Service may usually be implemented as follows:
+
+```ruby
+class Service
+  def call
+    # ...
+  end
+end
+```
+
+It has a single public method, often named [`call`](https://blog.eq8.eu/article/ruby-call-method.html) or `run`, `process`, `perform`, `execute`, etc, that is used to invoke its logic.
+
+```ruby
+service = Service.new
+
+service.call
+```
+
+## Why do we need services?
+
+> Hang on a minute!  According to the definition above, a service is almost the same as a regular function/method. Why do we need a new concept?
+>
+> — A curious developer
+
+Usual Ruby methods may solve similar problems as services most of the time.
+
+Moreover, when it is possible to achieve the task only by using plain methods, it is almost always preferable.
+
+As a result, services should NOT be considered competitors or replacements for methods, they are additions to them.
+
+It is like a new option in the development toolbox.
+
+You have primitives, methods, classes, etc, and now there is an ability to use a service.
+
+For example, removing duplicates from an array can be implemented in multiple ways, you decide whether to utilize an [array](https://www.geeksforgeeks.org/remove-duplicates-sorted-array/?ref=lbp), [hash](https://www.geeksforgeeks.org/remove-duplicates-from-unsorted-array-using-map-data-structure/?ref=lbp) or a [set](https://www.geeksforgeeks.org/remove-duplicates-from-unsorted-array-using-set-data-structure/), depending on your environment limitations.
+
+The same case is with services. Just use them when you feel they bring advantages compared to other approaches.
