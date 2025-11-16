@@ -2,9 +2,9 @@
 title: Service goals
 ---
 
-To get an idea of the result types even better, let's introduce an auxiliary term - *service goal*.
+To get an idea of the result types better, let's introduce an auxiliary term - *service goal*.
 
-## What is the service goal?
+## What is a service goal?
 
 The *service goal* is the desired effect of an action/operation.
 
@@ -38,22 +38,22 @@ We always invoke a service to achieve some concrete goal defined by the service 
 
 In other words, we call a service to resolve some specific problem stated by the service name.
 
-## Service problem resolutions
+## Service goal resolutions
 
 Let's come back to the `FindUser` service and add some basic implementation for it.
 
 ```ruby
 class FindUser
-  include ::ConvenientService::Standard::Config
+  include ConvenientService::Standard::Config
 
   def initialize(user_id:)
     @user_id = user_id
   end
 
   def result
-    return error("User id in NOT an integer") unless user_id.instance_of?(::Integer)
+    return error("User id in NOT an integer") unless user_id.instance_of?(Integer)
 
-    user = ::User.find_by(id: user_id)
+    user = User.find_by(id: user_id)
 
     return failure("NO user with id `#{user_id}`") unless user
 
@@ -71,7 +71,7 @@ As you can see, it may return one of the three possible result types that repres
 
 Each of them has a specific meaning.
 
-The `success` result communicates to its caller the positive service problem resolution, since the found user record is returned as expected.
+The `success` result communicates to its caller the positive service goal resolution, since the found user record is returned as expected.
 
 The `failure` result provides the negative resolution, because the user record does not exist in database.
 

@@ -3,6 +3,8 @@
     "services",
     "results",
     "result_types",
-    "service_goals"
+    "service_goals",
+    "errors",
+    "failures"
   ]
 }

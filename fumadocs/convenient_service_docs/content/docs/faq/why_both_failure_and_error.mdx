@@ -1,0 +1,154 @@
+---
+title: Why both failures and errors?
+description: Why not just failure or error?
+---
+
+## Failures and errors often can not be handled identically
+
+Consider the following user story.
+
+_As a dispatcher I would like to see a list of aerodromes._
+
+The list is received from the third-party API.
+
+Sometimes a controller for this task may be implemented as follows.
+
+```ruby title="controllers/aerodromes_controller.rb"
+class AerodromesController < ApplicationController
+  # ...
+  def index
+    # `response` is a `Hash`.
+    response = ApiClient.get(
+      "/aerodromes",
+      params: {region_id: permitted_region_id}
+    )
+
+    @aerodromes = response.dig(:data, :aerodromes)
+  end
+end
+```
+
+And the corresponding view.
+
+```erb title="views/aerodromes/index.html.erb"
+<h2>Aerodromes</h2>
+
+<% if @aerodromes.present? %>
+  <% @aerodromes.each do |aerodrome| %>
+    <p>
+      <div>
+        Name: <%= aerodrome[:name] %>
+      </div>
+      <div>
+        Location: <%= aerodrome[:location] %>
+      </div>
+    </p>
+  <% end %>
+<% else %>
+  <div>
+    Region has no aerodromes.
+  </div>
+<% end %>
+```
+
+The code may look innocent from the first point of view, but the devil is in the details.
+
+In a case, the API response has an unexpected format, `response.dig(:data, :aerodromes)` returns `nil`.
+
+Then `@aerodrome.present?` is evaluated as `false` in the view.
+
+As a consequence, the `"Region has no aerodromes."` string is displayed in the dispatcher's screen.
+
+That is why the real dispatchers have a lot of altermative sources of information. But the concept of the concern should be clear now.
+
+Unfortunately, a code with similar problems sometimes may be written even by experienced developers 😢.
+
+That is one of the main reasons of why Convenient Service differentiate [failures](basics/failures) and [errors](/basics/errors).
+
+Sure, the lib still can NOT 100% guarantee the complete elimination of the issue.
+
+However, it encourages the users to think about fallbacks and split the failures and errors from the beginning.
+
+The curiosity or the confusion that people feel when they find it difficult to decide whether to use a [failure](/basics/failures) or an [error](/basics/errors) works as a provocation for them to open and read this article.
+
+This way they become aware of the issue and share it with others more frequently.
+
+Refactoring using Convenient Service is the following:
+
+```ruby title="controllers/aerodromes_controller.rb"
+class FetchAerodromes
+  include ConvenientService::Standard::Config
+  # ...
+  def result
+    return error("API response does not have `data` key") unless response.has_key?(:data)
+    return error("API response data does not have `aerodromes` key") unless response[:data].has_key?(:aerodromes)
+
+    return failure("Region `#{permitted_region_id}` has no aerodromes.") if response[:data][:aerodromes].empty?
+
+    success(aerodromes: response[:data][:aerodromes])
+  end
+
+  private
+
+  def response
+    # `response` is a `Hash`.
+    @response ||= ApiClient.get("/aerodromes", params: {region_id: permitted_region_id})
+  end
+end
+```
+
+```ruby title="controllers/aerodromes_controller.rb"
+class AerodromesController < ApplicationController
+  # ...
+  def index
+    @fetch_aerodromes_result = FetchAerodromes.result(permitted_region_id: permitted_region_id)
+  end
+end
+```
+
+```erb title="views/aerodromes/index.html.erb"
+<h2>Aerodromes</h2>
+
+<% if @fetch_aerodromes_result.success? %>
+  <% @fetch_aerodromes_result.data[:aerodromes].each do |aerodrome| %>
+    <p>
+      <div>
+        Name: <%= aerodrome[:name] %>
+      </div>
+      <div>
+        Location: <%= aerodrome[:location] %>
+      </div>
+    </p>
+  <% end %>
+<% elsif @fetch_aerodromes_result.failure? %>
+  <div>
+    Region has no aerodromes.
+  </div>
+<% else # @fetch_aerodromes_result.error? %>
+  <div>
+    No aerodromes information available.
+  </div>
+  <div>
+    Try to refresh the page after a while.
+  <div>
+  <div>
+    If the issue persists please contact the support.
+  </div>
+<% end %>
+```
+
+The code is more verbose, but that is the price of reliability.
+
+Using the [service goal resolution terminology](/basics/service_goals), this is what we have as a summary.
+
+- `@fetch_aerodromes_result.success?` means that a region 100% has aerodromes (positive service goal resolution).
+
+  So that we can display them.
+
+- `@fetch_aerodromes_result.failure?` means that a region 100% has NO aerodromes (negative service goal resolution).
+
+  Therefore we are confident in the "Region has no aerodromes" text.
+
+- `@fetch_aerodromes_result.error?` means that even after service invocation, we still don't know whether a region has aerodromes or not (no service goal resolution at all).
+
+  Due to that, we are telling the truth that "No aerodromes information available" instead of the false-negative resolution that we had before the separation of failures and errors.

@@ -1,0 +1,62 @@
+---
+title: Errors
+---
+
+Now, it is time to describe each result type in more detail. Let's start with _errors_.
+
+## What is an error?
+
+_Error_ is a result type caused either by the wrong input data (_validation error_) or by the exceptional behaviour (_exception error_).
+
+In some cases, it may be a validation rule violation, unsatisfied [assertion](https://wiki.c2.com/?ReplaceCommentWithAssertion), or unmet precondition based on the service arguments.
+
+It is a responsibility of a developer/service user to provide correct inputs.
+
+Otherwise, there is no sense in even starting any service processing.
+
+Also errors are often semantically close to the [exceptions](https://ruby-doc.org/core-2.7.0/Exception.html).
+
+In other words, service errors are frequently located at the same places where [exceptions](https://ruby-doc.org/core-2.7.0/Exception.html) are [raised/rescued](https://ruby-doc.com/docs/ProgrammingRuby/html/tut_exceptions.html) in the reqular methods.
+
+<Callout>
+  Exceptional behaviour like HTTP connection issues, database inconsistencies, timeouts, etc are also errors.
+</Callout>
+
+Check out the following example:
+
+```ruby
+class EnsureFeatureActive
+  # ...
+  def initialize(name:)
+    @name = name
+  end
+
+  def result
+    return error("Feature name can NOT be `nil`") if name.nil?
+    return error("Unknown feature `#{name}`") unless Feature.exist?(name: name)
+
+    # ... Tricky and non trivial logic to ensure that feature is active...
+  rescue Feature::Exceptions::ConnectionTimeout => exception
+    return error("Feature `#{name}` connection timeout due to `#{exception.message}`")
+  end
+end
+```
+
+And this is how it can be triggerred:
+
+```ruby
+result = EnsureFeatureActive.result(name: "Fancy feature")
+
+if result.error?
+  # `result.message` is a string-like object with error reason.
+  result.message
+end
+```
+
+There is no point to involve all the heavy machinery when the feature name is `nil`.
+
+Why do we need to waste any expensive resources if the feature name is unknown?
+
+Can we guarantee whether the feature is actually active when a connection timeout happens?
+
+So, the one of the purposes of the error result is to say that the callers need to make adjustments in their code/config/dependency, not the service authors.
