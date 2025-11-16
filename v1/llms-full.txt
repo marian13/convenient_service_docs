@@ -1,3 +1,14 @@
+# Contributing
+
+## Debug
+
+### How to debug complex edge cases, for example, threading issues?
+
+Consider to check the [`lib/convenient_service/debug`](https://github.com/marian13/convenient_service/tree/main/lib/convenient_service/debug) directory.
+
+It may already contain the debugging tools for the common problems.
+
+
 # Installation
 
 import { version } from '../../custom/constants';
@@ -486,6 +497,68 @@ result = ReadFileContent.result(path: "Gemfile")
 See more [examples](https://github.com/marian13/convenient_service/tree/main/lib/convenient_service/examples) with [specs](https://github.com/marian13/convenient_service/tree/main/spec/lib/convenient_service/examples) in the Convenient Service [repo](https://github.com/marian13/convenient_service).
 
 
+# Errors
+
+Now, it is time to describe each result type in more detail. Let's start with *errors*.
+
+## What is an error?
+
+*Error* is a result type caused either by the wrong input data (*validation error*) or by the exceptional behaviour (*exception error*).
+
+In some cases, it may be a validation rule violation, unsatisfied [assertion](https://wiki.c2.com/?ReplaceCommentWithAssertion), or unmet precondition based on the service arguments.
+
+It is a responsibility of a developer/service user to provide correct inputs.
+
+Otherwise, there is no sense in even starting any service processing.
+
+Also errors are often semantically close to the [exceptions](https://ruby-doc.org/core-2.7.0/Exception.html).
+
+In other words, service errors are frequently located at the same places where [exceptions](https://ruby-doc.org/core-2.7.0/Exception.html) are [raised/rescued](https://ruby-doc.com/docs/ProgrammingRuby/html/tut_exceptions.html) in the reqular methods.
+
+<Callout>
+  Exceptional behaviour like HTTP connection issues, database inconsistencies, timeouts, etc are also errors.
+</Callout>
+
+Check out the following example:
+
+```ruby
+class EnsureFeatureActive
+  # ...
+  def initialize(name:)
+    @name = name
+  end
+
+  def result
+    return error("Feature name can NOT be `nil`") if name.nil?
+    return error("Unknown feature `#{name}`") unless Feature.exist?(name: name)
+
+    # ... Tricky and non trivial logic to ensure that feature is active...
+  rescue Feature::Exceptions::ConnectionTimeout => exception
+    return error("Feature `#{name}` connection timeout due to `#{exception.message}`")
+  end
+end
+```
+
+And this is how it can be triggerred:
+
+```ruby
+result = EnsureFeatureActive.result(name: "Fancy feature")
+
+if result.error?
+  # `result.message` is a string-like object with error reason.
+  result.message
+end
+```
+
+There is no point to involve all the heavy machinery when the feature name is `nil`.
+
+Why do we need to waste any expensive resources if the feature name is unknown?
+
+Can we guarantee whether the feature is actually active when a connection timeout happens?
+
+So, the one of the purposes of the error result is to say that the callers need to make adjustments in their code/config/dependency, not the service authors.
+
+
 # Basics
 
 import { docsLinkUrlWithPrefix } from "../../../custom/links"
@@ -499,11 +572,9 @@ import { docsLinkUrlWithPrefix } from "../../../custom/links"
     What is a result?
   </Card>
 
-  {/* <Card
-      href="/docs/ui/components"
-      title="Components"
-      description="See all available components to enhance your docs"
-    /> */}
+  <Card href={docsLinkUrlWithPrefix("basics/result_types")} title="Result Types">
+    Which result types are available?
+  </Card>
 </Cards>
 
 
@@ -751,7 +822,7 @@ After a careful review of all those methods:
 
 * Can you explain it to the beginner devs so that they can apply it the same way all the time?
 
-That is why Convenient Service uses the notion of the service goals.
+That is why Convenient Service try to use the notion of the service goals.
 
 
 # Results
@@ -840,9 +911,9 @@ end
 
 # Service goals
 
-To get an idea of the result types even better, let's introduce an auxiliary term - *service goal*.
+To get an idea of the result types better, let's introduce an auxiliary term - *service goal*.
 
-## What is the service goal?
+## What is a service goal?
 
 The *service goal* is the desired effect of an action/operation.
 
@@ -876,22 +947,22 @@ We always invoke a service to achieve some concrete goal defined by the service 
 
 In other words, we call a service to resolve some specific problem stated by the service name.
 
-## Service problem resolutions
+## Service goal resolutions
 
 Let's come back to the `FindUser` service and add some basic implementation for it.
 
 ```ruby
 class FindUser
-  include ::ConvenientService::Standard::Config
+  include ConvenientService::Standard::Config
 
   def initialize(user_id:)
     @user_id = user_id
   end
 
   def result
-    return error("User id in NOT an integer") unless user_id.instance_of?(::Integer)
+    return error("User id in NOT an integer") unless user_id.instance_of?(Integer)
 
-    user = ::User.find_by(id: user_id)
+    user = User.find_by(id: user_id)
 
     return failure("NO user with id `#{user_id}`") unless user
 
@@ -909,7 +980,7 @@ As you can see, it may return one of the three possible result types that repres
 
 Each of them has a specific meaning.
 
-The `success` result communicates to its caller the positive service problem resolution, since the found user record is returned as expected.
+The `success` result communicates to its caller the positive service goal resolution, since the found user record is returned as expected.
 
 The `failure` result provides the negative resolution, because the user record does not exist in database.
 
@@ -959,3 +1030,167 @@ You have primitives, methods, classes, etc, and now there is an ability to use a
 For example, removing duplicates from an array can be implemented in multiple ways, you decide whether to utilize an [array](https://www.geeksforgeeks.org/remove-duplicates-sorted-array/?ref=lbp), [hash](https://www.geeksforgeeks.org/remove-duplicates-from-unsorted-array-using-map-data-structure/?ref=lbp) or a [set](https://www.geeksforgeeks.org/remove-duplicates-from-unsorted-array-using-set-data-structure/), depending on your environment limitations.
 
 The same case is with services. Just use them when you feel they bring advantages compared to other approaches.
+
+
+# Frequently Asked Questions
+
+import { docsLinkUrlWithPrefix } from "../../../custom/links"
+
+<Cards>
+  <Card href={docsLinkUrlWithPrefix("faq/why_both_failure_and_error")} title="Why both failures and errors?">
+    Why not just failure or error?
+  </Card>
+</Cards>
+
+
+# Why both failures and errors?
+
+## Failures and errors often can not be handled identically
+
+Consider the following user story.
+
+*As a dispatcher I would like to see a list of aerodromes.*
+
+The list is received from the third-party API.
+
+Sometimes a controller for this task may be implemented as follows.
+
+```ruby title="controllers/aerodromes_controller.rb"
+class AerodromesController < ApplicationController
+  # ...
+  def index
+    # `response` is a `Hash`.
+    response = ApiClient.get(
+      "/aerodromes",
+      params: {region_id: permitted_region_id}
+    )
+
+    @aerodromes = response.dig(:data, :aerodromes)
+  end
+end
+```
+
+And the corresponding view.
+
+```erb title="views/aerodromes/index.html.erb"
+<h2>Aerodromes</h2>
+
+<% if @aerodromes.present? %>
+  <% @aerodromes.each do |aerodrome| %>
+    <p>
+      <div>
+        Name: <%= aerodrome[:name] %>
+      </div>
+      <div>
+        Location: <%= aerodrome[:location] %>
+      </div>
+    </p>
+  <% end %>
+<% else %>
+  <div>
+    Region has no aerodromes.
+  </div>
+<% end %>
+```
+
+The code may look innocent from the first point of view, but the devil is in the details.
+
+In a case, the API response has an unexpected format, `response.dig(:data, :aerodromes)` returns `nil`.
+
+Then `@aerodrome.present?` is evaluated as `false` in the view.
+
+As a consequence, the `"Region has no aerodromes."` string is displayed in the dispatcher's screen.
+
+That is why the real dispatchers have a lot of altermative sources of information. But the concept of the concern should be clear now.
+
+Unfortunately, a code with similar problems sometimes may be written even by experienced developers 😢.
+
+That is one of the main reasons of why Convenient Service differentiate [failures](basics/failures) and [errors](/basics/errors).
+
+Sure, the lib still can NOT 100% guarantee the complete elimination of the issue.
+
+However, it encourages the users to think about fallbacks and split the failures and errors from the beginning.
+
+The curiosity or the confusion that people feel when they find it difficult to decide whether to use a [failure](/basics/failures) or an [error](/basics/errors) works as a provocation for them to open and read this article.
+
+This way they become aware of the issue and share it with others more frequently.
+
+Refactoring using Convenient Service is the following:
+
+```ruby title="controllers/aerodromes_controller.rb"
+class FetchAerodromes
+  include ConvenientService::Standard::Config
+  # ...
+  def result
+    return error("API response does not have `data` key") unless response.has_key?(:data)
+    return error("API response data does not have `aerodromes` key") unless response[:data].has_key?(:aerodromes)
+
+    return failure("Region `#{permitted_region_id}` has no aerodromes.") if response[:data][:aerodromes].empty?
+
+    success(aerodromes: response[:data][:aerodromes])
+  end
+
+  private
+
+  def response
+    # `response` is a `Hash`.
+    @response ||= ApiClient.get("/aerodromes", params: {region_id: permitted_region_id})
+  end
+end
+```
+
+```ruby title="controllers/aerodromes_controller.rb"
+class AerodromesController < ApplicationController
+  # ...
+  def index
+    @fetch_aerodromes_result = FetchAerodromes.result(permitted_region_id: permitted_region_id)
+  end
+end
+```
+
+```erb title="views/aerodromes/index.html.erb"
+<h2>Aerodromes</h2>
+
+<% if @fetch_aerodromes_result.success? %>
+  <% @fetch_aerodromes_result.data[:aerodromes].each do |aerodrome| %>
+    <p>
+      <div>
+        Name: <%= aerodrome[:name] %>
+      </div>
+      <div>
+        Location: <%= aerodrome[:location] %>
+      </div>
+    </p>
+  <% end %>
+<% elsif @fetch_aerodromes_result.failure? %>
+  <div>
+    Region has no aerodromes.
+  </div>
+<% else # @fetch_aerodromes_result.error? %>
+  <div>
+    No aerodromes information available.
+  </div>
+  <div>
+    Try to refresh the page after a while.
+  <div>
+  <div>
+    If the issue persists please contact the support.
+  </div>
+<% end %>
+```
+
+The code is more verbose, but that is the price of reliability.
+
+Using the [service goal resolution terminology](/basics/service_goals), this is what we have as a summary.
+
+* `@fetch_aerodromes_result.success?` means that a region 100% has aerodromes (positive service goal resolution).
+
+  So that we can display them.
+
+* `@fetch_aerodromes_result.failure?` means that a region 100% has NO aerodromes (negative service goal resolution).
+
+  Therefore we are confident in the "Region has no aerodromes" text.
+
+* `@fetch_aerodromes_result.error?` means that even after service invocation, we still don't know whether a region has aerodromes or not (no service goal resolution at all).
+
+  Due to that, we are telling the truth that "No aerodromes information available" instead of the false-negative resolution that we had before the separation of failures and errors.
