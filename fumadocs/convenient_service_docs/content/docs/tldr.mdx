@@ -39,7 +39,7 @@ end
 gem "convenient_service", "1.0.0"
 ```
 
-<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+<Tabs groupId="config" items={["Standard", "Rails", "Dry", "Custom"]}>
   <Tab value="Standard" default>
     ```ruby
     require "convenient_service"
@@ -85,7 +85,7 @@ gem "convenient_service", "1.0.0"
   </Tab>
 </Tabs>
 
-<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+<Tabs groupId="config" items={["Standard", "Rails", "Dry", "Custom"]}>
   <Tab value="Standard" default>
     ```ruby
     module ApplicationService
@@ -160,7 +160,7 @@ gem "convenient_service", "1.0.0"
   </Tab>
 </Tabs>
 
-<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+<Tabs groupId="config" items={["Standard", "Rails", "Dry", "Custom"]}>
   <Tab value="Standard" default>
     ```ruby
     class AssertFileExists
@@ -246,7 +246,7 @@ gem "convenient_service", "1.0.0"
 result = AssertFileExists.result(path: "Gemfile")
 ```
 
-<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+<Tabs groupId="config" items={["Standard", "Rails", "Dry", "Custom"]}>
   <Tab value="Standard" default>
     ```ruby
     class AssertFileNotEmpty
@@ -333,7 +333,7 @@ result = AssertFileExists.result(path: "Gemfile")
 result = AssertFileNotEmpty.result(path: "Gemfile")
 ```
 
-<Tabs items={["Standard", "Rails", "Dry", "Custom"]}>
+<Tabs groupId="config" items={["Standard", "Rails", "Dry", "Custom"]}>
   <Tab value="Standard" default>
     ```ruby
     class ReadFileContent
