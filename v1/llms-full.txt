@@ -73,7 +73,7 @@ def read_file_content(path)
     "" # Fallback value or any other reasonable fallback behavior.
   else # result.error?
     ##
-    # Service NOT even tried to read file content due to an exception.
+    # Service NOT even tried to complete reading of file content due to an exception.
     #
     App.logger.error { result.message.to_s }
 
