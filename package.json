@@ -5,7 +5,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "build": "docusaurus build && cd fumadocs/convenient_service_docs && yarn install && yarn build && mv ./build/v1 ../../build/v1",
+    "build": "docusaurus build && cd fumadocs/convenient_service_docs && yarn install && HOST='https://userdocs.convenientservice.org' yarn build && mv ./build/v1 ../../build/v1",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",

@@ -4,32 +4,29 @@ import type { MDXComponents } from 'mdx/types';
 
 import FumadocsLink from 'fumadocs-core/link';
 
-import isEmpty from 'lodash/isEmpty';
-import startsWith from 'lodash/startsWith';
-import replace from 'lodash/replace';
+import { docsLinkUrlWithPrefix } from './custom/links';
 
 const FumadocsMarkdonwCard = defaultMdxComponents.Card;
 const FumadocsMarkdownLink = defaultMdxComponents.a;
 
-// TODO: Cleanup.
 const Card = ({ href, ...restProps }) => (
   <FumadocsMarkdonwCard
     {...restProps}
-    href={!isEmpty(href) && startsWith(href, '/v1') ? replace(href, '/v1', '') : href}
+    href={docsLinkUrlWithPrefix(href)}
   />
 )
 
 const Link = ({ href, ...restProps }) => (
   <FumadocsLink
     {...restProps}
-    href={!isEmpty(href) && startsWith(href, '/v1') ? replace(href, '/v1', '') : href}
+    href={docsLinkUrlWithPrefix(href)}
   />
 )
 
 const a = ({ href, ...restProps }) => (
   <FumadocsMarkdownLink
     {...restProps}
-    href={!isEmpty(href) ? (startsWith(href, '/') ? `/docs${href}` : `/docs/${href}`) : href}
+    href={docsLinkUrlWithPrefix(href)}
   />
 )
 
