@@ -1,0 +1,103 @@
+---
+slug: /deprecations/some_require_dependency_methods
+sidebar_position: 3
+title: 'Some `require` dependency methods'
+---
+
+### `require` dependency methods in configs
+
+Imagine a config from `v0.19.1`.
+
+```ruby
+ConvenientService.logger.level = Logger::INFO
+
+ConvenientService::Dependencies.require_has_j_send_result_params_validations_using_active_model_validations
+ConvenientService::Dependencies.require_assigns_attributes_in_constructor_using_dry_initializer
+ConvenientService::Dependencies.require_rescues_result_unhandled_exceptions
+ConvenientService::Dependencies.require_awesome_print_inspect if Rails.env.development? || Rails.env.test?
+
+module ApplicationService
+  module Default
+    module Config
+      include ConvenientService::Concern
+
+      included do
+        include ConvenientService::Standard::Config
+
+        if Rails.env.development? || Rails.env.test?
+          include ConvenientService::AwesomePrintInspect::Config
+        end
+
+        concerns do
+          use ConvenientService::Plugins::Common::AssignsAttributesInConstructor::UsingDryInitializer::Concern
+          use ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Concern
+        end
+
+        middlewares :initialize do
+          use ConvenientService::Plugins::Service::ForbidsConvenientServiceEntitiesAsConstructorArguments::Middleware
+        end
+
+        middlewares :result do
+          insert_before \
+            ConvenientService::Plugins::Service::CanHaveConnectedSteps::Middleware,
+            ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware
+        end
+
+        if !Rails.env.test?
+          middlewares :result do
+            use ConvenientService::Plugins::Service::RescuesResultUnhandledExceptions::Middleware
+          end
+
+          middlewares :result, scope: :class do
+            use ConvenientService::Plugins::Service::RescuesResultUnhandledExceptions::Middleware
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+Its `v0.20.0` equivalent is the following:
+
+
+```ruby
+require "convenient_service/extras/standard/config/options/active_model_validations"
+require "convenient_service/extras/standard/config/options/dry_initializer"
+require "convenient_service/extras/standard/config/options/awesome_print_inspect" if Rails.env.development? || Rails.env.test?
+
+module ApplicationService
+  module Default
+    module Config
+      include ConvenientService::Config
+
+      included do
+        include ConvenientService::Standard::Config
+          .with(
+            :dry_initializer,
+            :active_model_validations,
+            code_review_automation: Rails.env.development? || Rails.env.test?,
+            fault_tolerance: !Rails.env.test?,
+            awesome_print_inspect: Rails.env.development? || Rails.env.test?
+          )
+      end
+    end
+  end
+end
+```
+
+### `require` dependency methods for RSpec
+
+Before:
+
+```ruby
+ConvenientService::Dependencies.require_rspec_extentions
+```
+
+After:
+
+```ruby
+require "convenient_service/extras/rspec"
+```
+
+
