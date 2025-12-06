@@ -37,7 +37,6 @@ module ConvenientService
             ]
           end
 
-          # rubocop:disable Lint/ConstantDefinitionInBlock
           included do
             include ConvenientService::Standard::Config
               .without_defaults
@@ -65,7 +64,6 @@ module ConvenientService
               end
             end
           end
-          # rubocop:enable Lint/ConstantDefinitionInBlock
         end
       end
     end
