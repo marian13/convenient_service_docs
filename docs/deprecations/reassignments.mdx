@@ -1,0 +1,35 @@
+---
+slug: /deprecations/reassignments
+sidebar_position: 3
+title: Reassignments
+---
+
+Step `out` methods does NOT accept `reassign` values anymore.
+
+Starting from `v0.20`, Convenient Service can handle reassignments internally without the need of extra DSL.
+
+The refactoring is straighforward:
+
+### Before v0.20
+
+```ruby
+class Service
+  include ConvenientService::Service::Standard
+
+  step OtherService,
+    in: :item,
+    out: reassign(:item)
+end
+```
+
+### After v0.20
+
+```ruby
+class Service
+  include ConvenientService::Service::Standard
+
+  step OtherService,
+    in: :item,
+    out: :item
+end
+```

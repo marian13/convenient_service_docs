@@ -4,4 +4,79 @@ sidebar_position: 1
 title: JSend meaning of failure and error
 ---
 
-Usage of `ConvenientService::Standard::V1::Config`.
+In other words, the usage of the `ConvenientService::Standard::V1::Config` is deprecated.
+
+It will be removed on `v1.0.0` release.
+
+To keep the existing code working, backport it like so:
+
+```ruby
+# frozen_string_literal: true
+
+module ConvenientService
+  module Service
+    module Configs
+      module Standard
+        module V1
+          include ConvenientService::Config
+
+          default_options do
+            [
+              :essential,
+              :callbacks,
+              :inspect,
+              :recalculation,
+              :result_parents_trace,
+              :code_review_automation,
+              :short_syntax,
+              :type_safety,
+              :exception_services_trace,
+              :per_instance_caching,
+              :backtrace_cleaner,
+              rspec: Dependencies.rspec.loaded?
+            ]
+          end
+
+          # rubocop:disable Lint/ConstantDefinitionInBlock
+          included do
+            include ConvenientService::Standard::Config
+              .without_defaults
+              .with(options)
+
+            concerns do
+              if options.enabled?(:essential)
+                replace \
+                  ConvenientService::Plugins::Service::CanHaveConnectedSteps::Concern,
+                  ConvenientService::Plugins::Service::CanHaveSequentialSteps::Concern
+              end
+            end
+
+            middlewares :result do
+              if options.enabled?(:essential)
+                replace \
+                  ConvenientService::Plugins::Service::CanHaveConnectedSteps::Middleware,
+                  ConvenientService::Plugins::Service::CanHaveSequentialSteps::Middleware
+              end
+
+              if options.enabled?(:active_model_validations)
+                replace \
+                  ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware,
+                  ConvenientService::Plugins::Service::HasJSendResultParamsValidations::UsingActiveModelValidations::Middleware.with(status: :failure)
+              end
+            end
+          end
+          # rubocop:enable Lint/ConstantDefinitionInBlock
+        end
+      end
+    end
+  end
+end
+
+module ConvenientService
+  module Standard
+    module V1
+      Config = ::ConvenientService::Service::Configs::Standard::V1
+    end
+  end
+end
+```

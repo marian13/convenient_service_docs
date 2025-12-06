@@ -351,6 +351,7 @@ const sidebars = {
       items: [
         'deprecations/jsend_meaning_of_failure_and_error',
         'deprecations/imports_and_exports_via_dependency_containers',
+        'deprecations/reassignments',
       ],
     },
     'index',
