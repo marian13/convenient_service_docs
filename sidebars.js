@@ -355,6 +355,7 @@ const sidebars = {
         'deprecations/some_require_dependency_methods',
       ],
     },
+    'migrations',
     'index',
   ],
 };
