@@ -1,0 +1,35 @@
+/* Cool-neutral — slight blue-grey tint, easy on eyes under artificial light */
+
+:root, [data-theme="light"] {
+  --color-bg:      #f4f6f8;
+  --color-surface: #ffffff;
+  --color-border:  #dde1e7;
+  --color-text:    #1c2025;
+  --color-muted:   #7a8494;
+  --color-link:    #3a6ea8;
+}
+
+[data-theme="dark"] {
+  --color-bg:      #2c2f33;
+  --color-surface: #36393e;
+  --color-border:  #4a4e54;
+  --color-text:    #e8eaed;
+  --color-muted:   #9aa0aa;
+  --color-link:    #7aaddb;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-link);
+}
+
+blockquote {
+  border-left: 3px solid var(--color-border);
+  color: var(--color-muted);
+  margin: 0;
+  padding-left: 1rem;
+}

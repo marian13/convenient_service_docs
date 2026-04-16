@@ -1,0 +1,35 @@
+/* Warm-neutral — very slight warm grey tint, like reading a printed page */
+
+:root, [data-theme="light"] {
+  --color-bg:      #f7f5f2;
+  --color-surface: #ffffff;
+  --color-border:  #e0ddd9;
+  --color-text:    #1e1c1a;
+  --color-muted:   #857f78;
+  --color-link:    #5a6e8c;
+}
+
+[data-theme="dark"] {
+  --color-bg:      #2e2b28;
+  --color-surface: #383430;
+  --color-border:  #4d4843;
+  --color-text:    #edeae5;
+  --color-muted:   #9e9890;
+  --color-link:    #8faac4;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-link);
+}
+
+blockquote {
+  border-left: 3px solid var(--color-border);
+  color: var(--color-muted);
+  margin: 0;
+  padding-left: 1rem;
+}
