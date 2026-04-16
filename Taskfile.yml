@@ -1,0 +1,7 @@
+version: "3"
+
+tasks:
+  # Static server is required to avoid CORS issues when loading ES modules locally.
+  serve:
+    cmds:
+      - npx --no-install serve .
