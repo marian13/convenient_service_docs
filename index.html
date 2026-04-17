@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ConvenientService</title>
 
-  <link rel="stylesheet" href="./src/styles/fonts.css">
-  <link id="theme-stylesheet" rel="stylesheet" href="./src/styles/theme-ai-style.css">
+  <link rel="stylesheet" href="./src/global/styles/fonts/dm-sans.css">
+  <link id="theme-stylesheet" rel="stylesheet" href="./src/global/styles/themes/ai-style.css">
+  <link rel="stylesheet" href="./src/components/ThemeSelector/styles.css">
+  <link rel="stylesheet" href="./src/components/ThemeToggle/styles.css">
 
   <script type="importmap">
   {
@@ -16,8 +18,13 @@
       "htm": "https://esm.sh/htm@3",
       "zustand": "https://esm.sh/zustand@4?deps=react@18",
       "@utils/html": "./src/utils/html.js",
+      "@utils/colorScheme": "./src/utils/theme/colorScheme.js",
+      "@utils/palette": "./src/utils/theme/pallette.js",
       "@components/Header": "./src/components/Header/index.js",
-      "@components/Lorem": "./src/components/Lorem/index.js"
+      "@components/Lorem": "./src/components/Lorem/index.js",
+      "@components/ThemeSelector": "./src/components/ThemeSelector/index.js",
+      "@components/ThemeToggle": "./src/components/ThemeToggle/index.js",
+      "@icons": "./src/components/icons/index.js"
     }
   }
   </script>

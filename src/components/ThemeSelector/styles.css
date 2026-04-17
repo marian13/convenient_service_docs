@@ -1,0 +1,48 @@
+.cs-theme-selector {
+  position: relative;
+}
+
+.cs-theme-selector__trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 150ms;
+}
+
+.cs-theme-selector__trigger:hover {
+  background-color: var(--color-bg);
+}
+
+.cs-theme-selector__dropdown {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  min-width: 100%;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+}
+
+.cs-theme-selector__option {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 100ms;
+}
+
+.cs-theme-selector__option:hover,
+.cs-theme-selector__option--active {
+  background-color: var(--color-bg);
+}

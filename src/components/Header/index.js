@@ -1,17 +1,28 @@
+import { useState } from "react";
 import { html } from "@utils/html";
-import { useHeaderStore, PALETTES } from "./store.js";
+import { getColorScheme, toggleColorScheme } from "@utils/colorScheme";
+import { getPalette, setPallete, getAvailablePalletes } from "@utils/palette";
+import { ThemeSelector } from "@components/ThemeSelector";
+import { ThemeToggle } from "@components/ThemeToggle";
 
 export function Header() {
-  const { colorScheme, palette, toggleColorScheme, setPalette } = useHeaderStore();
+  const [colorScheme, setColorScheme] = useState(getColorScheme);
+  const [palette, setPalette] = useState(getPalette);
+
+  const handleToggle = () => {
+    toggleColorScheme();
+    setColorScheme(getColorScheme());
+  };
+
+  const handlePaletteSelect = (id) => {
+    setPallete(id);
+    setPalette(id);
+  };
 
   return html`
     <header>
-      <select value=${palette} onChange=${(e) => setPalette(e.target.value)}>
-        ${PALETTES.map(({ id, label }) => html`
-          <option key=${id} value=${id}>${label}</option>
-        `)}
-      </select>
-      <button onClick=${toggleColorScheme}>${colorScheme === "light" ? "🌙" : "☀️"}</button>
+      <${ThemeSelector} palette=${palette} palettes=${getAvailablePalletes()} onSelect=${handlePaletteSelect} />
+      <${ThemeToggle} colorScheme=${colorScheme} onToggle=${handleToggle} />
     </header>
   `;
 }
