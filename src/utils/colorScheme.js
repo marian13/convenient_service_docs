@@ -18,5 +18,7 @@ export const toggleColorScheme = () => {
   setColorScheme(nextColorScheme);
 };
 
+export const toggleColorSchemeAsync = () => Promise.resolve().then(toggleColorScheme);
+
 export const isLightColorScheme = () => getColorScheme() === "light";
 export const isDarkColorScheme = () => getColorScheme() === "dark";

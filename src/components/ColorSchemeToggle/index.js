@@ -1,30 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { html } from "@utils/html";
 import { SunIcon, MoonIcon } from "@icons";
-import { isLightColorScheme, toggleColorScheme } from "@utils/colorScheme";
+import { isLightColorScheme, toggleColorSchemeAsync } from "@utils/colorScheme";
 
 export const ColorSchemeToggle = () => {
-  const [isLight, setIsLight] = useState(isLightColorScheme);
-  const [shouldToggle, setShouldToggle] = useState(false);
-
-  useEffect(() => {
-    if (!shouldToggle) return;
-
-    toggleColorScheme();
-
-    setShouldToggle(false);
-  }, [shouldToggle]);
+  const [shouldTrigger, setShouldTrigger] = useState(false);
 
   const handleClick = () => {
-    setIsLight(!isLight);
+    setShouldTrigger(true);
 
-    setShouldToggle(true);
+    toggleColorSchemeAsync().then(() => setShouldTrigger(false));
   };
 
   return html`
     <button class="cs-color-scheme-toggle" onClick=${handleClick} aria-label="Toggle theme color scheme">
-      ${isLight ? html`<${SunIcon} />` : html`<${MoonIcon} />`}
+      ${isLightColorScheme() ? html`<${SunIcon} />` : html`<${MoonIcon} />`}
     </button>
   `;
 };
