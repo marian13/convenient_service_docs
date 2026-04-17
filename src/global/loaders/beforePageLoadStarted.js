@@ -1,6 +1,7 @@
 // Runs synchronously before CSS renders to avoid flash of default theme.
-// Mirrors logic from src/utils/theme.js and src/utils/colorScheme.js.
 // Cannot use ES module imports — must remain a plain script.
+// Duplicates logic from src/utils/theme.js and src/utils/colorScheme.js.
+// If defaults or storage keys change there, update this file too.
 
 (() => {
   const restoreTheme = () => {
