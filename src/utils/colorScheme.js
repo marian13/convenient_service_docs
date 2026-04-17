@@ -8,7 +8,7 @@ export const getColorScheme = () => getStoredColorScheme() || getUserPreferredCo
 export const setColorScheme = (colorScheme) => {
   setStoredColorScheme(colorScheme);
 
-  document.documentElement.setAttribute("data-theme", colorScheme);
+  document.documentElement.setAttribute("data-color-scheme", colorScheme);
 };
 
 export const toggleColorScheme = () => {

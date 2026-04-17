@@ -17,5 +17,5 @@ export const getAvailableThemes = () => [
 export const setTheme = (theme) => {
   setStoredTheme(theme);
 
-  document.getElementById("theme-stylesheet").href = `./src/global/styles/themes/${theme}.css`;
+  document.documentElement.setAttribute("data-theme", theme);
 };

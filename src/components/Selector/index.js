@@ -1,34 +1,52 @@
 import { useState, useEffect, useRef } from "react";
+import cx from "classnames";
+
 import { html } from "@utils/html";
 import { ChevronIcon } from "@icons";
 
 export const Selector = ({ value, options, onChange }) => {
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-  const current = options.find((o) => o.id === value);
+  const containerRef = useRef(null);
+
+  const currentOption = options.find((option) => option.id === value);
 
   useEffect(() => {
     if (!open) return;
-    const handler = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [open]);
 
+  const handleOutsideClick = (event) => {
+    if (containerRef.current && !containerRef.current.contains(event.target)) {
+      setOpen(false);
+    }
+  };
+
+  const handleTriggerClick = () => setOpen(!open);
+
+  const handleOptionClick = (id) => {
+    onChange(id);
+
+    setOpen(false);
+  };
+
   return html`
-    <div class="cs-selector" ref=${ref}>
-      <button class="cs-selector__trigger" onClick=${() => setOpen(!open)}>
-        <span>${current?.label}</span>
+    <div class="cs-selector" ref=${containerRef}>
+      <button class="cs-selector__trigger" onClick=${handleTriggerClick}>
+        <span>${currentOption?.label}</span>
+
         <${ChevronIcon} />
       </button>
+
       ${open && html`
         <div class="cs-selector__dropdown">
           ${options.map(({ id, label }) => html`
             <div
               key=${id}
-              class="cs-selector__option ${id === value ? "cs-selector__option--active" : ""}"
-              onClick=${() => { onChange(id); setOpen(false); }}
+              class=${cx("cs-selector__option", { "cs-selector__option--active": id === value })}
+              onClick=${() => handleOptionClick(id)}
             >
               ${label}
             </div>
