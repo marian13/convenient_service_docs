@@ -1,8 +1,8 @@
-.cs-theme-selector {
+.cs-selector {
   position: relative;
 }
 
-.cs-theme-selector__trigger {
+.cs-selector__trigger {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -17,11 +17,11 @@
   transition: background-color 150ms;
 }
 
-.cs-theme-selector__trigger:hover {
+.cs-selector__trigger:hover {
   background-color: var(--color-bg);
 }
 
-.cs-theme-selector__dropdown {
+.cs-selector__dropdown {
   position: absolute;
   top: calc(100% + 0.25rem);
   left: 0;
@@ -34,7 +34,7 @@
   box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
 }
 
-.cs-theme-selector__option {
+.cs-selector__option {
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   color: var(--color-text);
@@ -42,7 +42,7 @@
   transition: background-color 100ms;
 }
 
-.cs-theme-selector__option:hover,
-.cs-theme-selector__option--active {
+.cs-selector__option:hover,
+.cs-selector__option--active {
   background-color: var(--color-bg);
 }

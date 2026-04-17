@@ -1,28 +1,11 @@
-import { useState } from "react";
 import { html } from "@utils/html";
-import { getColorScheme, toggleColorScheme } from "@utils/colorScheme";
-import { getPalette, setPallete, getAvailablePalletes } from "@utils/palette";
 import { ThemeSelector } from "@components/ThemeSelector";
-import { ThemeToggle } from "@components/ThemeToggle";
+import { ColorSchemeToggle } from "@components/ColorSchemeToggle";
 
-export function Header() {
-  const [colorScheme, setColorScheme] = useState(getColorScheme);
-  const [palette, setPalette] = useState(getPalette);
-
-  const handleToggle = () => {
-    toggleColorScheme();
-    setColorScheme(getColorScheme());
-  };
-
-  const handlePaletteSelect = (id) => {
-    setPallete(id);
-    setPalette(id);
-  };
-
-  return html`
-    <header>
-      <${ThemeSelector} palette=${palette} palettes=${getAvailablePalletes()} onSelect=${handlePaletteSelect} />
-      <${ThemeToggle} colorScheme=${colorScheme} onToggle=${handleToggle} />
+export const Header = () =>
+  html`
+    <header class="cs-header">
+      <${ThemeSelector} />
+      <${ColorSchemeToggle} />
     </header>
   `;
-}

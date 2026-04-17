@@ -1,7 +1,6 @@
 import { html } from "@utils/html";
 
-export function Lorem() {
-  return html`
+export const Lorem = () => html`
     <div>
       <h1>Lorem Ipsum</h1>
       <h2>Dolor Sit Amet</h2>
@@ -21,4 +20,3 @@ export function Lorem() {
       <a href="#">Pellentesque link example</a>
     </div>
   `;
-}
