@@ -1,2 +1,4 @@
 internal/
 node_modules/
+dist/*
+!dist/.gitkeep

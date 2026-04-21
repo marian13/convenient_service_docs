@@ -72,8 +72,8 @@ blockquote {
   --color-link:    #8faac4;
 }
 
-/* Flexoki */
-[data-theme="flexoki"][data-color-scheme="light"] {
+/* Flexoki-inspired */
+[data-theme="flexoki-inspired"][data-color-scheme="light"] {
   --color-bg:      #fffcf0;
   --color-surface: #f2f0e5;
   --color-border:  #b7b5ac;
@@ -82,7 +82,7 @@ blockquote {
   --color-link:    #205ea6;
 }
 
-[data-theme="flexoki"][data-color-scheme="dark"] {
+[data-theme="flexoki-inspired"][data-color-scheme="dark"] {
   --color-bg:      #100f0f;
   --color-surface: #1c1b1a;
   --color-border:  #403e3c;
@@ -91,8 +91,8 @@ blockquote {
   --color-link:    #4385be;
 }
 
-/* Catppuccin */
-[data-theme="catppuccin"][data-color-scheme="light"] {
+/* Catppuccin-inspired */
+[data-theme="catppuccin-inspired"][data-color-scheme="light"] {
   --color-bg:      #eff1f5;
   --color-surface: #ffffff;
   --color-border:  #ccd0da;
@@ -101,7 +101,7 @@ blockquote {
   --color-link:    #1e66f5;
 }
 
-[data-theme="catppuccin"][data-color-scheme="dark"] {
+[data-theme="catppuccin-inspired"][data-color-scheme="dark"] {
   --color-bg:      #1e1e2e;
   --color-surface: #181825;
   --color-border:  #45475a;
@@ -110,8 +110,8 @@ blockquote {
   --color-link:    #89b4fa;
 }
 
-/* Rosé Pine */
-[data-theme="rose-pine"][data-color-scheme="light"] {
+/* Rosé Pine-inspired */
+[data-theme="rose-pine-inspired"][data-color-scheme="light"] {
   --color-bg:      #faf4ed;
   --color-surface: #fffaf3;
   --color-border:  #dfdad9;
@@ -120,7 +120,7 @@ blockquote {
   --color-link:    #286983;
 }
 
-[data-theme="rose-pine"][data-color-scheme="dark"] {
+[data-theme="rose-pine-inspired"][data-color-scheme="dark"] {
   --color-bg:      #191724;
   --color-surface: #1f1d2e;
   --color-border:  #403d52;
@@ -129,8 +129,8 @@ blockquote {
   --color-link:    #9ccfd8;
 }
 
-/* Gruvbox */
-[data-theme="gruvbox"][data-color-scheme="light"] {
+/* Gruvbox-inspired */
+[data-theme="gruvbox-inspired"][data-color-scheme="light"] {
   --color-bg:      #fbf1c7;
   --color-surface: #f2e5bc;
   --color-border:  #d5c4a1;
@@ -139,7 +139,7 @@ blockquote {
   --color-link:    #076678;
 }
 
-[data-theme="gruvbox"][data-color-scheme="dark"] {
+[data-theme="gruvbox-inspired"][data-color-scheme="dark"] {
   --color-bg:      #282828;
   --color-surface: #32302f;
   --color-border:  #504945;
