@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= @title %></title>
+  <script src="/src/global/loaders/beforePageLoadStarted.js"></script>
+  <link rel="stylesheet" href="/src/index.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18",
+      "react-dom/client": "https://esm.sh/react-dom@18/client",
+      "htm": "https://esm.sh/htm@3",
+      "zustand": "https://esm.sh/zustand@4?deps=react@18",
+      "classnames": "https://esm.sh/classnames@2",
+      "@utils/html": "/src/utils/html.js",
+      "@utils/colorScheme": "/src/utils/colorScheme.js",
+      "@utils/theme": "/src/utils/theme.js",
+      "@components/Header": "/src/components/Header/index.js",
+      "@components/Selector": "/src/components/Selector/index.js",
+      "@components/ThemeSelector": "/src/components/ThemeSelector/index.js",
+      "@components/ColorSchemeToggle": "/src/components/ColorSchemeToggle/index.js",
+      "@icons": "/src/components/icons/index.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="header-root"></div>
+  <%= yield %>
+  <script type="module">
+    import React from "react";
+    import ReactDOM from "react-dom/client";
+    import { html } from "@utils/html";
+    import { Header } from "@components/Header";
+    ReactDOM.createRoot(document.getElementById("header-root")).render(html`<${Header} />`);
+  </script>
+</body>
+</html>

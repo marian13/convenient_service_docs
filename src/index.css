@@ -1,7 +1,0 @@
-@import "./global/styles/fonts/dm-sans.css";
-@import "./global/styles/themes/index.css";
-
-@import "./components/Selector/styles.css";
-
-@import "./components/Header/styles.css";
-@import "./components/ColorSchemeToggle/styles.css";

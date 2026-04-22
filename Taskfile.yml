@@ -1,7 +1,14 @@
 version: "3"
 
 tasks:
-  # Static server is required to avoid CORS issues when loading ES modules locally.
-  serve:
+  install:
     cmds:
-      - npx --no-install serve .
+      - bundle install
+
+  start:dev:
+    cmds:
+      - bundle exec ruby server.rb
+
+  start:build:
+    cmds:
+      - bundle exec ruby build.rb
