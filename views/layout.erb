@@ -14,27 +14,27 @@
       "htm": "https://esm.sh/htm@3",
       "zustand": "https://esm.sh/zustand@4?deps=react@18",
       "classnames": "https://esm.sh/classnames@2",
+      "@utils/env": "/src/utils/env.js",
       "@utils/html": "/src/utils/html.js",
+      "@utils/island": "/src/utils/island.js",
       "@utils/colorScheme": "/src/utils/colorScheme.js",
       "@utils/theme": "/src/utils/theme.js",
+      "@components/App": "/src/components/App/index.js",
       "@components/Header": "/src/components/Header/index.js",
       "@components/Selector": "/src/components/Selector/index.js",
       "@components/ThemeSelector": "/src/components/ThemeSelector/index.js",
       "@components/ColorSchemeToggle": "/src/components/ColorSchemeToggle/index.js",
-      "@icons": "/src/components/icons/index.js"
+      "@components/Lorem": "/src/components/Lorem/index.js",
+      "@icons": "/src/components/icons/index.js",
+      "marked": "https://esm.sh/marked",
+      "@components/Markdown": "/src/components/Markdown/index.js"
     }
   }
   </script>
 </head>
 <body>
-  <div id="header-root"></div>
+  <cs-island component="Header" data-force></cs-island>
   <%= yield %>
-  <script type="module">
-    import React from "react";
-    import ReactDOM from "react-dom/client";
-    import { html } from "@utils/html";
-    import { Header } from "@components/Header";
-    ReactDOM.createRoot(document.getElementById("header-root")).render(html`<${Header} />`);
-  </script>
+  <script type="module" src="/src/global/loaders/afterPageLoadFinished.js"></script>
 </body>
 </html>

@@ -18,5 +18,6 @@ export const Lorem = () => html`
       <blockquote>Nullam varius, turpis molestie dictum semper, nunc augue laoreet lorem.</blockquote>
       <p>Fusce ac felis sit amet ligula pharetra condimentum. Maecenas ipsum velit, consectetuer eu lobortis ut, dictum at dui. Donec aliquet, tortor sed accumsan bibendum.</p>
       <a href="#">Pellentesque link example</a>
+      <p><a href="/docs/test.html">Test Doc</a></p>
     </div>
   `;
