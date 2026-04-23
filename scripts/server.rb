@@ -34,8 +34,6 @@ get %r{/(src|public)/(.+\.(js|css|svg|png))} do
 end
 
 get '/' do
-  content_type 'text/html'
-
   send_dynamic_page '/pages/index.html'
 end
 
@@ -46,19 +44,13 @@ get %r{/docs/(.+\.md)} do
 end
 
 get %r{/docs/(.+\.html)} do
-  content_type 'text/html'
-
   send_dynamic_doc path.sub(/\.html$/, '.md')
 end
 
 get %r{/pages/(.+\.html)} do
-  content_type 'text/html'
-
   send_dynamic_page path
 end
 
 not_found do
-  content_type 'text/html'
-
   send_static_file '/public/404.html'
 end
