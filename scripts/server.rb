@@ -7,38 +7,58 @@ set :views, File.join(ROOT, 'views')
 
 disable :static
 
-get %r{/(src|public)/(.*)} do |dir, path|
-  send_file File.join(ROOT, dir, path)
-rescue Errno::ENOENT
-  halt 404
-end
+helpers do
+  def path
+    request.path_info
+  end
 
-get '/' do
-  @title = 'Convenient Service'
-  erb File.read(File.join(ROOT, 'pages/index.html'))
-end
+  def send_static_file(path)
+    send_file File.join(ROOT, path)
+  end
 
-get %r{/(docs|pages|src)/(.+\.html)} do |dir, path|
-  md_file = File.join(ROOT, dir, path.sub(/\.html$/, '.md'))
+  def send_dynamic_page(path)
+    @content = File.read(File.join(ROOT, path))
 
-  if File.exist?(md_file)
-    @title = File.basename(md_file, '.md')
-    @md_path = "/#{dir}/#{path.sub(/\.html$/, '.md')}"
+    erb :page
+  end
+
+  def send_dynamic_doc(path)
+    @path = path
+
     erb :doc
-  else
-    html_file = File.join(ROOT, dir, path)
-    halt 404 unless File.exist?(html_file)
-    send_file html_file
   end
 end
 
-not_found do
-  send_file File.join(ROOT, 'public/404.html')
+get %r{/(src|public)/(.+\.(js|css|svg|png))} do
+  send_static_file path
 end
 
-get %r{/(docs|pages|src)/(.+\.md)} do |dir, path|
-  file = File.join(ROOT, dir, path)
-  halt 404 unless File.exist?(file)
+get '/' do
+  content_type 'text/html'
+
+  send_dynamic_page '/pages/index.html'
+end
+
+get %r{/docs/(.+\.md)} do
   content_type 'text/markdown'
-  send_file file
+
+  send_static_file path
+end
+
+get %r{/docs/(.+\.html)} do
+  content_type 'text/html'
+
+  send_dynamic_doc path.sub(/\.html$/, '.md')
+end
+
+get %r{/pages/(.+\.html)} do
+  content_type 'text/html'
+
+  send_dynamic_page path
+end
+
+not_found do
+  content_type 'text/html'
+
+  send_static_file '/public/404.html'
 end

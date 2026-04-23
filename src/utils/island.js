@@ -14,9 +14,9 @@ export const renderIsland = async (root) => {
     : ReactDOM.createRoot(root).render(element);
 };
 
-const isForced = (root) => root.hasAttribute("data-force");
+const isForced = (root) => root.hasAttribute("force");
 const isPrerendered = (root) => root.children.length > 0;
-const isStatic = (root) => root.hasAttribute("data-static");
+const isStatic = (root) => root.hasAttribute("static");
 
 const getComponent = async (root) => {
   const name = root.getAttribute("component");

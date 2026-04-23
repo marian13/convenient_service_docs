@@ -34,7 +34,7 @@ threads = locs.map do |loc|
       out = File.join(ROOT, 'dist', path)
     else
       browser = Ferrum::Browser.new(timeout: 15, headless: true)
-      browser.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__build__ = true")
+      browser.page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__build__ = true")
       browser.goto(local_url)
       browser.network.wait_for_idle
       sleep 5
