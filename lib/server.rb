@@ -3,7 +3,7 @@ require 'sinatra'
 ROOT = File.expand_path('..', __dir__)
 
 set :port, ENV.fetch('PORT', 8100).to_i
-set :views, File.join(ROOT, 'views')
+set :views, File.join(ROOT, 'src/views')
 
 disable :static
 
@@ -12,24 +12,36 @@ helpers do
     request.path_info
   end
 
-  def send_static_file(path)
-    send_file File.join(ROOT, path)
+  def src_file(url_path)
+    File.join(ROOT, 'src', url_path.sub(%r{^/src}, ''))
   end
 
-  def send_dynamic_page(path)
-    @content = File.read(File.join(ROOT, path))
+  def send_static_file(url_path)
+    send_file src_file(url_path)
+  end
+
+  def send_dynamic_page(url_path)
+    @content = File.read(src_file(url_path))
 
     erb :page
   end
 
-  def send_dynamic_doc(path)
-    @path = path
+  def send_dynamic_doc(url_path)
+    @path = url_path
 
     erb :doc
+  end
+
+  def render_partial(name)
+    erb :"partials/#{name}/index"
   end
 end
 
 get %r{/(src|public)/(.+\.(js|css|svg|png))} do
+  send_static_file path
+end
+
+get %r{/views/partials/(.+\.css)} do
   send_static_file path
 end
 

@@ -1,10 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { isBuildEnvironment } from "@utils/env";
 
 export const renderIsland = async (root) => {
   if (isPrerendered(root) && isStatic(root)) return;
-  if (isBuildEnvironment() && !isStatic(root)) return;
 
   const { Component, props } = await getComponent(root);
   const element = React.createElement(Component, props);

@@ -3,7 +3,7 @@ version: "3"
 tasks:
   build:
     cmds:
-      - bundle exec ruby scripts/build.rb
+      - bundle exec ruby lib/build.rb
 
   install:
     cmds:
@@ -15,7 +15,7 @@ tasks:
 
   start:dev:
     cmds:
-      - PORT=8100 bundle exec ruby scripts/server.rb
+      - PORT=8100 bundle exec ruby lib/server.rb
 
   start:build:
     cmds:

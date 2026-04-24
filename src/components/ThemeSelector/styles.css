@@ -1,0 +1,7 @@
+.cs-theme-selector {
+  min-width: 13rem;
+}
+
+.cs-theme-selector__loader {
+  width: 10rem;
+}

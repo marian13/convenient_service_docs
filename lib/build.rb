@@ -18,7 +18,7 @@ end
 
 PORT = free_port
 
-server_pid = spawn("PORT=#{PORT} bundle exec ruby scripts/server.rb", chdir: ROOT)
+server_pid = spawn("PORT=#{PORT} bundle exec ruby lib/server.rb", chdir: ROOT)
 sleep 2
 
 doc = REXML::Document.new(File.read(File.join(ROOT, 'sitemap.xml')))
@@ -57,10 +57,15 @@ end
 
 threads.each(&:join)
 
-FileUtils.cp_r(File.join(ROOT, 'src'),    File.join(ROOT, 'dist/src'),    remove_destination: true)
-FileUtils.cp_r(File.join(ROOT, 'pages'),  File.join(ROOT, 'dist/pages'),  remove_destination: true)
-FileUtils.cp_r(File.join(ROOT, 'public'), File.join(ROOT, 'dist/public'), remove_destination: true)
-FileUtils.cp(  File.join(ROOT, 'sitemap.xml'), File.join(ROOT, 'dist/sitemap.xml'))
+FileUtils.mkdir_p(File.join(ROOT, 'dist/src'))
+FileUtils.cp_r(File.join(ROOT, 'src/components'), File.join(ROOT, 'dist/src/components'), remove_destination: true)
+FileUtils.cp_r(File.join(ROOT, 'src/global'),     File.join(ROOT, 'dist/src/global'),     remove_destination: true)
+FileUtils.cp_r(File.join(ROOT, 'src/utils'),      File.join(ROOT, 'dist/src/utils'),      remove_destination: true)
+FileUtils.cp(  File.join(ROOT, 'src/index.css'),  File.join(ROOT, 'dist/src/index.css'))
+FileUtils.cp_r(File.join(ROOT, 'src/public'),     File.join(ROOT, 'dist/public'),         remove_destination: true)
+FileUtils.mkdir_p(File.join(ROOT, 'dist/views'))
+FileUtils.cp_r(File.join(ROOT, 'src/views/partials'), File.join(ROOT, 'dist/views/partials'), remove_destination: true)
+FileUtils.cp(  File.join(ROOT, 'sitemap.xml'),     File.join(ROOT, 'dist/sitemap.xml'))
 
 Process.kill('TERM', server_pid)
 Process.wait(server_pid)

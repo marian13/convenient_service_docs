@@ -15,3 +15,7 @@
 .cs-color-scheme-toggle:hover {
   background-color: var(--color-bg);
 }
+
+.cs-color-scheme-toggle__loader {
+  width: 1rem;
+}

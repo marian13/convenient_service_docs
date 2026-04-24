@@ -20,10 +20,11 @@
       "@utils/colorScheme": "/src/utils/colorScheme.js",
       "@utils/theme": "/src/utils/theme.js",
       "@components/App": "/src/components/App/index.js",
-      "@components/Header": "/src/components/Header/index.js",
       "@components/Selector": "/src/components/Selector/index.js",
       "@components/ThemeSelector": "/src/components/ThemeSelector/index.js",
       "@components/ColorSchemeToggle": "/src/components/ColorSchemeToggle/index.js",
+      "@components/Loader": "/src/components/Loader/index.js",
+      "@components/LoaderPulse": "/src/components/LoaderPulse/index.js",
       "@components/Lorem": "/src/components/Lorem/index.js",
       "@icons": "/src/components/icons/index.js",
       "marked": "https://esm.sh/marked",
@@ -33,7 +34,7 @@
   </script>
 </head>
 <body>
-  <react-island component="Header" force></react-island>
+  <%= render_partial 'header' %>
   <%= yield %>
   <script type="module" src="/src/global/loaders/afterPageLoadFinished.js"></script>
 </body>

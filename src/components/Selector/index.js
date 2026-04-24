@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import cx from "classnames";
 
 import { html } from "@utils/html";
+import { LoaderPulse } from "@components/LoaderPulse";
 import { ChevronIcon } from "@icons";
 
-export const Selector = ({ value, options, onChange }) => {
+export const Selector = ({ value, options, onChange, loading = false, className, loaderClassName }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
 
@@ -33,9 +34,9 @@ export const Selector = ({ value, options, onChange }) => {
   };
 
   return html`
-    <div class="cs-selector" ref=${containerRef}>
+    <div class=${cx("cs-selector", className)} ref=${containerRef}>
       <button class="cs-selector__trigger" onClick=${handleTriggerClick}>
-        <span>${currentOption?.label}</span>
+        <span>${loading ? html`<${LoaderPulse} className=${loaderClassName} />` : currentOption?.label}</span>
 
         <${ChevronIcon} />
       </button>
