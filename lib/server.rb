@@ -4,6 +4,7 @@ ROOT = File.expand_path('..', __dir__)
 
 set :port, ENV.fetch('PORT', 8100).to_i
 set :views, File.join(ROOT, 'src/views')
+set :erb, layout: :"layout.html"
 
 disable :static
 
@@ -23,17 +24,17 @@ helpers do
   def send_dynamic_page(url_path)
     @content = File.read(src_file(url_path))
 
-    erb :page
+    erb :"page.html"
   end
 
   def send_dynamic_doc(url_path)
     @path = url_path
 
-    erb :doc
+    erb :"doc.html"
   end
 
   def render_partial(name)
-    erb :"partials/#{name}/index"
+    erb :"partials/#{name}/index.html", layout: false
   end
 end
 

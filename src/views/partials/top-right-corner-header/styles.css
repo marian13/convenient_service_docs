@@ -1,4 +1,7 @@
-.cs-header {
+.cs-top-right-corner-header {
+  position: fixed;
+  top: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -6,7 +9,7 @@
   background-color: transparent;
 }
 
-.cs-header__controls {
+.cs-top-right-corner-header__controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;

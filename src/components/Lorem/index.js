@@ -1,7 +1,7 @@
 import { html } from "@utils/html";
 
 export const Lorem = () => html`
-    <div>
+    <div class="cs-lorem">
       <h1>Lorem Ipsum</h1>
       <h2>Dolor Sit Amet</h2>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
