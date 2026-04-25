@@ -3,7 +3,7 @@ version: "3"
 tasks:
   build:
     cmds:
-      - bundle exec ruby lib/build.rb
+      - bundle exec ruby lib/builder.rb {{.CLI_ARGS}}
 
   install:
     cmds:
@@ -11,13 +11,13 @@ tasks:
 
   start:
     cmds:
-      - task: start:dev
+      - task start:dev
 
   start:dev:
     cmds:
-      - PORT=8100 bundle exec ruby lib/server.rb
+      - PORT=8100 bundle exec ruby lib/dev_server.rb
 
   start:build:
     cmds:
-      - task: build
+      - task build -- {{.CLI_ARGS}}
       - ruby -run -e httpd dist -p 8101

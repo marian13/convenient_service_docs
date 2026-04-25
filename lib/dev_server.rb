@@ -1,9 +1,17 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 
-ROOT = File.expand_path('..', __dir__)
+def root
+  @root ||= File.expand_path('..', __dir__)
+end
 
-set :port, ENV.fetch('PORT', 8100).to_i
-set :views, File.join(ROOT, 'src/views')
+def port
+  @port ||= ENV.fetch('PORT', 8100).to_i
+end
+
+set :port, port
+set :views, File.join(root, 'src/views')
 set :erb, layout: :"layout.html"
 
 disable :static
@@ -14,7 +22,7 @@ helpers do
   end
 
   def src_file(url_path)
-    File.join(ROOT, 'src', url_path.sub(%r{^/src}, ''))
+    File.join(root, 'src', url_path.sub(%r{^/src}, ''))
   end
 
   def send_static_file(url_path)
