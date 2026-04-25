@@ -46,6 +46,10 @@ helpers do
   end
 end
 
+get '/healthcheck' do
+  'ok'
+end
+
 get %r{/(src|public)/(.+\.(js|css|svg|png))} do
   send_static_file path
 end
