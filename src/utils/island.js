@@ -19,7 +19,7 @@ const isStatic = (root) => root.hasAttribute("static");
 const getComponent = async (root) => {
   const name = root.getAttribute("component");
   const props = JSON.parse(root.getAttribute("props") || "{}");
-  const { [name]: Component } = await import(`/src/components/${name}/index.js`);
+  const { default: Component } = await import(`@components/${name}`);
 
   return { name, props, Component };
 };

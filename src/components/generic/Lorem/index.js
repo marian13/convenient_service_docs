@@ -1,6 +1,6 @@
 import { html } from "@utils/html";
 
-export const Lorem = () => html`
+const Lorem = () => html`
     <div class="cs-lorem">
       <h1>Lorem Ipsum</h1>
       <h2>Dolor Sit Amet</h2>
@@ -21,3 +21,5 @@ export const Lorem = () => html`
       <p><a href="/docs/test.html">Test Doc</a></p>
     </div>
   `;
+
+export default Lorem;

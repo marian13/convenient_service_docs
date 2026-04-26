@@ -1,7 +1,9 @@
 import React from "react";
 import { html } from "@utils/html";
-import { Lorem } from "@components/Lorem";
+import Lorem from "@components/generic/Lorem";
 
-export const App = () => html`
+const App = () => html`
   <${Lorem} />
 `;
+
+export default App;

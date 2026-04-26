@@ -1,4 +1,4 @@
-export { ChevronIcon } from "./ChevronIcon/index.js";
-export { SunIcon } from "./SunIcon/index.js";
-export { MoonIcon } from "./MoonIcon/index.js";
-export { PaletteIcon } from "./PaletteIcon/index.js";
+export { default as ChevronIcon } from "./ChevronIcon/index.js";
+export { default as SunIcon } from "./SunIcon/index.js";
+export { default as MoonIcon } from "./MoonIcon/index.js";
+export { default as PaletteIcon } from "./PaletteIcon/index.js";

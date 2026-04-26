@@ -1,6 +1,6 @@
 import { html } from "@utils/html";
 
-export const PaletteIcon = () => html`
+const PaletteIcon = () => html`
   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/>
     <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
@@ -9,3 +9,5 @@ export const PaletteIcon = () => html`
     <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
   </svg>
 `;
+
+export default PaletteIcon;

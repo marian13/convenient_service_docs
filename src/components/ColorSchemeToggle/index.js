@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import { html } from "@utils/html";
-import { LoaderPulse } from "@components/LoaderPulse";
+import LoaderPulse from "@components/generic/LoaderPulse";
 import { SunIcon, MoonIcon } from "@icons";
 import { isLightColorScheme, toggleColorSchemeAsync } from "@utils/colorScheme";
 import { isBuildEnvironment } from "@utils/env";
 
-export const ColorSchemeToggle = () => {
+const ColorSchemeToggle = () => {
   const [shouldTrigger, setShouldTrigger] = useState(false);
 
   const handleClick = () => {
@@ -21,3 +21,5 @@ export const ColorSchemeToggle = () => {
     </button>
   `;
 };
+
+export default ColorSchemeToggle;

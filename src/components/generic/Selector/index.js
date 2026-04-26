@@ -53,7 +53,7 @@ const useSelector = ({ value, options, onChange, trigger }) => {
   };
 };
 
-export const Selector = ({ value, options, onChange, trigger, className, dropdownClassName }) => {
+const Selector = ({ value, options, onChange, trigger, className, dropdownClassName }) => {
   const { open, floatingUI, handleOptionClick, renderTrigger } = useSelector({ value, options, onChange, trigger });
 
   return html`
@@ -78,3 +78,5 @@ export const Selector = ({ value, options, onChange, trigger, className, dropdow
     </div>
   `;
 };
+
+export default Selector;

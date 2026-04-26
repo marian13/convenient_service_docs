@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { marked } from "marked";
 import { html } from "@utils/html";
 
-export const Markdown = ({ src }) => {
+const Markdown = ({ src }) => {
   const [content, setContent] = useState("");
 
   useEffect(() => {
@@ -13,3 +13,5 @@ export const Markdown = ({ src }) => {
 
   return html`<main dangerouslySetInnerHTML=${{ __html: content }} />`;
 };
+
+export default Markdown;

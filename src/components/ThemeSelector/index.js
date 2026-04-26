@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 import { html } from "@utils/html";
-import { Selector } from "@components/Selector";
+import Selector from "@components/generic/Selector";
 import { getTheme, setTheme, getAvailableThemes } from "@utils/theme";
 import { PaletteIcon } from "@icons";
 
-export const ThemeSelector = () => {
+const ThemeSelector = () => {
   const [theme, setThemeState] = useState(getTheme);
 
   const handleChange = (id) => {
@@ -24,3 +24,5 @@ export const ThemeSelector = () => {
     />
   `;
 };
+
+export default ThemeSelector;
