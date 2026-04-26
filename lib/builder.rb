@@ -18,9 +18,8 @@ class Builder
 
     wait_server_healthcheck
 
-    build_urls
-
     touch_folder(dist('src'))
+
     copy_folder(src('docs'), dist('docs'))
     copy_folder(src('components'), dist('src/components'))
     copy_folder(src('global'), dist('src/global'))
@@ -30,6 +29,8 @@ class Builder
     copy_partial_styles
 
     copy_file(src('sitemap.xml'), dist('sitemap.xml'))
+
+    build_urls
 
     kill_process(server_pid)
 
@@ -165,7 +166,7 @@ class Builder
   end
 
   def copy_folder(src, dest)
-    FileUtils.cp_r(src, dest, remove_destination: true)
+    FileUtils.cp_r(src, dest)
   end
 
   def remove_folder(path)
