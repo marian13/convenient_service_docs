@@ -19,5 +19,4 @@ tasks:
 
   start:build:
     cmds:
-      - task build -- {{.CLI_ARGS}}
-      - ruby -run -e httpd dist -p 8101
+      - task build -- {{.CLI_ARGS}} && ruby -run -e httpd dist -p 8101
