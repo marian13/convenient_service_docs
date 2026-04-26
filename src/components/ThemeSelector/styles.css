@@ -1,7 +1,7 @@
 .cs-theme-selector {
-  min-width: 13rem;
+  min-width: fit-content;
 }
 
-.cs-theme-selector__loader {
-  width: 10rem;
+.cs-theme-selector__dropdown {
+  min-width: 10rem;
 }

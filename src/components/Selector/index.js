@@ -1,31 +1,33 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import cx from "classnames";
+import { useFloating, useClick, useDismiss, useInteractions, offset, shift } from "@floating-ui/react";
 
 import { html } from "@utils/html";
-import { LoaderPulse } from "@components/LoaderPulse";
 import { ChevronIcon } from "@icons";
 
-export const Selector = ({ value, options, onChange, loading = false, className, loaderClassName }) => {
+const useFloatingUI = ({ open, onOpenChange }) => {
+  /**
+   * NOTE: Floating UI accepts only px. 4 = 0.25rem at 16px base.
+   * - https://floating-ui.com/docs/shift#padding
+   */
+  const { refs, floatingStyles, context } = useFloating({ open, onOpenChange, middleware: [offset(4), shift({ padding: 4 })] });
+  const { getReferenceProps, getFloatingProps } = useInteractions([useClick(context), useDismiss(context)]);
+
+  return {
+    triggerRef: refs.setReference,
+    dropdownRef: refs.setFloating,
+    dropwondStyles: floatingStyles,
+    getTriggerProps: getReferenceProps,
+    getDropdownProps: getFloatingProps
+  };
+};
+
+const useSelector = ({ value, options, onChange, trigger }) => {
   const [open, setOpen] = useState(false);
-  const containerRef = useRef(null);
+
+  const floatingUI = useFloatingUI({ open, onOpenChange: setOpen });
 
   const currentOption = options.find((option) => option.id === value);
-
-  useEffect(() => {
-    if (!open) return;
-
-    document.addEventListener("mousedown", handleOutsideClick);
-
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [open]);
-
-  const handleOutsideClick = (event) => {
-    if (containerRef.current && !containerRef.current.contains(event.target)) {
-      setOpen(false);
-    }
-  };
-
-  const handleTriggerClick = () => setOpen(!open);
 
   const handleOptionClick = (id) => {
     onChange(id);
@@ -33,16 +35,35 @@ export const Selector = ({ value, options, onChange, loading = false, className,
     setOpen(false);
   };
 
-  return html`
-    <div class=${cx("cs-selector", className)} ref=${containerRef}>
-      <button class="cs-selector__trigger" onClick=${handleTriggerClick}>
-        <span>${loading ? html`<${LoaderPulse} className=${loaderClassName} />` : currentOption?.label}</span>
+  const renderTrigger = () => {
+    if (trigger) return trigger;
 
-        <${ChevronIcon} />
+    return html`
+      <span>${currentOption?.label}</span>
+
+      <${ChevronIcon} />
+    `;
+  };
+
+  return {
+    open,
+    floatingUI,
+    handleOptionClick,
+    renderTrigger
+  };
+};
+
+export const Selector = ({ value, options, onChange, trigger, className, dropdownClassName }) => {
+  const { open, floatingUI, handleOptionClick, renderTrigger } = useSelector({ value, options, onChange, trigger });
+
+  return html`
+    <div class=${cx("cs-selector", className)}>
+      <button class="cs-selector__trigger" ref=${floatingUI.triggerRef} ...${floatingUI.getTriggerProps()}>
+        ${renderTrigger()}
       </button>
 
       ${open && html`
-        <div class="cs-selector__dropdown">
+        <div class=${cx("cs-selector__dropdown", dropdownClassName)} ref=${floatingUI.dropdownRef} style=${floatingUI.dropwondStyles} ...${floatingUI.getDropdownProps()}>
           ${options.map(({ id, label }) => html`
             <div
               key=${id}
