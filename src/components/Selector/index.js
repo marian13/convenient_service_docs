@@ -7,10 +7,10 @@ import { ChevronIcon } from "@icons";
 
 const useFloatingUI = ({ open, onOpenChange }) => {
   /**
-   * NOTE: Floating UI accepts only px. 4 = 0.25rem at 16px base.
+   * NOTE: Floating UI accepts only px. 4 = 0.25rem at 16px base. Matches header padding-right so dropdown aligns with controls.
    * - https://floating-ui.com/docs/shift#padding
    */
-  const { refs, floatingStyles, context } = useFloating({ open, onOpenChange, middleware: [offset(4), shift({ padding: 4 })] });
+  const { refs, floatingStyles, context } = useFloating({ open, onOpenChange, middleware: [offset(8), shift({ padding: 4 })] });
   const { getReferenceProps, getFloatingProps } = useInteractions([useClick(context), useDismiss(context)]);
 
   return {
