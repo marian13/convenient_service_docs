@@ -22,7 +22,7 @@
 }
 
 .cs-button--primary:hover {
-  opacity: 0.9;
+  border-color: var(--color-text);
 }
 
 .cs-button--secondary {

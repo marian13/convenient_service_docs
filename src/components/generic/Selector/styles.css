@@ -18,11 +18,11 @@
   font-size: 0.875rem;
   line-height: 1;
   cursor: pointer;
-  transition: background-color 150ms;
+  transition: background-color 0.15s ease;
 }
 
 .cs-selector__trigger:hover {
-  background-color: var(--color-bg);
+  background-color: var(--color-border);
 }
 
 .cs-selector__dropdown {
@@ -40,10 +40,10 @@
   font-size: 0.875rem;
   color: var(--color-text);
   cursor: pointer;
-  transition: background-color 100ms;
+  transition: background-color 0.15s ease;
 }
 
 .cs-selector__option:hover,
 .cs-selector__option--active {
-  background-color: var(--color-bg);
+  background-color: var(--color-border);
 }
