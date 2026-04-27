@@ -6,7 +6,7 @@ import { getTheme, setTheme, getAvailableThemes } from "@utils/theme";
 import { isLightColorScheme } from "@utils/colorScheme";
 import { PaletteIcon } from "@icons";
 
-const ThemeSelector = () => {
+const ThemeSelector = ({ placement = "bottom" }) => {
   const [theme, setThemeState] = useState(getTheme);
 
   const handleChange = (id) => {
@@ -25,7 +25,7 @@ const ThemeSelector = () => {
       options=${options}
       onChange=${handleChange}
       trigger=${html`<${PaletteIcon} />`}
-      placement="top"
+      placement=${placement}
       className="cs-theme-selector"
       dropdownClassName="cs-theme-selector__dropdown"
     />
