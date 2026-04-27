@@ -7,7 +7,7 @@
 
 (() => {
   const restoreTheme = () => {
-    const theme = sessionStorage.getItem("cs:theme") || "ai-style";
+    const theme = sessionStorage.getItem("cs:theme") || "flexoki-inspired";
 
     document.documentElement.setAttribute("data-theme", theme);
   };

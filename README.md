@@ -90,4 +90,4 @@ The sitemap always uses explicit `.html` and `.md` paths (`/pages/home.html`, `/
 
 ---
 
-© 2026 Marian Kostyk
+Copyright (c) 2022-2026 Marian Kostyk.

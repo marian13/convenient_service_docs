@@ -15,63 +15,6 @@ blockquote {
   padding-left: 1rem;
 }
 
-/* AI Style */
-[data-theme="ai-style"][data-color-scheme="light"] {
-  --color-bg:      #f9f9f7;
-  --color-surface: #ffffff;
-  --color-border:  #e5e5e3;
-  --color-text:    #1a1a1a;
-  --color-muted:   #6e6e6e;
-  --color-link:    #2563a8;
-}
-
-[data-theme="ai-style"][data-color-scheme="dark"] {
-  --color-bg:      #212121;
-  --color-surface: #2a2a2a;
-  --color-border:  #3d3d3d;
-  --color-text:    #ececec;
-  --color-muted:   #8e8e8e;
-  --color-link:    #7ab3e0;
-}
-
-/* Cool Neutral */
-[data-theme="cool-neutral"][data-color-scheme="light"] {
-  --color-bg:      #f4f6f8;
-  --color-surface: #ffffff;
-  --color-border:  #dde1e7;
-  --color-text:    #1c2025;
-  --color-muted:   #7a8494;
-  --color-link:    #3a6ea8;
-}
-
-[data-theme="cool-neutral"][data-color-scheme="dark"] {
-  --color-bg:      #2c2f33;
-  --color-surface: #36393e;
-  --color-border:  #4a4e54;
-  --color-text:    #e8eaed;
-  --color-muted:   #9aa0aa;
-  --color-link:    #7aaddb;
-}
-
-/* Warm Neutral */
-[data-theme="warm-neutral"][data-color-scheme="light"] {
-  --color-bg:      #f7f5f2;
-  --color-surface: #ffffff;
-  --color-border:  #e0ddd9;
-  --color-text:    #1e1c1a;
-  --color-muted:   #857f78;
-  --color-link:    #5a6e8c;
-}
-
-[data-theme="warm-neutral"][data-color-scheme="dark"] {
-  --color-bg:      #2e2b28;
-  --color-surface: #383430;
-  --color-border:  #4d4843;
-  --color-text:    #edeae5;
-  --color-muted:   #9e9890;
-  --color-link:    #8faac4;
-}
-
 /* Flexoki-inspired */
 [data-theme="flexoki-inspired"][data-color-scheme="light"] {
   --color-bg:      #fffcf0;
@@ -105,7 +48,7 @@ blockquote {
   --color-bg:      #1e1e2e;
   --color-surface: #181825;
   --color-border:  #45475a;
-  --color-text:    #cdd6f4;
+  --color-text:    #dce4f5;
   --color-muted:   #6c7086;
   --color-link:    #89b4fa;
 }
@@ -124,9 +67,28 @@ blockquote {
   --color-bg:      #191724;
   --color-surface: #1f1d2e;
   --color-border:  #403d52;
-  --color-text:    #e0def4;
+  --color-text:    #eae8f8;
   --color-muted:   #6e6a86;
   --color-link:    #9ccfd8;
+}
+
+/* GitHub-inspired */
+[data-theme="github-inspired"][data-color-scheme="light"] {
+  --color-bg:      #ffffff;
+  --color-surface: #f6f8fa;
+  --color-border:  #d0d7de;
+  --color-text:    #1f2328;
+  --color-muted:   #656d76;
+  --color-link:    #0969da;
+}
+
+[data-theme="github-inspired"][data-color-scheme="dark"] {
+  --color-bg:      #22272e;
+  --color-surface: #2d333b;
+  --color-border:  #444c56;
+  --color-text:    #adbac7;
+  --color-muted:   #768390;
+  --color-link:    #539bf5;
 }
 
 /* Gruvbox-inspired */
@@ -143,7 +105,7 @@ blockquote {
   --color-bg:      #282828;
   --color-surface: #32302f;
   --color-border:  #504945;
-  --color-text:    #ebdbb2;
+  --color-text:    #f2e5c0;
   --color-muted:   #a89984;
   --color-link:    #83a598;
 }

@@ -13,6 +13,7 @@ require 'uri'
 class Builder
   def run
     remove_folder(dist)
+    touch_folder(dist)
 
     server_pid = spawn("PORT=#{port} bundle exec ruby lib/dev_server.rb", chdir: root)
 
