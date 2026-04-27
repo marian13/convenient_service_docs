@@ -119,4 +119,4 @@ class DevServer < Sinatra::Base
   end
 end
 
-DevServer.run! if app_file == $0
+DevServer.run! if DevServer.app_file == $0

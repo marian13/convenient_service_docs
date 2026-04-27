@@ -18,15 +18,14 @@ class Builder
 
     wait_server_healthcheck
 
-    touch_folder(dist('src'))
-
-    copy_folder(src('docs'), dist('docs'))
-    copy_folder(src('components'), dist('src/components'))
-    copy_folder(src('global'), dist('src/global'))
-    copy_folder(src('utils'), dist('src/utils'))
+    copy_folder(src('components'), dist('components'))
+    copy_folder(src('global'), dist('global'))
+    copy_folder(src('utils'), dist('utils'))
     copy_folder(src('public'), dist('public'))
 
-    copy_partial_styles
+    copy_files(src('pages'),  dist('pages'), pattern: '**/*.css')
+    copy_files(src('docs'), dist('docs'), pattern: '**/*.md')
+    copy_files(src('views/partials'), dist('views/partials'), pattern: '**/*.css')
 
     copy_file(src('sitemap.xml'), dist('sitemap.xml'))
 
@@ -90,14 +89,6 @@ class Builder
 
     pool.shutdown
     pool.wait_for_termination
-  end
-
-  def copy_partial_styles
-    Dir.glob(src('views/partials/**/*.css')).each do |css_file|
-      dest = css_file.sub(src, dist)
-      touch_folder(File.dirname(dest))
-      copy_file(css_file, dest)
-    end
   end
 
   def wait_server_healthcheck
@@ -167,6 +158,16 @@ class Builder
 
   def copy_folder(src, dest)
     FileUtils.cp_r(src, dest)
+  end
+
+  def copy_files(src, dest, pattern:)
+    Dir.glob(File.join(src, pattern)).each do |file|
+      target = file.sub(src, dest)
+
+      touch_folder(File.dirname(target))
+
+      copy_file(file, target)
+    end
   end
 
   def remove_folder(path)
