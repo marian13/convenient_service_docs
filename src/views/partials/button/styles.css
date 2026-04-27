@@ -24,3 +24,13 @@
 .cs-button--primary:hover {
   border-color: var(--color-text);
 }
+
+.cs-button--secondary {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.cs-button--secondary:hover {
+  background-color: var(--color-border);
+}
