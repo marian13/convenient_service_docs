@@ -3,6 +3,7 @@ import { useState } from "react";
 import { html } from "@utils/html";
 import Selector from "@components/generic/Selector";
 import { getTheme, setTheme, getAvailableThemes } from "@utils/theme";
+import { isLightColorScheme } from "@utils/colorScheme";
 import { PaletteIcon } from "@icons";
 
 const ThemeSelector = () => {
@@ -13,12 +14,18 @@ const ThemeSelector = () => {
     setThemeState(id);
   };
 
+  const options = getAvailableThemes().map((theme) => ({
+    ...theme,
+    label: isLightColorScheme() ? theme.lightLabel : theme.darkLabel,
+  }));
+
   return html`
     <${Selector}
       value=${theme}
-      options=${getAvailableThemes()}
+      options=${options}
       onChange=${handleChange}
       trigger=${html`<${PaletteIcon} />`}
+      placement="top"
       className="cs-theme-selector"
       dropdownClassName="cs-theme-selector__dropdown"
     />

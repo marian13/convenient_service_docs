@@ -5,12 +5,12 @@ import { useFloating, useClick, useDismiss, useInteractions, offset, shift } fro
 import { html } from "@utils/html";
 import { ChevronIcon } from "@icons";
 
-const useFloatingUI = ({ open, onOpenChange }) => {
+const useFloatingUI = ({ open, onOpenChange, placement }) => {
   /**
    * NOTE: Floating UI accepts only px. 4 = 0.25rem at 16px base. Matches header padding-right so dropdown aligns with controls.
    * - https://floating-ui.com/docs/shift#padding
    */
-  const { refs, floatingStyles, context } = useFloating({ open, onOpenChange, middleware: [offset(8), shift({ padding: 4 })] });
+  const { refs, floatingStyles, context } = useFloating({ open, onOpenChange, placement, middleware: [offset(8), shift({ padding: 4 })] });
   const { getReferenceProps, getFloatingProps } = useInteractions([useClick(context), useDismiss(context)]);
 
   return {
@@ -22,10 +22,10 @@ const useFloatingUI = ({ open, onOpenChange }) => {
   };
 };
 
-const useSelector = ({ value, options, onChange, trigger }) => {
+const useSelector = ({ value, options, onChange, trigger, placement }) => {
   const [open, setOpen] = useState(false);
 
-  const floatingUI = useFloatingUI({ open, onOpenChange: setOpen });
+  const floatingUI = useFloatingUI({ open, onOpenChange: setOpen, placement });
 
   const currentOption = options.find((option) => option.id === value);
 
@@ -53,8 +53,8 @@ const useSelector = ({ value, options, onChange, trigger }) => {
   };
 };
 
-const Selector = ({ value, options, onChange, trigger, className, dropdownClassName }) => {
-  const { open, floatingUI, handleOptionClick, renderTrigger } = useSelector({ value, options, onChange, trigger });
+const Selector = ({ value, options, onChange, trigger, placement, className, dropdownClassName }) => {
+  const { open, floatingUI, handleOptionClick, renderTrigger } = useSelector({ value, options, onChange, trigger, placement });
 
   return html`
     <div class=${cx("cs-selector", className)}>
