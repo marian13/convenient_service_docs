@@ -1,9 +1,16 @@
 import { renderIsland } from "@utils/island";
+import usePageLoadState from "@global/stores/usePageLoadState";
+
+customElements.define("cs-react-island", class extends HTMLElement {
+  connectedCallback() {
+    usePageLoadState.getState().increment();
+
+    renderIsland(this).finally(() => {
+      usePageLoadState.getState().decrement();
+    });
+  }
+});
 
 window.addEventListener("load", () => {
-  const islands = document.querySelectorAll("cs-react-island");
-
-  Promise.allSettled([...islands].map(renderIsland)).then(() => {
-    window.__ready__ = true;
-  });
+  usePageLoadState.getState().fireLoad();
 });
