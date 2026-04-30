@@ -21,6 +21,10 @@ class DevServer < Sinatra::Base
       erb :"partials/#{name}/index.html", layout: false, locals: locals
     end
 
+    def render_js_module_inline(file_path)
+      File.read(file_path).gsub(/^export /, '')
+    end
+
     def send_static_file(url_path)
       send_file static_file_path_from(url_path)
     end
@@ -84,6 +88,11 @@ class DevServer < Sinatra::Base
     def url_path_from(file_path)
       file_path.delete_prefix(File.join(root, 'src'))
     end
+  end
+
+  get '/global/loaders/beforePageLoadStarted.js' do
+    content_type 'application/javascript'
+    erb File.read(src('global/loaders/beforePageLoadStarted.js.erb')), layout: false
   end
 
   get %r{/pages/(.+\.html)} do

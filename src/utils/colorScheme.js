@@ -1,14 +1,12 @@
-const getDefaultColorScheme = () => "light";
-const getUserPreferredColorScheme = () => window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+import { getColorScheme } from "./colorScheme/getColorScheme.js";
+import { applyColorScheme } from "./colorScheme/applyColorScheme.js";
+
 const getStoredColorScheme = () => sessionStorage.getItem("cs:colorScheme");
 const setStoredColorScheme = (colorScheme) => sessionStorage.setItem("cs:colorScheme", colorScheme);
 
-export const getColorScheme = () => getStoredColorScheme() || getUserPreferredColorScheme() || getDefaultColorScheme();
-
 export const setColorScheme = (colorScheme) => {
   setStoredColorScheme(colorScheme);
-
-  document.documentElement.setAttribute("data-color-scheme", colorScheme);
+  applyColorScheme(colorScheme);
 };
 
 export const toggleColorScheme = () => {
@@ -22,3 +20,5 @@ export const toggleColorSchemeAsync = () => Promise.resolve().then(toggleColorSc
 
 export const isLightColorScheme = () => getColorScheme() === "light";
 export const isDarkColorScheme = () => getColorScheme() === "dark";
+
+export { getColorScheme, applyColorScheme };

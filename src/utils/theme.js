@@ -1,10 +1,7 @@
-const getDefaultTheme = () => "flexoki-inspired";
-const getStoredTheme = () => sessionStorage.getItem("cs:theme");
-const setStoredTheme = (theme) => sessionStorage.setItem("cs:theme", theme);
+import { getTheme } from "./theme/getTheme.js";
+import { applyTheme } from "./theme/applyTheme.js";
 
-export const getTheme = () => getStoredTheme() || getDefaultTheme();
-
-export const getAvailableThemes = () => [
+const getAvailableThemes = () => [
   { id: "rose-pine-inspired",  lightLabel: "Rosé Pine Dawn-inspired",  darkLabel: "Rosé Pine Main-inspired" },
   { id: "flexoki-inspired",    lightLabel: "Flexoki-inspired",    darkLabel: "Flexoki-inspired" },
   { id: "github-inspired",     lightLabel: "GitHub Light Default-inspired",     darkLabel: "GitHub Soft Dark-inspired" },
@@ -13,8 +10,17 @@ export const getAvailableThemes = () => [
   { id: "catppuccin-inspired", lightLabel: "Catppuccin-inspired", darkLabel: "Catppuccin-inspired" },
 ];
 
-export const setTheme = (theme) => {
-  setStoredTheme(theme);
+const getStoredTheme = () => sessionStorage.getItem("cs:theme");
+const setStoredTheme = (theme) => sessionStorage.setItem("cs:theme", theme);
 
-  document.documentElement.setAttribute("data-theme", theme);
+const setTheme = (theme) => {
+  setStoredTheme(theme);
+  applyTheme(theme);
+};
+
+export {
+  getTheme,
+  setTheme,
+  applyTheme,
+  getAvailableThemes
 };

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'erb'
 require 'ferrum'
 require 'concurrent'
 require 'logger'
@@ -21,6 +22,8 @@ class Builder
 
     copy_folder(src('components'), dist('components'))
     copy_folder(src('global'), dist('global'))
+    render_js_erb(src('global/loaders/beforePageLoadStarted.js.erb'), dist('global/loaders/beforePageLoadStarted.js'))
+    FileUtils.rm(dist('global/loaders/beforePageLoadStarted.js.erb'))
     copy_folder(src('utils'), dist('utils'))
     copy_folder(src('public'), dist('public'))
 
@@ -83,6 +86,16 @@ class Builder
     @logger ||= Logger.new($stdout)
   end
 
+  def browser
+    @browser ||= begin
+      browser = Ferrum::Browser.new(timeout: 15, headless: true)
+
+      browser.page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__build__ = true")
+
+      browser
+    end
+  end
+
   def build_urls
     pool = Concurrent::FixedThreadPool.new(pool_size)
 
@@ -90,6 +103,8 @@ class Builder
 
     pool.shutdown
     pool.wait_for_termination
+
+    browser.quit
   end
 
   def wait_server_healthcheck
@@ -114,20 +129,19 @@ class Builder
   end
 
   def fetch_url(url)
-    browser = Ferrum::Browser.new(timeout: 15, headless: true)
+    page = browser.create_page
 
-    browser.page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__build__ = true")
-    browser.goto(url.to_s)
-    browser.network.wait_for_idle
+    page.go_to(url.to_s)
+    page.network.wait_for_idle
 
-    wait(seconds: 5) { browser.evaluate("window.__ready__") }
+    wait(seconds: 5) { page.evaluate("window.__ready__") }
 
     content = <<~HTML
       <!DOCTYPE html>
-      #{browser.evaluate('document.documentElement.outerHTML')}
+      #{page.evaluate('document.documentElement.outerHTML')}
     HTML
 
-    browser.quit
+    page.close
 
     content
   end
@@ -169,6 +183,14 @@ class Builder
 
       copy_file(file, target)
     end
+  end
+
+  def render_js_module_inline(file_path)
+    File.read(file_path).gsub(/^export /, '')
+  end
+
+  def render_js_erb(src_path, dest_path)
+    File.write(dest_path, ERB.new(File.read(src_path)).result(binding))
   end
 
   def remove_folder(path)
