@@ -29,6 +29,18 @@ class DevServer < Sinatra::Base
       send_file static_file_path_from(url_path)
     end
 
+    def send_dynamic_file(url_path)
+      file_path = dynamic_file_path_from(url_path)
+
+      if file_path&.end_with?('.erb')
+        content_type File.extname(url_path)
+
+        read_erb_file(file_path)
+      else
+        send_static_file url_path
+      end
+    end
+
     def send_dynamic_html_page(url_path)
       @content = read_erb_file(dynamic_file_path_from(url_path))
 
@@ -90,11 +102,6 @@ class DevServer < Sinatra::Base
     end
   end
 
-  get '/global/loaders/beforePageLoadStarted.js' do
-    content_type 'application/javascript'
-    erb File.read(src('global/loaders/beforePageLoadStarted.js.erb')), layout: false
-  end
-
   get %r{/pages/(.+\.html)} do
     send_dynamic_html_page url_path
   end
@@ -108,11 +115,11 @@ class DevServer < Sinatra::Base
   end
 
   get %r{/(components|global|pages|utils|public)/(.+\.(js|css|svg|png|ico))} do
-    send_static_file url_path
+    send_dynamic_file url_path
   end
 
   get %r{/views/partials/(.+\.css)} do
-    send_static_file url_path
+    send_dynamic_file url_path
   end
 
   get '/healthcheck' do
