@@ -1,3 +1,6 @@
+<%= render_partial 'top-left-corner-header' %>
 <%= render_partial 'top-right-corner-header' %>
 
-<cs-react-island component="generic/Markdown" props='{"src":"<%= @path %>"}' static></cs-react-island>
+<div class="cs-doc">
+  <cs-react-island component="generic/Markdown" props='{"src":"<%= @path %>"}' static></cs-react-island>
+</div>

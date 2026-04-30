@@ -118,7 +118,7 @@ class DevServer < Sinatra::Base
     send_dynamic_file url_path
   end
 
-  get %r{/views/partials/(.+\.css)} do
+  get %r{/views/(.+\.css)} do
     send_dynamic_file url_path
   end
 
