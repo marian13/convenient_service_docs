@@ -11,6 +11,7 @@ const getAvailableThemes = () => [
 ];
 
 const getStoredTheme = () => sessionStorage.getItem("cs:theme");
+
 const setStoredTheme = (theme) => sessionStorage.setItem("cs:theme", theme);
 
 const setTheme = (theme) => {
@@ -20,7 +21,7 @@ const setTheme = (theme) => {
 
 export {
   getTheme,
-  setTheme,
+  getAvailableThemes,
   applyTheme,
-  getAvailableThemes
+  setTheme
 };

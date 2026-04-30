@@ -3,7 +3,6 @@
  * Cannot use ES module imports — must remain a plain script.
  * Uses ERB to inline src/utils/theme/getTheme.js, src/utils/theme/applyTheme.js, src/utils/colorScheme/getColorScheme.js, and src/utils/colorScheme/applyColorScheme.js.
 */
-
 (() => {
   <%= render_js_module_inline(src('utils/theme/getTheme.js')) %>
   <%= render_js_module_inline(src('utils/theme/applyTheme.js')) %>
