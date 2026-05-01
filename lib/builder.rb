@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-require 'ferrum'
 require 'concurrent'
+require 'debug'
+require 'ferrum'
+require 'fileutils'
 require 'logger'
+require 'net/http'
 require 'retriable'
 require 'rexml/document'
-require 'fileutils'
 require 'socket'
-require 'net/http'
 require 'uri'
 
 class Builder

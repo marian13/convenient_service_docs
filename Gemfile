@@ -7,3 +7,5 @@ gem 'ferrum', '0.17.2'
 gem 'rexml', '3.4.4'
 gem 'retriable', '3.1.2'
 gem 'concurrent-ruby', '1.3.5'
+
+gem 'debug'

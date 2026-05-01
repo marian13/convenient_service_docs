@@ -1,16 +1,79 @@
 # frozen_string_literal: true
 
 require 'sinatra/base'
+require 'fileutils'
+require 'rack'
+
+class ResponseCache
+  attr_reader :app, :cache_dir
+
+  def initialize(app, cache_dir:)
+    @app = app
+    @cache_dir = cache_dir
+  end
+
+  def call(env)
+    cache_path = cache_path_from(Rack::Request.new(env).path_info)
+
+    return hit(cache_path) if File.exist?(cache_path)
+
+    miss(env, cache_path)
+  end
+
+  private
+
+  def hit(cache_path)
+    body = File.binread(cache_path)
+
+    content_type = Rack::Mime.mime_type(File.extname(cache_path))
+
+    [200, { 'Content-Type' => content_type }, [body]]
+  end
+
+  def miss(env, cache_path)
+    status, headers, body = app.call(env)
+
+    store(cache_path, body) if status == 200
+
+    [status, headers, body]
+  end
+
+  def store(cache_path, body)
+    FileUtils.mkdir_p(File.dirname(cache_path))
+
+    content = body.each.map(&:to_s).join
+
+    File.binwrite(cache_path, content)
+  end
+
+  def cache_path_from(path)
+    normalized = path == '/' ? '/index.html' : path
+
+    File.join(cache_dir, normalized)
+  end
+end
 
 class DevServer < Sinatra::Base
-  set :port, ENV.fetch('PORT', 8100).to_i
-  set :views, File.join(File.expand_path('..', __dir__), 'src/views')
+  class << self
+    def port
+      @port ||= ENV.fetch('PORT', 8100).to_i
+    end
+
+    def root
+      @root ||= File.expand_path('..', __dir__)
+    end
+  end
+
+  set :port, port
+  set :views, File.join(root, 'src/views')
+
+  use ResponseCache, cache_dir: File.join(root, 'tmp/cache/responses')
 
   disable :static
 
   helpers do
     def root
-      @root ||= File.expand_path('..', __dir__)
+      self.class.root
     end
 
     def url_path

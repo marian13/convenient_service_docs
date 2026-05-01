@@ -6,3 +6,4 @@
 
 - [Test](https://userdocs.convenientservice.org/docs/test.md)
 - [Basics](https://userdocs.convenientservice.org/docs/basics.md)
+- [Benefits and Drawbacks](https://userdocs.convenientservice.org/docs/benefits-and-drawbacks.md)

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title></title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="/global/loaders/beforePageLoadStarted.js"></script>
+
+  <style>
+    @import "https://unpkg.com/modern-normalize";
+
+    @import "/global/styles/base.css";
+    @import "/global/styles/fonts/inter.css";
+    @import "/global/styles/themes/index.css";
+    @import "/global/styles/islands.css";
+
+    @import "/components/generic/Selector/styles.css";
+    @import "/components/ThemeSelector/styles.css";
+
+    @import "/views/html_doc.css";
+    @import "/views/partials/top-left-corner-header/styles.css";
+    @import "/views/partials/top-right-corner-header/styles.css";
+    @import "/views/partials/button/styles.css";
+
+    @import "/pages/home/styles.css";
+    @import "/components/ColorSchemeToggle/styles.css";
+    @import "/components/generic/Loader/styles.css";
+    @import "/components/generic/LoaderPulse/styles.css";
+    @import "/components/generic/Lorem/styles.css";
+  </style>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18",
+        "react-dom/client": "https://esm.sh/react-dom@18/client",
+        "htm": "https://esm.sh/htm@3",
+        "zustand": "https://esm.sh/zustand@4?deps=react@18",
+        "classnames": "https://esm.sh/classnames@2",
+        "@utils/env": "/utils/env.js",
+        "@utils/html": "/utils/html.js",
+        "@utils/island": "/utils/island.js",
+        "@utils/colorScheme": "/utils/colorScheme.js",
+        "@utils/theme": "/utils/theme.js",
+        "@global/stores/usePageLoadState": "/global/stores/usePageLoadState.js",
+        "@components/App": "/components/App/index.js",
+        "@components/generic/Selector": "/components/generic/Selector/index.js",
+        "@components/ThemeSelector": "/components/ThemeSelector/index.js",
+        "@components/ColorSchemeToggle": "/components/ColorSchemeToggle/index.js",
+        "@components/generic/Loader": "/components/generic/Loader/index.js",
+        "@components/generic/LoaderPulse": "/components/generic/LoaderPulse/index.js",
+        "@components/generic/Lorem": "/components/generic/Lorem/index.js",
+        "@icons": "/components/generic/icons/index.js",
+        "marked": "https://esm.sh/marked",
+        "@floating-ui/react": "https://esm.sh/@floating-ui/react?deps=react@18",
+        "@components/generic/Markdown": "/components/generic/Markdown/index.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <header class="cs-top-left-corner-header">
+  <a href="/" class="cs-top-left-corner-header__logo-link">
+    <img src="/public/logo.png" alt="Convenient Service" class="cs-top-left-corner-header__logo" />
+  </a>
+</header>
+<header class="cs-top-right-corner-header">
+  <div class="cs-top-right-corner-header__controls">
+    <cs-react-island component="ThemeSelector"></cs-react-island>
+    <cs-react-island component="ColorSchemeToggle"></cs-react-island>
+  </div>
+</header>
+
+<div class="cs-doc">
+  <cs-react-island component="generic/Markdown" props='{"src":"/docs/test.md"}' static></cs-react-island>
+</div>
+
+
+  <script type="module" src="/global/loaders/afterPageLoadFinished.js"></script>
+</body>
+</html>
