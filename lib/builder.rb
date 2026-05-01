@@ -28,13 +28,10 @@ class Builder
 
     kill_process(server_pid)
 
-    logger.info('done')
+    logger.info { 'done' }
   rescue => e
-    if logger.debug?
-      logger.error(e.full_message)
-    else
-      logger.error(e.message)
-    end
+    logger.error { e.message }
+    logger.debug { e.full_message }
 
     exit(1)
   end
@@ -101,25 +98,32 @@ class Builder
 
   def browser
     @browser ||= begin
-      browser = Ferrum::Browser.new(timeout: 15, headless: true)
+      options = { timeout: 15, headless: true }
+      options[:logger] = $stdout if logger.debug?
 
-      browser.page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__build__ = true")
-
-      browser
+      Ferrum::Browser.new(**options)
     end
   end
 
   def check_network
+    logger.debug { 'checking network...' }
+
     Net::HTTP.get(URI('https://esm.sh'))
+
+    logger.debug { 'network ok' }
   rescue => e
     raise "Network unavailable — CDN assets will not load: #{e.message}"
   end
 
   def build_urls
-    urls.each { |url| Concurrent::Future.execute(executor: pool) { build_url(url) } }
+    browser
+
+    futures = urls.map { |url| Concurrent::Future.execute(executor: pool) { build_url(url) } }
 
     pool.shutdown
     pool.wait_for_termination
+
+    futures.each(&:value!)
 
     browser.quit
 
@@ -144,13 +148,21 @@ class Builder
   end
 
   def build_url(url)
+    logger.debug { "building #{url}..." }
+
     page = browser.create_page
+
+    page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__build__ = true; window.__ready__ = { status: 'success' };")
 
     page.go_to(url.to_s)
 
     page.network.wait_for_idle
 
-    wait(seconds: 5) { page.evaluate("window.__ready__") }
+    wait(seconds: 5) { page.evaluate("window.__ready__?.status") }
+
+    ready = page.evaluate("window.__ready__")
+
+    raise ready['message'] if ready['status'] == 'failure'
 
     build_assets(page, url)
 
@@ -190,7 +202,7 @@ class Builder
 
     File.binwrite(dist_path, body)
 
-    logger.info("saved #{dist_path.delete_prefix("#{root}/")}")
+    logger.info { "saved #{dist_path.delete_prefix("#{root}/")}" }
   end
 
   def save_sitemap
@@ -198,7 +210,7 @@ class Builder
 
     File.binwrite(dist('sitemap.xml'), response.body)
 
-    logger.info('saved dist/sitemap.xml')
+    logger.info { 'saved dist/sitemap.xml' }
   end
 
   def save_llms_txt
@@ -206,7 +218,7 @@ class Builder
 
     File.binwrite(dist('llms.txt'), response.body)
 
-    logger.info('saved dist/llms.txt')
+    logger.info { 'saved dist/llms.txt' }
   end
 
   def save_url(url, content)
@@ -221,7 +233,7 @@ class Builder
 
     File.write(dist_path, content)
 
-    logger.info("built #{dist_path.delete_prefix("#{root}/")}")
+    logger.info { "built #{dist_path.delete_prefix("#{root}/")}" }
   end
 
   def touch_folder(path)
@@ -233,7 +245,7 @@ class Builder
   end
 
   def wait(seconds: 2, &block)
-    Retriable.retriable(tries: (seconds / 0.1).ceil, base_interval: 0.1) { raise unless block.call }
+    Retriable.retriable(tries: (seconds / 0.1).ceil, base_interval: 0.1, multiplier: 1.0) { raise unless block.call }
   end
 end
 

@@ -5,9 +5,9 @@ customElements.define("cs-react-island", class extends HTMLElement {
   connectedCallback() {
     usePageLoadState.getState().increment();
 
-    renderIsland(this).finally(() => {
-      usePageLoadState.getState().decrement();
-    });
+    renderIsland(this)
+      .then(() => usePageLoadState.getState().decrement())
+      .catch((error) => usePageLoadState.getState().fail(error.message));
   }
 });
 
