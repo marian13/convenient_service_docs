@@ -29,6 +29,14 @@ class Builder
     kill_process(server_pid)
 
     logger.info('done')
+  rescue => e
+    if logger.debug?
+      logger.error(e.full_message)
+    else
+      logger.error(e.message)
+    end
+
+    exit(1)
   end
 
   private
@@ -79,12 +87,16 @@ class Builder
     end
   end
 
-  def asset_urls
-    @asset_urls ||= Concurrent::Map.new
+  def assets
+    @assets ||= Concurrent::Map.new
+  end
+
+  def log_level
+    @log_level ||= ENV.fetch('LOG_LEVEL', 'info').upcase
   end
 
   def logger
-    @logger ||= Logger.new($stdout)
+    @logger ||= Logger.new($stdout, level: log_level)
   end
 
   def browser
@@ -97,6 +109,12 @@ class Builder
     end
   end
 
+  def check_network
+    Net::HTTP.get(URI('https://esm.sh'))
+  rescue => e
+    raise "Network unavailable — CDN assets will not load: #{e.message}"
+  end
+
   def build_urls
     urls.each { |url| Concurrent::Future.execute(executor: pool) { build_url(url) } }
 
@@ -106,12 +124,6 @@ class Builder
     browser.quit
 
     save_assets
-  end
-
-  def check_network
-    Net::HTTP.get(URI('https://esm.sh'))
-  rescue => e
-    raise "Network unavailable — CDN assets will not load: #{e.message}"
   end
 
   def wait_server_healthcheck
@@ -140,14 +152,7 @@ class Builder
 
     wait(seconds: 5) { page.evaluate("window.__ready__") }
 
-    page.network.traffic.each do |exchange|
-      next if exchange.response.nil?
-      next if URI.parse(exchange.request.url).host != 'localhost'
-      next if exchange.request.url == url.to_s
-
-      path = URI.parse(exchange.request.url).path
-      asset_urls.put_if_absent(path, exchange.response.body)
-    end
+    build_assets(page, url)
 
     content = <<~HTML
       <!DOCTYPE html>
@@ -159,8 +164,23 @@ class Builder
     save_url(url, content)
   end
 
+  def build_assets(page, url)
+    page.network.traffic.each { |exchange| build_asset(exchange, url) }
+  end
+
+  def build_asset(exchange, url)
+    return if exchange.response.nil?
+
+    request_uri = URI.parse(exchange.request.url)
+
+    return if request_uri.host != 'localhost'
+    return if exchange.request.url == url.to_s
+
+    assets.put_if_absent(request_uri.path, exchange.response.body)
+  end
+
   def save_assets
-    asset_urls.each_pair { |path, body| save_asset(path, body) }
+    assets.each_pair { |path, body| save_asset(path, body) }
   end
 
   def save_asset(path, body)
@@ -193,10 +213,8 @@ class Builder
     dist_path =
       if url.path == '/'
         dist('index.html')
-      elsif url.path.end_with?('.html')
-        dist(url.path)
       else
-        dist(File.join(url.path.chomp('/'), 'index.html'))
+        dist(url.path)
       end
 
     touch_folder(File.dirname(dist_path))
