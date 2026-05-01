@@ -12,11 +12,13 @@ const usePageLoadState = create((set) => ({
 
 usePageLoadState.subscribe((state) => {
   if (state.error) {
-    window.__ready__ = { status: "failure", message: state.error };
+    window.__cs__.ready = { status: "failed", message: state.error };
   } else if (state.loadFired && state.pending === 0) {
-    window.__ready__ = { status: "success" };
+    window.__cs__.ready = { status: "completed" };
+  } else if (state.pending > 0) {
+    window.__cs__.ready = { status: "in_progress" };
   } else {
-    window.__ready__ = null;
+    window.__cs__.ready = { status: "started" };
   }
 });
 

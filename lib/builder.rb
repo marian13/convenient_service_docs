@@ -152,17 +152,20 @@ class Builder
 
     page = browser.create_page
 
-    page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__build__ = true; window.__ready__ = { status: 'success' };")
+    ##
+    # NOTE: Injected before any page scripts run. Sets `build: true` so JS can detect build mode, and initializes `ready` with `started` status so pages with no islands are immediately completable via the `load` event. In dev server, `beforePageLoadStarted.js` initializes `window.__cs__` with `build: false` instead.
+    #
+    page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__cs__ = { build: true, ready: { status: 'started' } };")
 
     page.go_to(url.to_s)
 
     page.network.wait_for_idle
 
-    wait(seconds: 5) { page.evaluate("window.__ready__?.status") }
+    wait(seconds: 5) { %w[completed failed].include?(page.evaluate("window.__cs__?.ready?.status")) }
 
-    ready = page.evaluate("window.__ready__")
+    ready = page.evaluate("window.__cs__['ready']")
 
-    raise ready['message'] if ready['status'] == 'failure'
+    raise ready['message'] if ready['status'] == 'failed'
 
     build_assets(page, url)
 

@@ -4,6 +4,11 @@
  * Uses ERB to inline src/utils/theme/getTheme.js, src/utils/theme/applyTheme.js, src/utils/colorScheme/getColorScheme.js, and src/utils/colorScheme/applyColorScheme.js.
 */
 (() => {
+  /**
+   * NOTE: In dev server, `window.__cs__` is not set before this script runs, so it is initialized here with `build: false`. In build mode, Ferrum injects `window.__cs__` with `build: true` before any page scripts run, so the existing value is preserved.
+   */
+  window.__cs__ = window.__cs__ || { build: false, ready: { status: "started" } };
+
   <%= render_js_module_inline(static_file_path_from('utils/theme/getTheme.js')) %>
   <%= render_js_module_inline(static_file_path_from('utils/theme/applyTheme.js')) %>
   <%= render_js_module_inline(static_file_path_from('utils/colorScheme/getColorScheme.js')) %>

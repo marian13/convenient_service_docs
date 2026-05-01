@@ -1,1 +1,1 @@
-export const isBuildEnvironment = () => window.__build__;
+export const isBuildEnvironment = () => window.__cs__?.build;
