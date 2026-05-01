@@ -2,7 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://userdocs.convenientservice.org/</loc></url>
   <url><loc>https://userdocs.convenientservice.org/docs/test.html</loc></url>
-  <url><loc>https://userdocs.convenientservice.org/docs/test.md</loc></url>
   <url><loc>https://userdocs.convenientservice.org/docs/basics.html</loc></url>
-  <url><loc>https://userdocs.convenientservice.org/docs/basics.md</loc></url>
+  <url><loc>https://userdocs.convenientservice.org/404.html</loc></url>
 </urlset>

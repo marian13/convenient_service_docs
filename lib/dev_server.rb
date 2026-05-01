@@ -122,6 +122,22 @@ class DevServer < Sinatra::Base
     send_dynamic_file url_path
   end
 
+  get '/404.html' do
+    send_static_file '/public/404.html'
+  end
+
+  get '/sitemap.xml' do
+    content_type 'application/xml'
+
+    send_static_file '/sitemap.xml'
+  end
+
+  get '/llms.txt' do
+    content_type 'text/plain'
+
+    send_static_file '/llms.txt'
+  end
+
   get '/healthcheck' do
     'ok'
   end

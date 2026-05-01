@@ -1,0 +1,8 @@
+# Convenient Service
+
+> ConvenientService is a Ruby gem that provides a service object pattern with middleware-like feature composition.
+
+## Docs
+
+- [Test](https://userdocs.convenientservice.org/docs/test.md)
+- [Basics](https://userdocs.convenientservice.org/docs/basics.md)

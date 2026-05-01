@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'erb'
 require 'ferrum'
 require 'concurrent'
 require 'logger'
@@ -13,6 +12,8 @@ require 'uri'
 
 class Builder
   def run
+    check_network
+
     remove_folder(dist)
     touch_folder(dist)
 
@@ -20,20 +21,10 @@ class Builder
 
     wait_server_healthcheck
 
-    copy_folder(src('components'), dist('components'))
-    copy_folder(src('global'), dist('global'))
-    render_js_erb(src('global/loaders/beforePageLoadStarted.js.erb'), dist('global/loaders/beforePageLoadStarted.js'))
-    FileUtils.rm(dist('global/loaders/beforePageLoadStarted.js.erb'))
-    copy_folder(src('utils'), dist('utils'))
-    copy_folder(src('public'), dist('public'))
-
-    copy_files(src('pages'),  dist('pages'), pattern: '**/*.css')
-    copy_files(src('docs'), dist('docs'), pattern: '**/*.md')
-    copy_files(src('views/partials'), dist('views/partials'), pattern: '**/*.css')
-
-    copy_file(src('sitemap.xml'), dist('sitemap.xml'))
-
     build_urls
+
+    save_sitemap
+    save_llms_txt
 
     kill_process(server_pid)
 
@@ -49,8 +40,11 @@ class Builder
   def port
     @port ||= begin
       server = TCPServer.new('127.0.0.1', 0)
+
       port = server.addr[1]
+
       server.close
+
       port
     end
   end
@@ -59,11 +53,16 @@ class Builder
     @pool_size ||= 8
   end
 
+  def pool
+    @pool ||= Concurrent::FixedThreadPool.new(pool_size)
+  end
+
   def locs
     @locs ||= if ARGV.any?
       ARGV
     else
       doc = REXML::Document.new(File.read(src('sitemap.xml')))
+
       doc.elements.collect('urlset/url/loc', &:text)
     end
   end
@@ -71,15 +70,17 @@ class Builder
   def urls
     @urls ||= locs.map do |loc|
       uri = URI.parse(loc)
+
       uri.scheme = 'http'
       uri.host = 'localhost'
       uri.port = port
+
       uri
     end
   end
 
-  def dynamic_urls
-    @dynamic_urls ||= urls.reject { |url| url.path.end_with?('.md') }
+  def asset_urls
+    @asset_urls ||= Concurrent::Map.new
   end
 
   def logger
@@ -97,14 +98,20 @@ class Builder
   end
 
   def build_urls
-    pool = Concurrent::FixedThreadPool.new(pool_size)
-
-    dynamic_urls.each { |url| Concurrent::Future.execute(executor: pool) { build_url(url) } }
+    urls.each { |url| Concurrent::Future.execute(executor: pool) { build_url(url) } }
 
     pool.shutdown
     pool.wait_for_termination
 
     browser.quit
+
+    save_assets
+  end
+
+  def check_network
+    Net::HTTP.get(URI('https://esm.sh'))
+  rescue => e
+    raise "Network unavailable — CDN assets will not load: #{e.message}"
   end
 
   def wait_server_healthcheck
@@ -125,16 +132,22 @@ class Builder
   end
 
   def build_url(url)
-    save_url(url, fetch_url(url))
-  end
-
-  def fetch_url(url)
     page = browser.create_page
 
     page.go_to(url.to_s)
+
     page.network.wait_for_idle
 
     wait(seconds: 5) { page.evaluate("window.__ready__") }
+
+    page.network.traffic.each do |exchange|
+      next if exchange.response.nil?
+      next if URI.parse(exchange.request.url).host != 'localhost'
+      next if exchange.request.url == url.to_s
+
+      path = URI.parse(exchange.request.url).path
+      asset_urls.put_if_absent(path, exchange.response.body)
+    end
 
     content = <<~HTML
       <!DOCTYPE html>
@@ -143,7 +156,37 @@ class Builder
 
     page.close
 
-    content
+    save_url(url, content)
+  end
+
+  def save_assets
+    asset_urls.each_pair { |path, body| save_asset(path, body) }
+  end
+
+  def save_asset(path, body)
+    dist_path = dist(path)
+
+    touch_folder(File.dirname(dist_path))
+
+    File.binwrite(dist_path, body)
+
+    logger.info("saved #{dist_path.delete_prefix("#{root}/")}")
+  end
+
+  def save_sitemap
+    response = Net::HTTP.get_response(URI("http://localhost:#{port}/sitemap.xml"))
+
+    File.binwrite(dist('sitemap.xml'), response.body)
+
+    logger.info('saved dist/sitemap.xml')
+  end
+
+  def save_llms_txt
+    response = Net::HTTP.get_response(URI("http://localhost:#{port}/llms.txt"))
+
+    File.binwrite(dist('llms.txt'), response.body)
+
+    logger.info('saved dist/llms.txt')
   end
 
   def save_url(url, content)
@@ -165,32 +208,6 @@ class Builder
 
   def touch_folder(path)
     FileUtils.mkdir_p(path)
-  end
-
-  def copy_file(src, dest)
-    FileUtils.cp(src, dest)
-  end
-
-  def copy_folder(src, dest)
-    FileUtils.cp_r(src, dest)
-  end
-
-  def copy_files(src, dest, pattern:)
-    Dir.glob(File.join(src, pattern)).each do |file|
-      target = file.sub(src, dest)
-
-      touch_folder(File.dirname(target))
-
-      copy_file(file, target)
-    end
-  end
-
-  def render_js_module_inline(file_path)
-    File.read(file_path).gsub(/^export /, '')
-  end
-
-  def render_js_erb(src_path, dest_path)
-    File.write(dest_path, ERB.new(File.read(src_path)).result(binding))
   end
 
   def remove_folder(path)
