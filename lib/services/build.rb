@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require "concurrent"
+require "ferrum"
+require "logger"
+
 require_relative "configs/practical/v1"
 require_relative "check_network"
 require_relative "find_free_port"
@@ -18,17 +22,11 @@ module Services
   class Build
     include Services::Configs::Practical::V1
 
-    option :browser
-    option :assets
-    option :pool
-    option :root
-    option :logger
-
-    validates :browser, presence: true
-    validates :assets, presence: true
-    validates :pool, presence: true
-    validates :root, presence: true
-    validates :logger, presence: true
+    option :root, default: proc { File.expand_path("../..", __dir__) }
+    option :logger, default: proc { Logger.new($stdout, level: ENV.fetch("LOG_LEVEL", "info").upcase) }
+    option :browser, default: proc { Ferrum::Browser.new(timeout: 15, headless: true) }
+    option :pool, default: proc { Concurrent::FixedThreadPool.new(8) }
+    option :assets, default: proc { Concurrent::Map.new }
 
     step Services::CheckNetwork,
       in: :logger
