@@ -2,6 +2,9 @@
 
 require_relative "configs/practical/v1"
 require_relative "check_network"
+require_relative "find_free_port"
+require_relative "resolve_locs"
+require_relative "convert_locs_to_uris"
 require_relative "remove_folder"
 require_relative "touch_folder"
 require_relative "spawn_dev_server"
@@ -15,24 +18,31 @@ module Services
   class Build
     include Services::Configs::Practical::V1
 
-    option :uris
     option :browser
     option :assets
     option :pool
-    option :port
     option :root
     option :logger
 
-    validates :uris, presence: true
     validates :browser, presence: true
     validates :assets, presence: true
     validates :pool, presence: true
-    validates :port, presence: true
     validates :root, presence: true
     validates :logger, presence: true
 
     step Services::CheckNetwork,
       in: :logger
+
+    step Services::FindFreePort,
+      out: :port
+
+    step Services::ResolveLocs,
+      in: :root,
+      out: :locs
+
+    step Services::ConvertLocsToUris,
+      in: [:locs, :port],
+      out: :uris
 
     step Services::RemoveFolder,
       in: {path: :dist_path}

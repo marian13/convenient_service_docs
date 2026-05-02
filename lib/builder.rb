@@ -7,20 +7,15 @@ require 'fileutils'
 require 'logger'
 require 'net/http'
 require 'retriable'
-require 'rexml/document'
-require 'socket'
-require 'uri'
 
 require_relative 'services/build'
 
 class Builder
   def run
     Services::Build.call(
-      uris: urls,
       browser: browser,
       assets: assets,
       pool: pool,
-      port: port,
       root: root,
       logger: logger
     )
@@ -38,46 +33,12 @@ class Builder
     @root ||= File.expand_path('..', __dir__)
   end
 
-  def port
-    @port ||= begin
-      server = TCPServer.new('127.0.0.1', 0)
-
-      port = server.addr[1]
-
-      server.close
-
-      port
-    end
-  end
-
   def pool_size
     @pool_size ||= 8
   end
 
   def pool
     @pool ||= Concurrent::FixedThreadPool.new(pool_size)
-  end
-
-  def locs
-    @locs ||= if ARGV.any?
-      ARGV
-    else
-      doc = REXML::Document.new(File.read(src('sitemap.xml')))
-
-      doc.elements.collect('urlset/url/loc', &:text)
-    end
-  end
-
-  def urls
-    @urls ||= locs.map do |loc|
-      uri = URI.parse(loc)
-
-      uri.scheme = 'http'
-      uri.host = 'localhost'
-      uri.port = port
-
-      uri
-    end
   end
 
   def assets
@@ -99,10 +60,6 @@ class Builder
 
       Ferrum::Browser.new(**options)
     end
-  end
-
-  def src(path = '')
-    File.join(root, 'src', path)
   end
 end
 
