@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require_relative "configs/practical/v1"
-require_relative "resolve_dist_folder_path"
+require_relative "convert_uri_to_dist_path"
+require_relative "convert_uri_to_dist_parent_path"
 require_relative "touch_folder"
 require_relative "write_file"
 
@@ -19,12 +20,16 @@ module Services
     validates :root, presence: true
     validates :logger, presence: true
 
-    step Services::ResolveDistFolderPath,
+    step Services::ConvertUriToDistPath,
       in: [:uri, :root],
-      out: [:dist_path, :dist_folder_path]
+      out: :dist_path
+
+    step Services::ConvertUriToDistParentPath,
+      in: [:uri, :root],
+      out: :dist_parent_path
 
     step Services::TouchFolder,
-      in: {path: :dist_folder_path}
+      in: {path: :dist_parent_path}
 
     step Services::WriteFile,
       in: [{path: :dist_path}, :content]

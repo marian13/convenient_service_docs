@@ -3,7 +3,7 @@
 require_relative "configs/practical/v1"
 
 module Services
-  class ResolveDistFolderPath
+  class ConvertUriToDistPath
     include Services::Configs::Practical::V1
 
     option :uri
@@ -13,14 +13,14 @@ module Services
     validates :root, presence: true
 
     def result
-      dist_path =
+      path =
         if uri.path == "/"
           File.join(root, "dist", "index.html")
         else
           File.join(root, "dist", uri.path)
         end
 
-      success(dist_folder_path: File.dirname(dist_path))
+      success(dist_path: path)
     end
   end
 end

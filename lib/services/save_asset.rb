@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require_relative "configs/practical/v1"
-require_relative "resolve_dist_path"
-require_relative "resolve_dist_folder_path"
+require_relative "convert_uri_to_dist_path"
+require_relative "convert_uri_to_dist_parent_path"
 require_relative "touch_folder"
 require_relative "write_binary_file"
 
@@ -20,22 +20,22 @@ module Services
     validates :root, presence: true
     validates :logger, presence: true
 
-    step Services::ResolveDistPath,
+    step Services::ConvertUriToDistPath,
       in: [:uri, :root],
-      out: {path: :asset_path_in_dist}
+      out: :dist_path
 
-    step Services::ResolveDistFolderPath,
+    step Services::ConvertUriToDistParentPath,
       in: [:uri, :root],
-      out: {dist_folder_path: :asset_parent_path_in_dist}
+      out: :dist_parent_path
 
     step Services::TouchFolder,
-      in: {path: :asset_parent_path_in_dist}
+      in: {path: :dist_parent_path}
 
     step Services::WriteBinaryFile,
-      in: [{path: :asset_path_in_dist}, :body]
+      in: [{path: :dist_path}, :body]
 
     after :result do |result|
-      logger.info { "saved #{asset_path_in_dist.delete_prefix("#{root}/")}" } if result.success?
+      logger.info { "saved #{dist_path.delete_prefix("#{root}/")}" } if result.success?
     end
   end
 end
