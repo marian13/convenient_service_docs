@@ -15,9 +15,15 @@ const ColorSchemeToggle = () => {
     toggleColorSchemeAsync().then(() => setShouldTrigger(false));
   };
 
+  const renderContent = () => {
+    if (shouldTrigger || isBuildEnvironment()) return html`<${LoaderPulse} className="cs-color-scheme-toggle__loader" />`;
+
+    return isLightColorScheme() ? html`<${SunIcon} />` : html`<${MoonIcon} />`;
+  };
+
   return html`
     <button class="cs-color-scheme-toggle" onClick=${handleClick} aria-label="Toggle theme color scheme">
-      ${shouldTrigger || isBuildEnvironment() ? html`<${LoaderPulse} className="cs-color-scheme-toggle__loader" />` : isLightColorScheme() ? html`<${SunIcon} />` : html`<${MoonIcon} />`}
+      ${renderContent()}
     </button>
   `;
 };

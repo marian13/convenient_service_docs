@@ -62,14 +62,24 @@ class DevServer < Sinatra::Base
     def root
       @root ||= File.expand_path('..', __dir__)
     end
+
+    def run!(...)
+      FileUtils.rm_rf(File.join(root, 'tmp/cache/responses'))
+
+      super(...)
+    end
   end
 
   set :port, port
   set :views, File.join(root, 'src/views')
 
-  use ResponseCache, cache_dir: File.join(root, 'tmp/cache/responses')
+  # use ResponseCache, cache_dir: File.join(root, 'tmp/cache/responses')
 
   disable :static
+
+  enable :logging
+
+  set :dump_errors, true
 
   helpers do
     def root

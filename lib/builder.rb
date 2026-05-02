@@ -11,18 +11,26 @@ require 'rexml/document'
 require 'socket'
 require 'uri'
 
+require_relative 'services/check_network'
+require_relative 'services/remove_folder'
+require_relative 'services/touch_folder'
+require_relative 'services/spawn_dev_server'
+require_relative 'services/wait_server_healthcheck'
+require_relative 'services/save_url'
+require_relative 'services/save_asset'
+
 class Builder
   def run
-    check_network
+    Services::CheckNetwork.call(logger: logger)
 
-    remove_folder(dist)
-    touch_folder(dist)
+    Services::RemoveFolder.call(path: dist)
+    Services::TouchFolder.call(path: dist)
 
-    server_pid = spawn("PORT=#{port} bundle exec ruby lib/dev_server.rb", chdir: root)
+    server_pid = Services::SpawnDevServer.call(port: port, root: root)[:pid]
 
-    wait_server_healthcheck
+    Services::WaitServerHealthcheck.call(port: port)
 
-    build_urls
+    build_uris
 
     save_sitemap
     save_llms_txt
@@ -31,6 +39,7 @@ class Builder
 
     logger.info { 'done' }
   rescue => e
+    logger.error { e.class }
     logger.error { e.message }
     logger.debug { e.full_message }
 
@@ -100,39 +109,43 @@ class Builder
   def browser
     @browser ||= begin
       options = { timeout: 15, headless: true }
-      options[:logger] = $stdout if logger.debug?
+      # options[:logger] = $stdout if logger.debug?
 
       Ferrum::Browser.new(**options)
     end
   end
 
-  def check_network
-    logger.debug { 'checking network...' }
-
-    Net::HTTP.get(URI('https://esm.sh'))
-
-    logger.debug { 'network ok' }
-  rescue => e
-    raise "Network unavailable — CDN assets will not load: #{e.message}"
-  end
-
-  def build_urls
+  def build_uris
     browser
 
-    futures = urls.map { |url| Concurrent::Future.execute(executor: pool) { build_url(url) } }
+    if sequential?
+      urls.each do |url|
+        build_uri(url)
+      rescue => e
+        logger.error { "#{url}: #{e.class}: #{e.message}" }
+        logger.debug { e.full_message }
+        raise
+      end
+    else
+      futures = urls.map do |url|
+        Concurrent::Future.execute(executor: pool) do
+          build_uri(url)
+        rescue => e
+          logger.error { "#{url}: #{e.class}: #{e.message}" }
+          logger.debug { e.full_message }
+          raise
+        end
+      end
 
-    pool.shutdown
-    pool.wait_for_termination
+      pool.shutdown
+      pool.wait_for_termination
 
-    futures.each(&:value!)
+      futures.each(&:value!)
+    end
 
     browser.quit
 
     save_assets
-  end
-
-  def wait_server_healthcheck
-    wait { Net::HTTP.get(URI("http://localhost:#{port}/healthcheck")) }
   end
 
   def kill_process(pid)
@@ -148,27 +161,29 @@ class Builder
     File.join(root, 'dist', path)
   end
 
-  def build_url(url)
-    logger.debug { "building #{url}..." }
+  def build_uri(uri)
+    logger.debug { "building #{uri}..." }
 
     page = browser.create_page
 
-    ##
-    # NOTE: Injected before any page scripts run. Sets `build: true` so JS can detect build mode, and initializes `ready` with `started` status so pages with no islands are immediately completable via the `load` event. In dev server, `beforePageLoadStarted.js` initializes `window.__cs__` with `build: false` instead.
-    #
-    page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__cs__ = { build: true, ready: { status: 'started' } };")
+    page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__cs__ = { build: true };")
 
-    page.go_to(url.to_s)
+    page.go_to(uri.to_s)
 
     page.network.wait_for_idle
 
-    wait(seconds: 5) { %w[completed failed].include?(page.evaluate("window.__cs__?.ready?.status")) }
+    logger.debug { "#{uri} ready status: #{page.evaluate("window.__cs__?.ready?.status").inspect}" }
 
-    ready = page.evaluate("window.__cs__['ready']")
+    wait(seconds: 5) {
+      cs = page.evaluate("window.__cs__")
+      !cs || !cs['ready'] || %w[completed failed].include?(cs.dig('ready', 'status'))
+    }
 
-    raise ready['message'] if ready['status'] == 'failed'
+    ready = page.evaluate("window.__cs__?.['ready']")
 
-    build_assets(page, url)
+    raise ready['message'] if ready&.dig('status') == 'failed'
+
+    build_assets(page, uri)
 
     content = <<~HTML
       <!DOCTYPE html>
@@ -177,36 +192,28 @@ class Builder
 
     page.close
 
-    save_url(url, content)
+    Services::SaveUrl.call(uri: uri, content: content, root: root, logger: logger)
   end
 
-  def build_assets(page, url)
-    page.network.traffic.each { |exchange| build_asset(exchange, url) }
+  def build_assets(page, uri)
+    page.network.traffic.each { |exchange| build_asset(exchange, uri) }
   end
 
-  def build_asset(exchange, url)
+  def build_asset(exchange, uri)
     return if exchange.response.nil?
 
     request_uri = URI.parse(exchange.request.url)
 
     return if request_uri.host != 'localhost'
-    return if exchange.request.url == url.to_s
+    return if exchange.request.url == uri.to_s
 
-    assets.put_if_absent(request_uri.path, exchange.response.body)
+    assets.put_if_absent(request_uri, exchange.response.body)
   end
 
   def save_assets
-    assets.each_pair { |path, body| save_asset(path, body) }
-  end
-
-  def save_asset(path, body)
-    dist_path = dist(path)
-
-    touch_folder(File.dirname(dist_path))
-
-    File.binwrite(dist_path, body)
-
-    logger.info { "saved #{dist_path.delete_prefix("#{root}/")}" }
+    assets.each_pair do |uri, body|
+      Services::SaveAsset.call(uri: uri, body: body, root: root, logger: logger)
+    end
   end
 
   def save_sitemap
@@ -225,27 +232,8 @@ class Builder
     logger.info { 'saved dist/llms.txt' }
   end
 
-  def save_url(url, content)
-    dist_path =
-      if url.path == '/'
-        dist('index.html')
-      else
-        dist(url.path)
-      end
-
-    touch_folder(File.dirname(dist_path))
-
-    File.write(dist_path, content)
-
-    logger.info { "built #{dist_path.delete_prefix("#{root}/")}" }
-  end
-
-  def touch_folder(path)
-    FileUtils.mkdir_p(path)
-  end
-
-  def remove_folder(path)
-    FileUtils.rm_rf(path)
+  def sequential?
+    ENV['SEQUENTIAL'] == '1'
   end
 
   def wait(seconds: 2, &block)

@@ -11,6 +11,10 @@ customElements.define("cs-react-island", class extends HTMLElement {
   }
 });
 
-window.addEventListener("load", () => {
+if (document.readyState === "complete") {
   usePageLoadState.getState().fireLoad();
-});
+} else {
+  window.addEventListener("load", () => {
+    usePageLoadState.getState().fireLoad();
+  });
+}
