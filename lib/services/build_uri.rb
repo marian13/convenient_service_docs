@@ -22,17 +22,54 @@ module Services
     validates :root, presence: true
     validates :logger, presence: true
 
-    def result
+    step :CreateBrowserPage,
+      out: :page
+
+    step :InjectBuildScript,
+      in: :page
+
+    step :NavigateToUri,
+      in: :page
+
+    step :WaitForIslandsToBeReady,
+      in: :page
+
+    step :CollectAssets,
+      in: :page
+
+    step :CapturePageContent,
+      in: :page,
+      out: :content
+
+    step :CloseBrowserPage,
+      in: :page
+
+    step Services::SaveUrl,
+      in: [:uri, :content, :root, :logger]
+
+    private
+
+    def CreateBrowserPage
       logger.debug { "building #{uri}..." }
 
-      page = browser.create_page
+      success(page: browser.create_page)
+    end
 
+    def InjectBuildScript
       page.command("Page.addScriptToEvaluateOnNewDocument", source: "window.__cs__ = { build: true };")
 
+      success
+    end
+
+    def NavigateToUri
       page.go_to(uri.to_s)
 
       page.network.wait_for_idle
 
+      success
+    end
+
+    def WaitForIslandsToBeReady
       logger.debug { "#{uri} ready status: #{page.evaluate("window.__cs__?.ready?.status").inspect}" }
 
       wait(seconds: 5) {
@@ -44,25 +81,31 @@ module Services
 
       return error(ready['message']) if ready&.dig('status') == 'failed'
 
-      page.network.traffic.each do |exchange|
-        Services::CollectAsset.result(exchange: exchange, uri: uri, assets: assets).with_fallback
-      end
+      success
+    end
 
+    def CollectAssets
+      service_aware_enumerable(page.network.traffic)
+        .service_aware_each { |exchange|
+          Services::CollectAsset.result(exchange: exchange, uri: uri, assets: assets).with_fallback
+        }
+        .result
+    end
+
+    def CapturePageContent
       content = <<~HTML
         <!DOCTYPE html>
         #{page.evaluate('document.documentElement.outerHTML')}
       HTML
 
-      page.close
-
-      Services::SaveUrl.call(uri: uri, content: content, root: root, logger: logger)
-    rescue => e
-      logger.error { "#{uri}: #{e.class}: #{e.message}" }
-      logger.debug { e.full_message }
-      error(e.message)
+      success(content: content)
     end
 
-    private
+    def CloseBrowserPage
+      page.close
+
+      success
+    end
 
     def wait(seconds: 2, &block)
       Retriable.retriable(tries: (seconds / 0.1).ceil, base_interval: 0.1, multiplier: 1.0) { raise unless block.call }
