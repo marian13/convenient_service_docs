@@ -56,6 +56,10 @@ module Services
       page.close
 
       Services::SaveUrl.call(uri: uri, content: content, root: root, logger: logger)
+    rescue => e
+      logger.error { "#{uri}: #{e.class}: #{e.message}" }
+      logger.debug { e.full_message }
+      error(e.message)
     end
 
     private

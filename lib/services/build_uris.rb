@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require "concurrent"
-
 require_relative "configs/practical/v1"
-require_relative "build_uri"
-require_relative "save_asset"
+require_relative "build_uris_sequentially"
+require_relative "build_uris_concurrently"
 
 module Services
   class BuildUris
@@ -24,45 +22,10 @@ module Services
     validates :root, presence: true
     validates :logger, presence: true
 
-    def result
-      if sequential?
-        uris.each do |uri|
-          Services::BuildUri.call(uri: uri, browser: browser, assets: assets, root: root, logger: logger)
-        rescue => e
-          logger.error { "#{uri}: #{e.class}: #{e.message}" }
-          logger.debug { e.full_message }
-          raise
-        end
-      else
-        futures = uris.map do |uri|
-          Concurrent::Future.execute(executor: pool) do
-            Services::BuildUri.call(uri: uri, browser: browser, assets: assets, root: root, logger: logger)
-          rescue => e
-            logger.error { "#{uri}: #{e.class}: #{e.message}" }
-            logger.debug { e.full_message }
-            raise
-          end
-        end
+    step Services::BuildUrisSequentially,
+      in: [:uris, :browser, :assets, :root, :logger]
 
-        pool.shutdown
-        pool.wait_for_termination
-
-        futures.each(&:value!)
-      end
-
-      browser.quit
-
-      assets.each_pair do |uri, body|
-        Services::SaveAsset.call(uri: uri, body: body, root: root, logger: logger)
-      end
-
-      success
-    end
-
-    private
-
-    def sequential?
-      ENV['SEQUENTIAL'] == '1'
-    end
+    or_step Services::BuildUrisConcurrently,
+      in: [:uris, :browser, :assets, :pool, :root, :logger]
   end
 end
