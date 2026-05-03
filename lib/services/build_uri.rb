@@ -47,11 +47,13 @@ module Services
     step Services::SaveUrl,
       in: [:uri, :content, :root, :logger]
 
+    before :result do
+      logger.debug { "building #{uri}..." }
+    end
+
     private
 
     def CreateBrowserPage
-      logger.debug { "building #{uri}..." }
-
       success(page: browser.create_page)
     end
 
@@ -87,7 +89,9 @@ module Services
     def CollectAssets
       service_aware_enumerable(page.network.traffic)
         .service_aware_each { |exchange|
-          Services::CollectAsset.result(exchange: exchange, uri: uri, assets: assets).with_fallback
+          step Services::CollectAsset,
+            in: [exchange: -> { exchange }, uri: -> { uri }, assets: -> { assets }],
+            fallback: true
         }
         .result
     end
