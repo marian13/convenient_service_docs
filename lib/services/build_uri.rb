@@ -18,7 +18,7 @@ module Services
 
     validates :uri, presence: true
     validates :browser, presence: true
-    validates :assets, presence: true
+    validates :assets, nil: false
     validates :root, presence: true
     validates :logger, presence: true
 

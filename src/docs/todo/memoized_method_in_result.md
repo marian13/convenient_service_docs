@@ -34,7 +34,7 @@ end
 
 private
 
-memoize def request_uri
+memo_wise def request_uri
   URI.parse(exchange.request.url)
 end
 ```

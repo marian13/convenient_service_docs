@@ -28,7 +28,7 @@ step Services::FetchHttpResponse,
 
 private
 
-memoize def source_uri
+memo_wise def source_uri
   URI("http://localhost:#{port}/sitemap.xml")
 end
 ```

@@ -14,7 +14,7 @@ module Services
 
     validates :exchange, presence: true
     validates :uri, presence: true
-    validates :assets, presence: true
+    validates :assets, nil: false
 
     def result
       return failure("Exchange has no response") if exchange.response.nil?
@@ -32,7 +32,7 @@ module Services
 
     private
 
-    memoize def request_uri
+    memo_wise def request_uri
       URI.parse(exchange.request.url)
     end
   end

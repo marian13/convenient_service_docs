@@ -31,11 +31,11 @@ module Services
 
     private
 
-    memoize def source_uri
+    memo_wise def source_uri
       URI("http://localhost:#{port}/llms.txt")
     end
 
-    memoize def dist_path
+    memo_wise def dist_path
       File.join(root, "dist", "llms.txt")
     end
   end

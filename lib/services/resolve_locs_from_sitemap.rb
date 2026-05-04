@@ -26,7 +26,7 @@ module Services
 
     private
 
-    memoize def sitemap_path
+    memo_wise def sitemap_path
       File.join(root, "src", "sitemap.xml")
     end
 

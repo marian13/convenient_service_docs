@@ -73,7 +73,7 @@ module Services
 
     private
 
-    memoize def dist_path
+    memo_wise def dist_path
       File.join(root, "dist")
     end
   end

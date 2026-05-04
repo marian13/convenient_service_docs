@@ -11,7 +11,7 @@ module Services
     option :root
     option :logger
 
-    validates :assets, presence: true
+    validates :assets, nil: false
     validates :root, presence: true
     validates :logger, presence: true
 
