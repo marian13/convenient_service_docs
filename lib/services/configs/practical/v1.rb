@@ -5,7 +5,7 @@ require "memo_wise"
 require "awesome_print"
 
 require "convenient_service"
-require_relative "../../validators/nil_validator"
+require_relative "../../../validators/nil_validator"
 require "convenient_service/extras/standard/config/options/dry_initializer"
 require "convenient_service/extras/standard/config/options/active_model_validations"
 require "convenient_service/extras/standard/config/options/memo_wise"

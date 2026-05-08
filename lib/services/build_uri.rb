@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "retriable"
-
 require_relative "configs/practical/v1"
 require_relative "collect_asset"
 require_relative "save_url"
@@ -31,8 +29,10 @@ module Services
     step :NavigateToUri,
       in: :page
 
-    step :WaitForIslandsToBeReady,
+    step :CheckNetworkResponses,
       in: :page
+
+    step :CheckConsoleErrors
 
     step :CollectAssets,
       in: :page
@@ -54,7 +54,18 @@ module Services
     private
 
     def CreateBrowserPage
-      success(page: browser.create_page)
+      @console_errors = []
+
+      page = browser.create_page
+
+      page.on("Runtime.consoleAPICalled") do |params|
+        next unless params["type"] == "error"
+        @console_errors << params["args"].map { |a| a["value"] || a["description"] }.compact.join(" ")
+      end
+
+      success(page: page)
+    rescue => e
+      error_from_exception(e)
     end
 
     def InjectBuildScript
@@ -67,21 +78,24 @@ module Services
       page.go_to(uri.to_s)
 
       page.network.wait_for_idle
+      sleep(2)
+      page.network.wait_for_idle
+
+      success
+    rescue => e
+      error_from_exception(e)
+    end
+
+    def CheckNetworkResponses
+      failed = page.network.traffic.select { |exchange| exchange.response&.status.to_i >= 400 }
+
+      return error("Non-2xx responses for #{uri}:\n#{failed.map { |e| "#{e.url} → #{e.response.status}" }.join("\n")}") if failed.any?
 
       success
     end
 
-    def WaitForIslandsToBeReady
-      logger.debug { "#{uri} ready status: #{page.evaluate("window.__cs__?.ready?.status").inspect}" }
-
-      wait(seconds: 5) {
-        cs = page.evaluate("window.__cs__")
-        !cs || !cs['ready'] || %w[completed failed].include?(cs.dig('ready', 'status'))
-      }
-
-      ready = page.evaluate("window.__cs__?.['ready']")
-
-      return error(ready['message']) if ready&.dig('status') == 'failed'
+    def CheckConsoleErrors
+      return error("Console errors for #{uri}:\n#{@console_errors.join("\n")}") if @console_errors.any?
 
       success
     end
@@ -109,10 +123,6 @@ module Services
       page.close
 
       success
-    end
-
-    def wait(seconds: 2, &block)
-      Retriable.retriable(tries: (seconds / 0.1).ceil, base_interval: 0.1, multiplier: 1.0) { raise unless block.call }
     end
   end
 end

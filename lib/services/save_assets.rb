@@ -16,11 +16,12 @@ module Services
     validates :logger, presence: true
 
     def result
-      assets.each_pair do |uri, body|
-        Services::SaveAsset.call(uri: uri, body: body, root: root, logger: logger)
-      end
-
-      success
+      service_aware_enumerator(assets.each_pair)
+        .service_aware_each { |uri, body|
+          step Services::SaveAsset,
+            in: [uri: -> { uri }, body: -> { body }, root: -> { root }, logger: -> { logger }]
+        }
+        .result(evaluate_by: nil)
     end
   end
 end

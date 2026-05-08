@@ -8,7 +8,7 @@ gem 'rexml', '3.4.4'
 gem 'retriable', '3.1.2'
 gem 'concurrent-ruby', '1.3.5'
 
-gem 'convenient_service', '0.23.0'
+gem 'convenient_service', '0.24.0'
 gem 'dry-initializer', '3.2.0'
 gem 'memo_wise', '1.13.0'
 gem 'awesome_print', '1.9.2'

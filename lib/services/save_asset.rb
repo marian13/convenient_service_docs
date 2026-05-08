@@ -32,7 +32,7 @@ module Services
       in: {path: :dist_parent_path}
 
     step Services::WriteBinaryFile,
-      in: [{path: :dist_path}, :body]
+      in: [{path: :dist_path}, {content: :body}]
 
     after :result do |result|
       logger.info { "saved #{dist_path.delete_prefix("#{root}/")}" } if result.success?
