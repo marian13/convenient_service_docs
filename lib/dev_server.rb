@@ -90,7 +90,7 @@ class DevServer < Sinatra::Base
       request.path_info
     end
 
-    def render_partial(name, locals: {})
+    def render_html_partial(name, locals: {})
       erb :"partials/#{name}/index.html", layout: false, locals: locals
     end
 
