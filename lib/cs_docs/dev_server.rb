@@ -129,7 +129,7 @@ module CSDocs
       end
 
       def send_doc_page_html(file_path)
-        @path = url_path_from(file_path)
+        @path = file_path
 
         erb :"doc_page.html", layout: :"layouts/html_layout.html"
       end
@@ -154,22 +154,22 @@ module CSDocs
         erb(read_file(file_path), layout: false)
       end
 
-      def static_file_path_from(url_path)
-        File.join(root, 'src', url_path)
+      def static_file_path_from(file_path)
+        File.join(root, 'src', file_path)
       end
 
-      def dynamic_file_path_from(url_path)
-        file_path = static_file_path_from(url_path)
+      def dynamic_file_path_from(file_path)
+        resolved_file_path = static_file_path_from(file_path)
 
-        return file_path if file_exist?(file_path)
+        return resolved_file_path if file_exist?(resolved_file_path)
 
-        erb_file_path = file_path + ".erb"
+        erb_file_path = resolved_file_path + ".erb"
 
         return erb_file_path if file_exist?(erb_file_path)
 
-        extension = File.extname(file_path)
+        extension = File.extname(resolved_file_path)
 
-        index_file_path = file_path.delete_suffix(extension) + "/index" + extension
+        index_file_path = resolved_file_path.delete_suffix(extension) + "/index" + extension
 
         return index_file_path if file_exist?(index_file_path)
 
@@ -183,14 +183,14 @@ module CSDocs
       end
     end
 
-    get %r{/docs/(.+\.html)} do
-      file_path = dynamic_file_path_from("/doc_pages/#{params['captures'].first.delete_suffix('.html')}.md")
+    get %r{/docs/(?<file_name>.+\.html)} do |file_name|
+      file_path = "/docs/#{file_name.delete_suffix('.html')}.md"
 
       send_doc_page_html file_path
     end
 
-    get %r{/docs/(.+\.md)} do
-      file_path = dynamic_file_path_from("/doc_pages/#{params['captures'].first}")
+    get %r{/docs/(?<file_name>.+\.md)} do |file_name|
+      file_path = dynamic_file_path_from("/doc_pages/#{file_name}")
 
       send_doc_page_markdown file_path
     end
