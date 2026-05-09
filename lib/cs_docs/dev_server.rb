@@ -114,8 +114,6 @@ module CSDocs
 
       def send_dynamic_file(file_path)
         if file_path&.end_with?('.erb')
-          content_type File.extname(file_path.delete_suffix('.erb'))
-
           read_erb_file(file_path)
         else
           send_file file_path
@@ -177,10 +175,6 @@ module CSDocs
 
         return index_erb_file_path if file_exist?(index_erb_file_path)
       end
-
-      def url_path_from(file_path)
-        file_path.delete_prefix(File.join(root, 'src'))
-      end
     end
 
     get %r{/docs/(?<file_name>.+\.html)} do |file_name|
@@ -195,26 +189,32 @@ module CSDocs
       send_doc_page_markdown file_path
     end
 
-    get %r{/assets/(components|global|utils)/(.+\.(js|css|svg|png|ico))} do
+    get %r{/assets/(?:components|global|utils)/.+(?<ext>\.(?:js|css|svg|png|ico))} do |ext|
       file_path = dynamic_file_path_from(url_path)
+
+      content_type ext
 
       send_dynamic_file file_path
     end
 
-    get %r{/custom_pages/(.+\.(js|css|svg|png|ico))} do
+    get %r{/custom_pages/.+(?<ext>\.(?:js|css|svg|png|ico))} do |ext|
       file_path = dynamic_file_path_from(url_path)
+
+      content_type ext
 
       send_dynamic_file file_path
     end
 
-    get %r{/public/(.+\.(js|css|svg|png|ico))} do
+    get %r{/public/.+\.(?:js|css|svg|png|ico)} do
       file_path = static_file_path_from(url_path)
 
       send_static_file file_path
     end
 
-    get %r{/views/(.+\.css)} do
+    get %r{/views/.+(?<ext>\.css)} do |ext|
       file_path = dynamic_file_path_from(url_path)
+
+      content_type ext
 
       send_dynamic_file file_path
     end
