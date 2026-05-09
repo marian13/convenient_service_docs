@@ -9,7 +9,7 @@ require "cs_docs/builder/services/write_file"
 module CSDocs
   class Builder
     module Services
-      class SaveUrl
+      class SavePage
         include ::CSDocs::Services::Configs::Practical::V1
     
         option :uri

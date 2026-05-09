@@ -13,7 +13,7 @@ require "cs_docs/builder/services/remove_folder"
 require "cs_docs/builder/services/touch_folder"
 require "cs_docs/builder/services/spawn_dev_server"
 require "cs_docs/builder/services/wait_server_healthcheck"
-require "cs_docs/builder/services/build_uris"
+require "cs_docs/builder/services/build_pages"
 require "cs_docs/builder/services/save_sitemap"
 require "cs_docs/builder/services/save_llms_txt"
 require "cs_docs/builder/services/kill_process"
@@ -57,7 +57,7 @@ module CSDocs
         step Services::WaitServerHealthcheck,
           in: :port
     
-        step Services::BuildUris,
+        step Services::BuildPages,
           in: [:uris, :browser, :assets, :pool, :root, :logger]
     
         step Services::SaveSitemap,

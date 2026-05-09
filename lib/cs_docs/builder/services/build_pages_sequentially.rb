@@ -1,29 +1,25 @@
 # frozen_string_literal: true
 
-require "concurrent"
-
 require "cs_docs/services/configs/practical/v1"
-require "cs_docs/builder/services/build_uri"
+require "cs_docs/builder/services/build_page"
 require "cs_docs/builder/services/quit_browser"
 require "cs_docs/builder/services/save_assets"
 
 module CSDocs
   class Builder
     module Services
-      class BuildUrisConcurrently
+      class BuildPagesSequentially
         include ::CSDocs::Services::Configs::Practical::V1
     
         option :uris
         option :browser
         option :assets
-        option :pool
         option :root
         option :logger
     
         validates :uris, presence: true
         validates :browser, presence: true
         validates :assets, nil: false
-        validates :pool, presence: true
         validates :root, presence: true
         validates :logger, presence: true
     
@@ -38,14 +34,18 @@ module CSDocs
         private
     
         def ProcessUris
+          return failure("not in sequential mode") unless sequential?
+    
           service_aware_enumerable(uris)
-            .map { |uri| Concurrent::Future.execute(executor: pool) { Services::BuildUri.result(uri: uri, browser: browser, assets: assets, root: root, logger: logger) } }
-            .lazy
-            .service_aware_map { |future| future.value!.tap { |result| pool.kill if result.not_success? } }
+            .service_aware_each { |uri|
+              step Services::BuildPage,
+                in: [uri: -> { uri }, browser: -> { browser }, assets: -> { assets }, root: -> { root }, logger: -> { logger }]
+            }
             .result
-        ensure
-          pool.shutdown
-          pool.wait_for_termination
+        end
+    
+        def sequential?
+          ENV["SEQUENTIAL"] == "1"
         end
       end
     end
