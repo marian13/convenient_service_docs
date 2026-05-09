@@ -195,7 +195,13 @@ module CSDocs
       send_doc_page_markdown file_path
     end
 
-    get %r{/(components|global|custom_pages|utils|public)/(.+\.(js|css|svg|png|ico))} do
+    get %r{/assets/(components|global|utils)/(.+\.(js|css|svg|png|ico))} do
+      file_path = dynamic_file_path_from(url_path)
+
+      send_dynamic_file file_path
+    end
+
+    get %r{/(custom_pages|public)/(.+\.(js|css|svg|png|ico))} do
       file_path = dynamic_file_path_from(url_path)
 
       send_dynamic_file file_path

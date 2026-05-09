@@ -8,30 +8,30 @@
 
   <%= render_html_partial "syntax-highlighting/#{config[:syntax_highlighting][:provider]}/css_links" %>
 
-  <script src="/global/loaders/beforePageLoadStarted.js"></script>
+  <script src="/assets/global/loaders/beforePageLoadStarted.js"></script>
 
   <style>
     @import "https://unpkg.com/modern-normalize";
 
-    @import "/global/styles/base.css";
-    @import "/global/styles/fonts/inter.css";
-    @import "/global/styles/themes/index.css";
-    @import "/global/styles/islands.css";
+    @import "/assets/global/styles/base.css";
+    @import "/assets/global/styles/fonts/inter.css";
+    @import "/assets/global/styles/themes/index.css";
+    @import "/assets/global/styles/islands.css";
 
-    @import "/components/generic/Selector/styles.css";
-    @import "/components/ThemeSelector/styles.css";
+    @import "/assets/components/generic/Selector/styles.css";
+    @import "/assets/components/ThemeSelector/styles.css";
 
     @import "/views/doc_page.css";
-    @import "/global/styles/<%= config[:syntax_highlighting][:provider] %>.css";
+    @import "/assets/global/styles/<%= config[:syntax_highlighting][:provider] %>.css";
     @import "/views/partials/top-left-corner-header/styles.css";
     @import "/views/partials/top-right-corner-header/styles.css";
     @import "/views/partials/button/styles.css";
 
     @import "/custom_pages/home/styles.css";
-    @import "/components/ColorSchemeToggle/styles.css";
-    @import "/components/generic/Loader/styles.css";
-    @import "/components/generic/LoaderPulse/styles.css";
-    @import "/components/generic/Lorem/styles.css";
+    @import "/assets/components/ColorSchemeToggle/styles.css";
+    @import "/assets/components/generic/Loader/styles.css";
+    @import "/assets/components/generic/LoaderPulse/styles.css";
+    @import "/assets/components/generic/Lorem/styles.css";
   </style>
 
   <script type="importmap">
@@ -42,29 +42,29 @@
         "htm": "https://esm.sh/htm@3",
         "zustand": "https://esm.sh/zustand@4?deps=react@18",
         "classnames": "https://esm.sh/classnames@2",
-        "@utils/env": "/utils/env.js",
-        "@utils/html": "/utils/html.js",
-        "@utils/island": "/utils/island.js",
-        "@utils/colorScheme": "/utils/colorScheme.js",
-        "@utils/theme": "/utils/theme.js",
-        "@utils/async": "/utils/async/index.js",
-        "@utils/http": "/utils/http/index.js",
-        "@utils/markdown": "/utils/markdown/index.js",
-        "@components/App": "/components/App/index.js",
-        "@components/generic/Selector": "/components/generic/Selector/index.js",
-        "@components/ThemeSelector": "/components/ThemeSelector/index.js",
-        "@components/ColorSchemeToggle": "/components/ColorSchemeToggle/index.js",
-        "@components/generic/Loader": "/components/generic/Loader/index.js",
-        "@components/generic/LoaderPulse": "/components/generic/LoaderPulse/index.js",
-        "@components/generic/Lorem": "/components/generic/Lorem/index.js",
-        "@icons": "/components/generic/icons/index.js",
+        "@utils/env": "/assets/utils/env.js",
+        "@utils/html": "/assets/utils/html.js",
+        "@utils/island": "/assets/utils/island.js",
+        "@utils/colorScheme": "/assets/utils/colorScheme.js",
+        "@utils/theme": "/assets/utils/theme.js",
+        "@utils/async": "/assets/utils/async/index.js",
+        "@utils/http": "/assets/utils/http/index.js",
+        "@utils/markdown": "/assets/utils/markdown/index.js",
+        "@components/App": "/assets/components/App/index.js",
+        "@components/generic/Selector": "/assets/components/generic/Selector/index.js",
+        "@components/ThemeSelector": "/assets/components/ThemeSelector/index.js",
+        "@components/ColorSchemeToggle": "/assets/components/ColorSchemeToggle/index.js",
+        "@components/generic/Loader": "/assets/components/generic/Loader/index.js",
+        "@components/generic/LoaderPulse": "/assets/components/generic/LoaderPulse/index.js",
+        "@components/generic/Lorem": "/assets/components/generic/Lorem/index.js",
+        "@icons": "/assets/components/generic/icons/index.js",
         "marked": "https://esm.sh/marked",
         "highlight.js": "https://esm.sh/highlight.js",
         "prismjs": "https://esm.sh/prismjs",
         "prismjs/components/prism-ruby": "https://esm.sh/prismjs/components/prism-ruby",
         "prismjs/components/prism-bash": "https://esm.sh/prismjs/components/prism-bash",
         "@floating-ui/react": "https://esm.sh/@floating-ui/react?deps=react@18",
-        "@components/generic/Markdown": "/components/generic/Markdown/index.js"
+        "@components/generic/Markdown": "/assets/components/generic/Markdown/index.js"
       }
     }
   </script>
@@ -72,6 +72,6 @@
 <body>
   <%= yield %>
 
-  <script type="module" src="/global/loaders/afterPageLoadFinished.js"></script>
+  <script type="module" src="/assets/global/loaders/afterPageLoadFinished.js"></script>
 </body>
 </html>
