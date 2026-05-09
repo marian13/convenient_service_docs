@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'sinatra/base'
+require 'yaml'
 require 'fileutils'
 require 'rack'
 
@@ -82,6 +83,10 @@ class DevServer < Sinatra::Base
   set :dump_errors, true
 
   helpers do
+    def config
+      @config ||= YAML.load_file(File.join(root, 'config.yml'), symbolize_names: true)
+    end
+
     def root
       self.class.root
     end
