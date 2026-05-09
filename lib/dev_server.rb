@@ -94,6 +94,10 @@ class DevServer < Sinatra::Base
       erb :"partials/#{name}/index.html", layout: false, locals: locals
     end
 
+    def render_js_partial(name)
+      erb :"partials/#{name}/index.js", layout: false
+    end
+
     def render_js_module_inline(file_path)
       File.read(file_path).gsub(/^export /, '')
     end
