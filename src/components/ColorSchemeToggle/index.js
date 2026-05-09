@@ -3,7 +3,8 @@ import { useState } from "react";
 import { html } from "@utils/html";
 import LoaderPulse from "@components/generic/LoaderPulse";
 import { SunIcon, MoonIcon } from "@icons";
-import { isLightColorScheme, toggleColorSchemeAsync } from "@utils/colorScheme";
+import { isLightColorScheme, toggleColorScheme } from "@utils/colorScheme";
+import { callAsync } from "@utils/async";
 import { isBuildEnvironment } from "@utils/env";
 
 const ColorSchemeToggle = () => {
@@ -12,7 +13,7 @@ const ColorSchemeToggle = () => {
   const handleClick = () => {
     setShouldTrigger(true);
 
-    toggleColorSchemeAsync().then(() => setShouldTrigger(false));
+    callAsync(toggleColorScheme).then(() => setShouldTrigger(false));
   };
 
   const renderContent = () => {

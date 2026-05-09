@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { marked } from "marked";
 import { html } from "@utils/html";
+import { fetch } from "@utils/http";
 
 const Markdown = ({ src }) => {
   const [content, setContent] = useState("");

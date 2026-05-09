@@ -20,14 +20,11 @@ const toggleColorScheme = () => {
   setColorScheme(nextColorScheme);
 };
 
-const toggleColorSchemeAsync = () => Promise.resolve().then(toggleColorScheme);
-
 export {
   getColorScheme,
   isLightColorScheme,
   isDarkColorScheme,
   applyColorScheme,
   setColorScheme,
-  toggleColorScheme,
-  toggleColorSchemeAsync
+  toggleColorScheme
 };
