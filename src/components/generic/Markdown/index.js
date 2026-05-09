@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { marked } from "marked";
 import { html } from "@utils/html";
 import { fetch } from "@utils/http";
+import { markdownToHtml } from "@utils/markdown";
 
 const Markdown = ({ src }) => {
   const [content, setContent] = useState("");
@@ -9,7 +9,7 @@ const Markdown = ({ src }) => {
   useEffect(() => {
     fetch(src)
       .then((r) => r.text())
-      .then((md) => setContent(marked.parse(md)));
+      .then((md) => setContent(markdownToHtml(md)));
   }, [src]);
 
   return html`<main dangerouslySetInnerHTML=${{ __html: content }} />`;
