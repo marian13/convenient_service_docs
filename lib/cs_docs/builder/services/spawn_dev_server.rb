@@ -15,7 +15,7 @@ module CSDocs
         validates :root, presence: true
     
         def result
-          pid = spawn("PORT=#{port} bundle exec ruby lib/dev_server.rb", chdir: root)
+          pid = spawn("PORT=#{port} bundle exec ruby lib/cs_docs/dev_server.rb", chdir: root)
     
           success(pid: pid)
         end
