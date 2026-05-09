@@ -108,38 +108,36 @@ module CSDocs
         File.read(file_path).gsub(/^export /, '')
       end
 
-      def send_static_file(url_path)
-        send_file static_file_path_from(url_path)
+      def send_static_file(file_path)
+        send_file file_path
       end
 
-      def send_dynamic_file(url_path)
-        file_path = dynamic_file_path_from(url_path)
-
+      def send_dynamic_file(file_path)
         if file_path&.end_with?('.erb')
-          content_type File.extname(url_path)
+          content_type File.extname(file_path.delete_suffix('.erb'))
 
           read_erb_file(file_path)
         else
-          send_static_file url_path
+          send_file file_path
         end
       end
 
-      def send_custom_page_html(url_path)
-        @content = read_erb_file(dynamic_file_path_from(url_path))
+      def send_custom_page_html(file_path)
+        @content = read_erb_file(file_path)
 
         erb :"custom_page.html", layout: :"layouts/html_layout.html"
       end
 
-      def send_doc_page_html(url_path)
-        @path = url_path_from(dynamic_file_path_from(url_path.delete_suffix(".html") + ".md"))
+      def send_doc_page_html(file_path)
+        @path = url_path_from(file_path)
 
         erb :"doc_page.html", layout: :"layouts/html_layout.html"
       end
 
-      def send_doc_page_markdown(url_path)
+      def send_doc_page_markdown(file_path)
         content_type 'text/markdown'
 
-        @content = read_erb_file(dynamic_file_path_from(url_path))
+        @content = read_erb_file(file_path)
 
         erb :"doc_page.md", layout: :"layouts/markdown_layout.md"
       end
@@ -186,35 +184,49 @@ module CSDocs
     end
 
     get %r{/docs/(.+\.html)} do
-      send_doc_page_html "/doc_pages/#{params['captures'].first}"
+      file_path = dynamic_file_path_from("/doc_pages/#{params['captures'].first.delete_suffix('.html')}.md")
+
+      send_doc_page_html file_path
     end
 
     get %r{/docs/(.+\.md)} do
-      send_doc_page_markdown "/doc_pages/#{params['captures'].first}"
+      file_path = dynamic_file_path_from("/doc_pages/#{params['captures'].first}")
+
+      send_doc_page_markdown file_path
     end
 
     get %r{/(components|global|custom_pages|utils|public)/(.+\.(js|css|svg|png|ico))} do
-      send_dynamic_file url_path
+      file_path = dynamic_file_path_from(url_path)
+
+      send_dynamic_file file_path
     end
 
     get %r{/views/(.+\.css)} do
-      send_dynamic_file url_path
+      file_path = dynamic_file_path_from(url_path)
+
+      send_dynamic_file file_path
     end
 
     get '/404.html' do
-      send_static_file '/public/404.html'
+      file_path = static_file_path_from('/public/404.html')
+
+      send_static_file file_path
     end
 
     get '/sitemap.xml' do
       content_type 'application/xml'
 
-      send_static_file '/sitemap.xml'
+      file_path = static_file_path_from('/sitemap.xml')
+
+      send_static_file file_path
     end
 
     get '/llms.txt' do
       content_type 'text/plain'
 
-      send_static_file '/llms.txt'
+      file_path = static_file_path_from('/llms.txt')
+
+      send_static_file file_path
     end
 
     get '/healthcheck' do
@@ -222,11 +234,15 @@ module CSDocs
     end
 
     get '/' do
-      send_custom_page_html '/custom_pages/home/index.html'
+      file_path = dynamic_file_path_from('/custom_pages/home/index.html')
+
+      send_custom_page_html file_path
     end
 
     not_found do
-      send_static_file '/public/404.html'
+      file_path = static_file_path_from('/public/404.html')
+
+      send_static_file file_path
     end
   end
 end
