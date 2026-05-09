@@ -124,24 +124,24 @@ module CSDocs
         end
       end
 
-      def send_dynamic_html_page(url_path)
+      def send_custom_page_html(url_path)
         @content = read_erb_file(dynamic_file_path_from(url_path))
 
-        erb :"html_page.html", layout: :"layouts/html_layout.html"
+        erb :"custom_page.html", layout: :"layouts/html_layout.html"
       end
 
-      def send_dynamic_html_doc(url_path)
+      def send_doc_page_html(url_path)
         @path = url_path_from(dynamic_file_path_from(url_path.delete_suffix(".html") + ".md"))
 
-        erb :"html_doc.html", layout: :"layouts/html_layout.html"
+        erb :"doc_page.html", layout: :"layouts/html_layout.html"
       end
 
-      def send_dynamic_markdown_doc(url_path)
+      def send_doc_page_markdown(url_path)
         content_type 'text/markdown'
 
         @content = read_erb_file(dynamic_file_path_from(url_path))
 
-        erb :"markdown_doc.md", layout: :"layouts/markdown_layout.md"
+        erb :"doc_page.md", layout: :"layouts/markdown_layout.md"
       end
 
       def file_exist?(file_path)
@@ -185,19 +185,15 @@ module CSDocs
       end
     end
 
-    get %r{/pages/(.+\.html)} do
-      send_dynamic_html_page url_path
-    end
-
     get %r{/docs/(.+\.html)} do
-      send_dynamic_html_doc url_path
+      send_doc_page_html "/doc_pages/#{params['captures'].first}"
     end
 
     get %r{/docs/(.+\.md)} do
-      send_dynamic_markdown_doc url_path
+      send_doc_page_markdown "/doc_pages/#{params['captures'].first}"
     end
 
-    get %r{/(components|global|pages|utils|public)/(.+\.(js|css|svg|png|ico))} do
+    get %r{/(components|global|custom_pages|utils|public)/(.+\.(js|css|svg|png|ico))} do
       send_dynamic_file url_path
     end
 
@@ -226,7 +222,7 @@ module CSDocs
     end
 
     get '/' do
-      send_dynamic_html_page '/pages/home/index.html'
+      send_custom_page_html '/custom_pages/home/index.html'
     end
 
     not_found do
