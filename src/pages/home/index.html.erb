@@ -1,3 +1,6 @@
+<%= render_partial 'top-left-corner-header' %>
+<%= render_partial 'top-right-corner-header' %>
+
 <main class="cs-pages-home">
   <h1 class="cs-pages-home__title">Convenient Service</h1>
 
@@ -14,10 +17,5 @@
     <%= render_partial 'button', locals: { variant: 'secondary', href: '/docs/basics.html', label: 'User Docs', target: '_self', rel: '' } %>
     <%= render_partial 'button', locals: { variant: 'secondary', href: 'https://apidocs.convenientservice.org', label: 'API Docs', target: '_blank', rel: 'noopener noreferrer' } %>
     <%= render_partial 'button', locals: { variant: 'secondary', href: 'https://github.com/marian13/convenient_service', label: 'GitHub', target: '_blank', rel: 'noopener noreferrer' } %>
-  </div>
-
-  <div class="cs-pages-home__controls">
-    <cs-react-island component="ThemeSelector" props='{"placement":"top"}'></cs-react-island>
-    <cs-react-island component="ColorSchemeToggle"></cs-react-island>
   </div>
 </main>
