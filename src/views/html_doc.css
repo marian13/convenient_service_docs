@@ -6,6 +6,15 @@
   padding-right: 2rem;
 }
 
+.cs-doc pre:has(> code.hljs) {
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+}
+
+.cs-doc code.hljs {
+  border-radius: 0.375rem;
+}
+
 .cs-doc pre:has(> code[class^="language-"]) {
   padding: 1rem;
   border: 1px solid var(--color-border);

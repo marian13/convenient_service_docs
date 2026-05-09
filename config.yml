@@ -1,8 +1,8 @@
 ##
-# NOTE: Possible provider values: "highlight-js", "prism".
+# NOTE: Possible provider values: "highlight-js", "prism-js".
 # - https://highlightjs.org
 # - https://prismjs.com
 #
 syntax_highlighting:
   # provider: highlight-js
-  provider: prism
+  provider: prism-js
