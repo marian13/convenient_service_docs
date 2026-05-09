@@ -201,10 +201,16 @@ module CSDocs
       send_dynamic_file file_path
     end
 
-    get %r{/(custom_pages|public)/(.+\.(js|css|svg|png|ico))} do
+    get %r{/custom_pages/(.+\.(js|css|svg|png|ico))} do
       file_path = dynamic_file_path_from(url_path)
 
       send_dynamic_file file_path
+    end
+
+    get %r{/public/(.+\.(js|css|svg|png|ico))} do
+      file_path = static_file_path_from(url_path)
+
+      send_static_file file_path
     end
 
     get %r{/views/(.+\.css)} do
