@@ -1,7 +1,17 @@
+cs-dita-short-description,
+cs-dita-concept-body,
+cs-dita-task-prerequisites,
+cs-dita-task-steps,
+cs-dita-task-result,
+cs-dita-reference-properties {
+  display: block;
+}
+
 .cs-doc {
   max-width: 800px;
   margin: 0 auto;
   padding-top: 2rem;
-  padding-left: 2rem;
   padding-right: 2rem;
+  padding-bottom: 4rem;
+  padding-left: 2rem;
 }

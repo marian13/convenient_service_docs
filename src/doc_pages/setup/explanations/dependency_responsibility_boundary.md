@@ -1,6 +1,6 @@
 # Dependency responsibility boundary
 
-> Basic / Explanation / Concept topic
+> Setup / Basic / Explanation / Concept topic
 
 Convenient Service core depends only on the Ruby standard library. No external gems are required to use it.
 

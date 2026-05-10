@@ -1,11 +1,13 @@
 # Table of contents
 
-## Explanations
+## Setup
 
-- [Dependency responsibility boundary](/docs/explanations/dependency_responsibility_boundary.html)
+### Explanations
 
-## How-to
+- [Dependency responsibility boundary](/docs/setup/explanations/dependency_responsibility_boundary.html)
 
-## Reference
+### How-to
 
-## Tutorials
+### Reference
+
+### Tutorials

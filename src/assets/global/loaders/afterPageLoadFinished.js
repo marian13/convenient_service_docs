@@ -1,7 +1,2 @@
-import { renderIsland } from "@utils/island";
-
-customElements.define("cs-react-island", class extends HTMLElement {
-  connectedCallback() {
-    renderIsland(this).catch((error) => console.error(error));
-  }
-});
+import "@assets/global/custom_html_elements/react-island.js";
+import "@assets/global/custom_html_elements/dita.js";
