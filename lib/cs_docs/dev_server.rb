@@ -81,16 +81,8 @@ module CSDocs
         erb :"doc_page.md", layout: :"layouts/markdown_layout.md"
       end
 
-      def file_exist?(file_path)
-        File.exist?(file_path)
-      end
-
-      def read_file(file_path)
-        File.read(file_path)
-      end
-
       def read_erb_file(file_path)
-        erb(read_file(file_path), layout: false)
+        erb(File.read(file_path), layout: false)
       end
 
       ##
@@ -112,21 +104,21 @@ module CSDocs
       def dynamic_file_path_from(file_path)
         resolved_file_path = static_file_path_from(file_path)
 
-        return resolved_file_path if file_exist?(resolved_file_path)
+        return resolved_file_path if File.exist?(resolved_file_path)
 
         erb_file_path = resolved_file_path + ".erb"
 
-        return erb_file_path if file_exist?(erb_file_path)
+        return erb_file_path if File.exist?(erb_file_path)
 
         extension = File.extname(resolved_file_path)
 
         index_file_path = resolved_file_path.delete_suffix(extension) + "/index" + extension
 
-        return index_file_path if file_exist?(index_file_path)
+        return index_file_path if File.exist?(index_file_path)
 
         index_erb_file_path = index_file_path + ".erb"
 
-        return index_erb_file_path if file_exist?(index_erb_file_path)
+        return index_erb_file_path if File.exist?(index_erb_file_path)
       end
     end
 
@@ -181,6 +173,7 @@ module CSDocs
 
     ##
     # URL: /views/doc_page.css -> File: src/views/doc_page.css
+    # Some views and partials have CSS that lives next to them, this route makes those CSS browser-accessible.
     #
     get %r{/views/.+(?<ext>\.css)} do |ext|
       file_path = dynamic_file_path_from(url_path)
