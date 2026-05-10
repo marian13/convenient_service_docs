@@ -40,6 +40,9 @@ module CSDocs
         step :CollectAssets,
           in: :page
 
+        step :MarkAsPrerenderedOnBuild,
+          in: :page
+
         step :CapturePageContent,
           in: :page,
           out: :content
@@ -114,6 +117,19 @@ module CSDocs
                 fallback: true
             }
             .result
+        end
+
+        def MarkAsPrerenderedOnBuild
+          page.evaluate(<<~JS)
+            document
+              .querySelectorAll('cs-react-island[prerender-on-build]')
+              .forEach(el => {
+                el.removeAttribute('prerender-on-build');
+                el.setAttribute('prerendered-on-build', '');
+              });
+          JS
+
+          success
         end
 
         def CapturePageContent

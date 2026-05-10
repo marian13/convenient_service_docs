@@ -2,5 +2,5 @@
 <%= render_html_partial 'top-right-corner-header' %>
 
 <div class="cs-doc">
-  <cs-react-island component="generic/Markdown" props='{"src":"<%= @markdown_path %>"}' static></cs-react-island>
+  <cs-react-island component="generic/Markdown" props='{"src":"<%= @markdown_path %>"}' prerender-on-build></cs-react-island>
 </div>
