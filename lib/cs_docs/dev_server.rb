@@ -2,59 +2,8 @@
 
 require 'sinatra/base'
 require 'yaml'
-require 'fileutils'
-require 'rack'
 
 module CSDocs
-  class ResponseCache
-    attr_reader :app, :cache_dir
-
-    def initialize(app, cache_dir:)
-      @app = app
-      @cache_dir = cache_dir
-    end
-
-    def call(env)
-      cache_path = cache_path_from(Rack::Request.new(env).path_info)
-
-      return hit(cache_path) if File.exist?(cache_path)
-
-      miss(env, cache_path)
-    end
-
-    private
-
-    def hit(cache_path)
-      body = File.binread(cache_path)
-
-      content_type = Rack::Mime.mime_type(File.extname(cache_path))
-
-      [200, { 'Content-Type' => content_type }, [body]]
-    end
-
-    def miss(env, cache_path)
-      status, headers, body = app.call(env)
-
-      store(cache_path, body) if status == 200
-
-      [status, headers, body]
-    end
-
-    def store(cache_path, body)
-      FileUtils.mkdir_p(File.dirname(cache_path))
-
-      content = body.each.map(&:to_s).join
-
-      File.binwrite(cache_path, content)
-    end
-
-    def cache_path_from(path)
-      normalized = path == '/' ? '/index.html' : path
-
-      File.join(cache_dir, normalized)
-    end
-  end
-
   class DevServer < Sinatra::Base
     class << self
       def port
@@ -64,18 +13,10 @@ module CSDocs
       def root
         @root ||= File.expand_path('../..', __dir__)
       end
-
-      def run!(...)
-        FileUtils.rm_rf(File.join(root, 'tmp/cache/responses'))
-
-        super(...)
-      end
     end
 
     set :port, port
     set :views, File.join(root, 'src/views')
-
-    # use ResponseCache, cache_dir: File.join(root, 'tmp/cache/responses')
 
     disable :static
 
@@ -100,11 +41,11 @@ module CSDocs
         erb :"partials/#{name}/index.html", layout: false, locals: locals
       end
 
-      def render_js_partial(name)
-        erb :"partials/#{name}/index.js", layout: false
+      def render_js_partial(name, locals: {})
+        erb :"partials/#{name}/index.js", layout: false, locals: locals
       end
 
-      def render_js_module_inline(file_path)
+      def render_inline_js_module(file_path)
         File.read(file_path).gsub(/^export /, '')
       end
 
@@ -121,13 +62,13 @@ module CSDocs
       end
 
       def send_custom_page_html(file_path)
-        @content = read_erb_file(file_path)
+        @html_content = read_erb_file(file_path)
 
         erb :"custom_page.html", layout: :"layouts/html_layout.html"
       end
 
-      def send_doc_page_html(file_path)
-        @path = file_path
+      def send_doc_page_html(md_url_path)
+        @markdown_path = md_url_path
 
         erb :"doc_page.html", layout: :"layouts/html_layout.html"
       end
@@ -135,7 +76,7 @@ module CSDocs
       def send_doc_page_markdown(file_path)
         content_type 'text/markdown'
 
-        @content = read_erb_file(file_path)
+        @markdown_content = read_erb_file(file_path)
 
         erb :"doc_page.md", layout: :"layouts/markdown_layout.md"
       end
@@ -152,10 +93,22 @@ module CSDocs
         erb(read_file(file_path), layout: false)
       end
 
+      ##
+      # Resolves directly to the exact path, no fallbacks.
+      # Example: /public/logo.png -> src/public/logo.png
+      #
       def static_file_path_from(file_path)
         File.join(root, 'src', file_path)
       end
 
+      ##
+      # Tries four candidates in order:
+      # 1. Exact path          - src/custom_pages/home/styles.css
+      # 2. ERB variant         - src/custom_pages/home/styles.css.erb
+      # 3. Index variant       - src/custom_pages/home/styles/index.css
+      # 4. Index ERB variant   - src/custom_pages/home/styles/index.css.erb
+      # Returns the first one that exists on disk, or nil if none match.
+      #
       def dynamic_file_path_from(file_path)
         resolved_file_path = static_file_path_from(file_path)
 
@@ -177,18 +130,27 @@ module CSDocs
       end
     end
 
+    ##
+    # URL: /docs/basics.html -> URL: /docs/basics.md -> File: src/doc_pages/basics.md
+    #
     get %r{/docs/(?<file_name>.+\.html)} do |file_name|
-      file_path = "/docs/#{file_name.delete_suffix('.html')}.md"
+      md_url_path = "/docs/#{file_name.delete_suffix('.html')}.md"
 
-      send_doc_page_html file_path
+      send_doc_page_html md_url_path
     end
 
+    ##
+    # URL: /docs/basics.md -> File: src/doc_pages/basics.md
+    #
     get %r{/docs/(?<file_name>.+\.md)} do |file_name|
       file_path = dynamic_file_path_from("/doc_pages/#{file_name}")
 
       send_doc_page_markdown file_path
     end
 
+    ##
+    # URL: /assets/global/loaders/beforePageLoadStarted.js -> File: src/assets/global/loaders/beforePageLoadStarted.js.erb
+    #
     get %r{/assets/(?:components|global|utils)/.+(?<ext>\.(?:js|css|svg|png|ico))} do |ext|
       file_path = dynamic_file_path_from(url_path)
 
@@ -197,6 +159,9 @@ module CSDocs
       send_dynamic_file file_path
     end
 
+    ##
+    # URL: /custom_pages/home/styles.css -> File: src/custom_pages/home/styles.css
+    #
     get %r{/custom_pages/.+(?<ext>\.(?:js|css|svg|png|ico))} do |ext|
       file_path = dynamic_file_path_from(url_path)
 
@@ -205,12 +170,18 @@ module CSDocs
       send_dynamic_file file_path
     end
 
+    ##
+    # URL: /public/logo.png -> File: src/public/logo.png
+    #
     get %r{/public/.+\.(?:js|css|svg|png|ico)} do
       file_path = static_file_path_from(url_path)
 
       send_static_file file_path
     end
 
+    ##
+    # URL: /views/doc_page.css -> File: src/views/doc_page.css
+    #
     get %r{/views/.+(?<ext>\.css)} do |ext|
       file_path = dynamic_file_path_from(url_path)
 
@@ -219,12 +190,18 @@ module CSDocs
       send_dynamic_file file_path
     end
 
+    ##
+    # URL: /404.html -> File: src/public/404.html
+    #
     get '/404.html' do
       file_path = static_file_path_from('/public/404.html')
 
       send_static_file file_path
     end
 
+    ##
+    # URL: /sitemap.xml -> File: src/sitemap.xml
+    #
     get '/sitemap.xml' do
       content_type 'application/xml'
 
@@ -233,6 +210,9 @@ module CSDocs
       send_static_file file_path
     end
 
+    ##
+    # URL: /llms.txt -> File: src/llms.txt
+    #
     get '/llms.txt' do
       content_type 'text/plain'
 
@@ -245,12 +225,18 @@ module CSDocs
       'ok'
     end
 
+    ##
+    # URL: / -> File: src/custom_pages/home/index.html.erb
+    #
     get '/' do
       file_path = dynamic_file_path_from('/custom_pages/home/index.html')
 
       send_custom_page_html file_path
     end
 
+    ##
+    # URL: <any unmatched path> -> File: src/public/404.html
+    #
     not_found do
       file_path = static_file_path_from('/public/404.html')
 

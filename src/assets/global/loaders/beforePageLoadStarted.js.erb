@@ -4,10 +4,10 @@
  * Uses ERB to inline src/assets/utils/theme/getTheme.js, src/assets/utils/theme/applyTheme.js, src/assets/utils/colorScheme/getColorScheme.js, and src/assets/utils/colorScheme/applyColorScheme.js.
 */
 (() => {
-  <%= render_js_module_inline(static_file_path_from('assets/utils/theme/getTheme.js')) %>
-  <%= render_js_module_inline(static_file_path_from('assets/utils/theme/applyTheme.js')) %>
-  <%= render_js_module_inline(static_file_path_from('assets/utils/colorScheme/getColorScheme.js')) %>
-  <%= render_js_module_inline(static_file_path_from('assets/utils/colorScheme/applyColorScheme.js')) %>
+  <%= render_inline_js_module(static_file_path_from('assets/utils/theme/getTheme.js')) %>
+  <%= render_inline_js_module(static_file_path_from('assets/utils/theme/applyTheme.js')) %>
+  <%= render_inline_js_module(static_file_path_from('assets/utils/colorScheme/getColorScheme.js')) %>
+  <%= render_inline_js_module(static_file_path_from('assets/utils/colorScheme/applyColorScheme.js')) %>
 
   applyTheme(getTheme());
   applyColorScheme(getColorScheme());
