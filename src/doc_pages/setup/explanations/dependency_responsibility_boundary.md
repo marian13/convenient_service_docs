@@ -15,6 +15,7 @@ Convenient Service core depends only on the Ruby standard library. No external g
 CS functionality is extended through plugins. A _plugin_ is an optional module that adds a specific capability to services - constructor injection, memoization, validations, and so on.
 
 Some plugins wrap external gems.
+
 - `AssignsAttributesInConstructor::UsingDryInitializer` wraps the [`dry-initializer`](https://dry-rb.org/gems/dry-initializer) gem. 
 - `HasMemoization::UsingMemoWise` wraps [`memo_wise`](https://github.com/panorama-ed/memo_wise).
 - `HasJSendResultParamsValidations::UsingActiveModelValidations` wraps [`activemodel`](https://rubygems.org/gems/activemodel).
