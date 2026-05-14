@@ -3,7 +3,10 @@ cs-dita-concept-body,
 cs-dita-task-prerequisites,
 cs-dita-task-steps,
 cs-dita-task-result,
-cs-dita-reference-properties {
+cs-dita-reference-syntax,
+cs-dita-reference-properties,
+cs-dita-example,
+cs-dita-related-links {
   display: block;
 }
 
@@ -14,6 +17,10 @@ cs-dita-reference-properties {
   padding-right: 2rem;
   padding-bottom: 4rem;
   padding-left: 2rem;
+}
+
+cs-doc-reviewed {
+  display: none;
 }
 
 .cs-doc pre {

@@ -1,4 +1,4 @@
-# Load a plugin with external dependency
+# How to load a plugin with external dependency?
 
 <cs-react-island component="DocAxes" props='{"label":"Setup / Basic / How-to / Task"}'></cs-react-island>
 
@@ -20,8 +20,6 @@ How to require an external gem before using a CS plugin that depends on it.
 <cs-dita-task-steps>
 
 ## Lower-level approach
-
-Use this when you need full control over which plugins are active or when the extras path is not available for your gem.
 
 1. Require the external gem before requiring CS.
 2. Require CS.
@@ -55,8 +53,6 @@ end
 ```
 
 ## Higher-level approach
-
-Use this for standard config options. CS provides an extras file that handles the require and plugin wiring in one step.
 
 1. Require the extras file for the config option.
 2. Use `ConvenientService::Standard::Config.with(:option_name)` in your config.
