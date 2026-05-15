@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { html } from "@utils/html";
+import { html } from "@utils/react";
 import LoaderPulse from "@components/generic/LoaderPulse";
 import { SunIcon, MoonIcon } from "@icons";
 import { isLightColorScheme, toggleColorScheme } from "@utils/colorScheme";

@@ -1,0 +1,23 @@
+import { html } from "@utils/react";
+import Markdown from "@components/generic/Markdown";
+import { mutateHtmlFromString } from "@utils/html";
+
+const EXAMPLE_LINKS = <%= config[:code_links].to_json %>;
+
+const addExampleLinks = (rawHtml) => {
+  return mutateHtmlFromString(rawHtml, (doc) => {
+    doc.querySelectorAll("pre code").forEach((block) => {
+      for (const [className, href] of Object.entries(EXAMPLE_LINKS)) {
+        const regex = new RegExp(`\\b${className}\\b`, "g");
+
+        block.innerHTML = block.innerHTML.replace(regex, `<a href="${href}" class="cs-code-link">${className}</a>`);
+      }
+    });
+  });
+};
+
+const CSMarkdown = ({ src }) => {
+  return html`<${Markdown} src=${src} transformHtml=${addExampleLinks} />`;
+};
+
+export default CSMarkdown;

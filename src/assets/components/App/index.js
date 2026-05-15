@@ -1,5 +1,5 @@
 import React from "react";
-import { html } from "@utils/html";
+import { html } from "@utils/react";
 import Lorem from "@components/generic/Lorem";
 
 const App = () => html`

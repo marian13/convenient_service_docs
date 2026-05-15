@@ -54,6 +54,13 @@ cs-doc-reviewed {
   text-align: left;
 }
 
+.cs-doc .cs-code-link {
+  color: var(--color-link, inherit);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
 .cs-doc pre {
   overflow-x: auto;
   scrollbar-color: var(--color-border) transparent;

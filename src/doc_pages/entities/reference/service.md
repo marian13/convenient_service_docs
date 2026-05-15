@@ -40,9 +40,7 @@ ServiceName.new(*args, **kwargs, &block).call
 
 | Property | Required | Description |
 |---|---|---|
-| Config | yes | Must include a config via `include`. |
-| Class-level `.result` | - | Instantiates and calls `#result` immediately. |
-| Instance-level `.result` | - | Allows delaying the calculation until `#result` is called. |
+| [Config](/docs/entities/reference/config.html) | yes | Must include a config via `include`. |
 
 </cs-dita-reference-properties>
 
@@ -72,7 +70,13 @@ class AssertFileExists
   end
 end
 
-AssertFileExists.result(path: "Gemfile")
+result = AssertFileExists.result(path: "Gemfile")
+
+if result.success?
+  puts "File exists"
+else
+  puts result.message
+end
 ```
 
 ### With steps
@@ -96,7 +100,13 @@ class ReadFileContent
   end
 end
 
-ReadFileContent.result(path: "Gemfile")
+result = ReadFileContent.result(path: "Gemfile")
+
+if result.success?
+  puts result.data[:content]
+else
+  puts result.message
+end
 ```
 
 </cs-dita-example>
@@ -108,8 +118,8 @@ ReadFileContent.result(path: "Gemfile")
 - [Regular service](/docs/entities/reference/regular_service.html).
 - [Organizer service](/docs/entities/reference/organizer_service.html).
 - [Calling a service](/docs/capabilities/reference/calling_a_service.html).
-- Result.
-- Config.
+- [Result](/docs/entities/reference/result.html).
+- [Config](/docs/entities/reference/config.html).
 </cs-dita-related-links>
 
 <cs-doc-reviewed date="2026-05-15"></cs-doc-reviewed>

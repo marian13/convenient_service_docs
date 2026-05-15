@@ -42,15 +42,15 @@ ServiceName.new(...).result
 class ReadFileContent
   include ConvenientService::Standard::Config
 
+  step AssertFileExists, in: :path
+  step AssertFileNotEmpty, in: :path
+  step :result, in: :path, out: :content
+
   attr_reader :path
 
   def initialize(path:)
     @path = path
   end
-
-  step AssertFileExists, in: :path
-  step AssertFileNotEmpty, in: :path
-  step :result, in: :path, out: :content
 
   def result
     success(content: ::File.read(path))

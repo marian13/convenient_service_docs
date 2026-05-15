@@ -17,6 +17,12 @@
 - ✅ [Service](/docs/entities/reference/service.html).
 - ✅ [Regular service](/docs/entities/reference/regular_service.html).
 - ✅ [Organizer service](/docs/entities/reference/organizer_service.html).
+- ⏳ [Result](/docs/entities/reference/result.html).
+- ⏳ [Config](/docs/entities/reference/config.html).
+
+## Examples
+
+- ⏳ [Service examples](/docs/examples/services.html).
 
 ## Capabilities
 

@@ -1,4 +1,4 @@
-import { html } from "@utils/html";
+import { html } from "@utils/react";
 
 const Lorem = () => html`
     <div class="cs-lorem">

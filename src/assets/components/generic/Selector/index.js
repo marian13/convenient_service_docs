@@ -2,7 +2,7 @@ import { useState } from "react";
 import cx from "classnames";
 import { useFloating, useClick, useDismiss, useInteractions, offset, shift } from "@floating-ui/react";
 
-import { html } from "@utils/html";
+import { html } from "@utils/react";
 import { ChevronIcon } from "@icons";
 
 const useFloatingUI = ({ open, onOpenChange, placement }) => {

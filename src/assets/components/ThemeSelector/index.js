@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { html } from "@utils/html";
+import { html } from "@utils/react";
 import Selector from "@components/generic/Selector";
 import { getTheme, setTheme, getAvailableThemes } from "@utils/theme";
 import { isLightColorScheme } from "@utils/colorScheme";
