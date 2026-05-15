@@ -23,6 +23,37 @@ cs-doc-reviewed {
   display: none;
 }
 
+.cs-doc table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.cs-doc table th,
+.cs-doc table td {
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+}
+
+.cs-doc table th:last-child,
+.cs-doc table td:last-child {
+  border-right: none;
+}
+
+.cs-doc table tr:last-child th,
+.cs-doc table tr:last-child td {
+  border-bottom: none;
+}
+
+.cs-doc table th {
+  background-color: var(--color-surface);
+  text-align: left;
+}
+
 .cs-doc pre {
   overflow-x: auto;
   scrollbar-color: var(--color-border) transparent;

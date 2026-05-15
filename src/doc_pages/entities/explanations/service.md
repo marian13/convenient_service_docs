@@ -4,7 +4,7 @@
 
 <cs-dita-short-description>
 
-A CS service is a class with one responsibility - to calculate and return a result.
+A CS service is a class with one responsibility - to calculate and return a result of a logical operation.
 
 </cs-dita-short-description>
 
@@ -36,5 +36,19 @@ class AssertFileExists
   end
 end
 ```
+
+## Why result forces a status check
+
+`#result` returns a result object, not raw data. Accessing data on that object without first checking the status raises an exception - by design. This forces the caller to handle all three outcomes (`success`, `failure`, `error`) explicitly rather than silently ignoring errors.
+
+This is the default posture of CS: safe by default, explicit about outcomes.
+
+## The escape hatch: `#call`
+
+CS services also expose `#call` for code that does not need structured result handling. It returns `result.data.to_h` on `success`, `nil` on `failure`, and still raises on `error` - because `error` is close to an exception in nature and should never be silently swallowed.
+
+The typical pattern for `#call` users is to always return `success` from their services and use `#call` to get the data hash directly. If a `failure` slips through, they get `nil`. If an `error` occurs, it raises - as it should.
+
+`#call` trades the safety guarantee of `#result` for convenience. It exists as a deliberate opt-out, not as the default.
 
 </cs-dita-concept-body>
