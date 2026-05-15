@@ -55,10 +55,11 @@ cs-doc-reviewed {
 }
 
 .cs-doc .cs-code-link {
-  color: var(--color-link, inherit);
+  color: inherit;
   text-decoration: underline;
   text-decoration-style: dotted;
   text-underline-offset: 2px;
+  cursor: pointer;
 }
 
 .cs-doc pre {
