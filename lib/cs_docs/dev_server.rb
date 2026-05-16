@@ -46,7 +46,7 @@ module CSDocs
       end
 
       def render_inline_js_module(file_path)
-        File.read(file_path).gsub(/^export /, '')
+        File.read(file_path).gsub(/^export (default )?/, '')
       end
 
       def send_static_file(file_path)
