@@ -27,6 +27,7 @@ const renderIsland = async (root) => {
   if (isPrerendered(root) && wasPrerenderedOnBuild(root)) return;
 
   const { Component, props } = await getComponent(root);
+
   const element = React.createElement(Component, props);
 
   isPrerendered(root)

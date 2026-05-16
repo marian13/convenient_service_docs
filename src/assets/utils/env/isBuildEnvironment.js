@@ -1,9 +1,6 @@
-const isBuildEnvironment = () => {
-  const param = new URLSearchParams(location.search).get("build");
+import isBuildEnvironmentFromUrlParams from "./isBuildEnvironmentFromUrlParams.js";
+import isBuildEnvironmentFromWindow from "./isBuildEnvironmentFromWindow.js";
 
-  if (param !== null) return param === "true";
-
-  return window.__cs__?.build ?? false;
-};
+const isBuildEnvironment = () => isBuildEnvironmentFromUrlParams() || isBuildEnvironmentFromWindow();
 
 export default isBuildEnvironment;

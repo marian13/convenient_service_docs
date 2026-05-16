@@ -1,4 +1,4 @@
-import { renderIsland } from "@utils/island";
+import { renderIsland } from "@utils/react/island";
 
 customElements.define("cs-react-island", class extends HTMLElement {
   connectedCallback() {
