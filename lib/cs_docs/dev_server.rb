@@ -70,7 +70,9 @@ module CSDocs
         erb :"custom_page.html", layout: :"layouts/html_layout.html"
       end
 
-      def send_doc_page_html(md_url_path)
+      def send_doc_page_html(md_url_path, md_file_path)
+        @markdown_frontmatter, _content = parse_markdown_file(md_file_path)
+
         @markdown_path = md_url_path
 
         erb :"doc_page.html", layout: :"layouts/html_layout.html"
@@ -79,7 +81,7 @@ module CSDocs
       def send_doc_page_markdown(file_path)
         content_type 'text/markdown'
 
-        @markdown_content = read_erb_file(file_path)
+        @markdown_frontmatter, @markdown_content = parse_markdown_file(file_path)
 
         erb :"doc_page.md", layout: :"layouts/markdown_layout.md"
       end
@@ -124,15 +126,36 @@ module CSDocs
         return index_erb_file_path if File.exist?(index_erb_file_path)
       end
 
+      private
+
+      def parse_markdown_file(file_path)
+        content = File.read(file_path)
+
+        return {}, content unless content.start_with?("---\n")
+
+        match = content.match(/\A---\n(.*?)\n---\n/m)
+
+        return {}, content unless match
+
+        frontmatter = YAML.safe_load(match[1], symbolize_names: true) || {}
+
+        body = content[match.end(0)..]
+
+        [frontmatter, body]
+      end
     end
 
     ##
     # URL: /docs/basics.html -> URL: /docs/basics.md -> File: src/doc_pages/basics.md
     #
     get %r{/docs/(?<file_name>.+\.html)} do |file_name|
-      md_url_path = "/docs/#{file_name.delete_suffix('.html')}.md"
+      md_file_name = "#{file_name.delete_suffix('.html')}.md"
 
-      send_doc_page_html md_url_path
+      md_url_path = "/docs/#{md_file_name}"
+
+      md_file_path = dynamic_file_path_from("/doc_pages/#{md_file_name}")
+
+      send_doc_page_html md_url_path, md_file_path
     end
 
     ##
