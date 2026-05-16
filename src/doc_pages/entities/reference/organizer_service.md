@@ -4,7 +4,7 @@
 
 <cs-dita-short-description>
 
-An organizer service composes other services or methods via steps. If any step is not successful, the pipeline stops and that step result is returned.
+An organizer service composes other services or methods via steps. If any step is not successful, the pipeline stops and that step result is returned as the whole service result.
 
 </cs-dita-short-description>
 
@@ -13,10 +13,10 @@ An organizer service composes other services or methods via steps. If any step i
 ## Signature
 
 ```ruby
-ServiceName.result(...)
+OrganizerService.result(...)
 # => result object
 
-ServiceName.new(...).result
+OrganizerService.new(...).result
 # => result object
 ```
 
@@ -28,8 +28,8 @@ ServiceName.new(...).result
 
 | Property | Required | Description |
 |---|---|---|
-| Config | yes | Must include a config via `include`. |
-| Steps | yes | Must have at least one step. |
+| Config | yes | Has a config like `ConvenientService::Standard::Config`. |
+| Steps | yes | Has at least one step. |
 | `#result` method | no | Optional - implement only if used as a `step :result` method step. |
 
 </cs-dita-reference-properties>

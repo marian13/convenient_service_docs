@@ -13,10 +13,10 @@ A regular service is a class with one responsibility - to calculate and return a
 ## Signature
 
 ```ruby
-ServiceName.result(...)
+RegularService.result(...)
 # => result object
 
-ServiceName.new(...).result
+RegularService.new(...).result
 # => result object
 ```
 
@@ -28,9 +28,9 @@ ServiceName.new(...).result
 
 | Property | Required | Description |
 |---|---|---|
-| Config | yes | Must include a config via `include`. |
+| Config | yes | Has a config like `ConvenientService::Standard::Config`. |
 | `#result` method | yes | Implements the service logic directly, returning `success`, `failure`, or `error`. |
-| Steps | no | Must not have any steps. |
+| Steps | no | Does not have any steps. |
 
 </cs-dita-reference-properties>
 

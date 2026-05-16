@@ -16,19 +16,19 @@ A CS service is a class with one responsibility - to calculate and return a resu
 ##
 # Class-level invocation (most common).
 #
-ServiceName.result(*args, **kwargs, &block)
+Service.result(*args, **kwargs, &block)
 # => result object
 
-ServiceName.call(*args, **kwargs, &block)
+Service.call(*args, **kwargs, &block)
 # => result.data.to_h, nil, or raises
 
 ##
 # Instance-level invocation.
 #
-ServiceName.new(*args, **kwargs, &block).result
+Service.new(*args, **kwargs, &block).result
 # => result object
 
-ServiceName.new(*args, **kwargs, &block).call
+Service.new(*args, **kwargs, &block).call
 # => result.data.to_h, nil, or raises
 ```
 
@@ -40,7 +40,7 @@ ServiceName.new(*args, **kwargs, &block).call
 
 | Property | Required | Description |
 |---|---|---|
-| [Config](/docs/entities/reference/config.html) | yes | Must include a config via `include`. |
+| [Config](/docs/entities/reference/config.html) | yes | Has a config like `ConvenientService::Standard::Config`. |
 
 </cs-dita-reference-properties>
 
