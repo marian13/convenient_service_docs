@@ -30,7 +30,7 @@ OrganizerService.new(...).result
 |---|---|---|
 | Config | yes | Has a config like `ConvenientService::Standard::Config`. |
 | Steps | yes | Has at least one step. |
-| `#result` method | no | Optional - implement only if used as a `step :result` method step. |
+| `#result` method | no | Optional - implement only if used as a [method step](/docs/entities/reference/method_step.html). |
 
 </cs-dita-reference-properties>
 
@@ -107,6 +107,9 @@ result.data[:content]
 - [Service](/docs/entities/reference/service.html).
 - [Regular service](/docs/entities/reference/regular_service.html).
 - [Calling a service](/docs/capabilities/reference/calling_a_service.html).
+- [Step](/docs/entities/reference/step.html).
+- [Service step](/docs/entities/reference/service_step.html).
+- [Method step](/docs/entities/reference/method_step.html).
 - [Why the last step is named `:result`](/docs/entities/explanations/step_result_naming_convention.html).
 </cs-dita-related-links>
 

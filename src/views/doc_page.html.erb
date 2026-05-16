@@ -1,3 +1,11 @@
+<% content_for :head do %>
+  <style>
+    @import "/views/doc_page.css";
+    @import "/assets/global/styles/<%= config[:syntax_highlighting][:provider] %>.css";
+    @import "/assets/components/DocAxes/styles.css";
+  </style>
+<% end %>
+
 <%= render_html_partial 'top-left-corner-header' %>
 <%= render_html_partial 'top-right-corner-header' %>
 

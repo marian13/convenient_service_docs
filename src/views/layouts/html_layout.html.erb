@@ -20,19 +20,16 @@
 
     @import "/assets/components/generic/Selector/styles.css";
     @import "/assets/components/ThemeSelector/styles.css";
+    @import "/assets/components/ColorSchemeToggle/styles.css";
+    @import "/assets/components/generic/Loader/styles.css";
+    @import "/assets/components/generic/LoaderPulse/styles.css";
 
-    @import "/views/doc_page.css";
-    @import "/assets/global/styles/<%= config[:syntax_highlighting][:provider] %>.css";
     @import "/views/partials/top-left-corner-header/styles.css";
     @import "/views/partials/top-right-corner-header/styles.css";
     @import "/views/partials/button/styles.css";
-
-    @import "/custom_pages/home/styles.css";
-    @import "/assets/components/ColorSchemeToggle/styles.css";
-    @import "/assets/components/DocAxes/styles.css";
-    @import "/assets/components/generic/Loader/styles.css";
-    @import "/assets/components/generic/LoaderPulse/styles.css";
   </style>
+
+  <%= yield_content :head %>
 
   <script type="importmap">
     {

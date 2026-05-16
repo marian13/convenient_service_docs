@@ -118,6 +118,8 @@ end
 - [Regular service](/docs/entities/reference/regular_service.html).
 - [Organizer service](/docs/entities/reference/organizer_service.html).
 - [Calling a service](/docs/capabilities/reference/calling_a_service.html).
+- [Step](/docs/entities/reference/step.html).
+- [Method step](/docs/entities/reference/method_step.html).
 - [Result](/docs/entities/reference/result.html).
 - [Config](/docs/entities/reference/config.html).
 </cs-dita-related-links>

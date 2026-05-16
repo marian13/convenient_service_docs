@@ -59,7 +59,13 @@ class FindUser
   end
 end
 
-FindUser.result(id: 1)
+result = FindUser.result(id: 1)
+
+if result.success?
+  puts result.data[:user].id
+else
+  puts result.message
+end
 ```
 
 </cs-dita-example>
@@ -71,6 +77,7 @@ FindUser.result(id: 1)
 - [Service](/docs/entities/reference/service.html).
 - [Organizer service](/docs/entities/reference/organizer_service.html).
 - [Calling a service](/docs/capabilities/reference/calling_a_service.html).
+- [Result](/docs/entities/reference/result.html).
 </cs-dita-related-links>
 
 <cs-doc-reviewed date="2026-05-15"></cs-doc-reviewed>

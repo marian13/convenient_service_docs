@@ -19,6 +19,9 @@
 - ✅ [Organizer service](/docs/entities/reference/organizer_service.html).
 - ⏳ [Result](/docs/entities/reference/result.html).
 - ⏳ [Config](/docs/entities/reference/config.html).
+- ⏳ [Step](/docs/entities/reference/step.html).
+- ⏳ [Service step](/docs/entities/reference/service_step.html).
+- ⏳ [Method step](/docs/entities/reference/method_step.html).
 
 ## Examples
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'sinatra/base'
+require 'sinatra/content_for'
 require 'yaml'
 
 module CSDocs
@@ -23,6 +24,8 @@ module CSDocs
     enable :logging
 
     set :dump_errors, true
+
+    helpers Sinatra::ContentFor
 
     helpers do
       def config
