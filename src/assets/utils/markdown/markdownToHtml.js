@@ -3,4 +3,6 @@ import renderer from "./renderer.js";
 
 marked.use({ renderer });
 
-export const markdownToHtml = (md) => marked.parse(md);
+const markdownToHtml = (md) => marked.parse(md);
+
+export default markdownToHtml;

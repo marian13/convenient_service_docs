@@ -1,1 +1,3 @@
-export const generateStringFromHtml = (doc) => doc.body.innerHTML;
+const generateStringFromHtml = (doc) => doc.body.innerHTML;
+
+export default generateStringFromHtml;

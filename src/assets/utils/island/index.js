@@ -1,1 +1,1 @@
-export { renderIsland } from "./renderIsland.js";
+export { default as renderIsland } from "./renderIsland.js";

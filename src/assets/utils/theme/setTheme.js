@@ -1,8 +1,10 @@
-import { applyTheme } from "./applyTheme.js";
+import applyTheme from "./applyTheme.js";
 
 const setStoredTheme = (theme) => sessionStorage.setItem("cs:theme", theme);
 
-export const setTheme = (theme) => {
+const setTheme = (theme) => {
   setStoredTheme(theme);
   applyTheme(theme);
 };
+
+export default setTheme;

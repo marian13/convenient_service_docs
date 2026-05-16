@@ -1,1 +1,1 @@
-export { isBuildEnvironment } from "./isBuildEnvironment.js";
+export { default as isBuildEnvironment } from "./isBuildEnvironment.js";

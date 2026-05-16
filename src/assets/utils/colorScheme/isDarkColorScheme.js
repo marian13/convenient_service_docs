@@ -1,3 +1,5 @@
-import { getColorScheme } from "./getColorScheme.js";
+import getColorScheme from "./getColorScheme.js";
 
-export const isDarkColorScheme = () => getColorScheme() === "dark";
+const isDarkColorScheme = () => getColorScheme() === "dark";
+
+export default isDarkColorScheme;

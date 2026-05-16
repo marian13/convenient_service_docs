@@ -1,8 +1,10 @@
-import { applyColorScheme } from "./applyColorScheme.js";
+import applyColorScheme from "./applyColorScheme.js";
 
 const setStoredColorScheme = (colorScheme) => sessionStorage.setItem("cs:colorScheme", colorScheme);
 
-export const setColorScheme = (colorScheme) => {
+const setColorScheme = (colorScheme) => {
   setStoredColorScheme(colorScheme);
   applyColorScheme(colorScheme);
 };
+
+export default setColorScheme;

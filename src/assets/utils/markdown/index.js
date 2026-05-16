@@ -1,1 +1,1 @@
-export { markdownToHtml } from "./markdownToHtml.js";
+export { default as markdownToHtml } from "./markdownToHtml.js";

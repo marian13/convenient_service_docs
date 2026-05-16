@@ -1,3 +1,5 @@
-import { makeAsync } from "./makeAsync.js";
+import makeAsync from "./makeAsync.js";
 
-export const callAsync = (fn, ...args) => makeAsync(fn)(...args);
+const callAsync = (fn, ...args) => makeAsync(fn)(...args);
+
+export default callAsync;

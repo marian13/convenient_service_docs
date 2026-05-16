@@ -1,3 +1,5 @@
-import { getColorScheme } from "./getColorScheme.js";
+import getColorScheme from "./getColorScheme.js";
 
-export const isLightColorScheme = () => getColorScheme() === "light";
+const isLightColorScheme = () => getColorScheme() === "light";
+
+export default isLightColorScheme;

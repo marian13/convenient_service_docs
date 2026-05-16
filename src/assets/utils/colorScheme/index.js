@@ -1,6 +1,6 @@
-export { getColorScheme } from "./getColorScheme.js";
-export { applyColorScheme } from "./applyColorScheme.js";
-export { isLightColorScheme } from "./isLightColorScheme.js";
-export { isDarkColorScheme } from "./isDarkColorScheme.js";
-export { setColorScheme } from "./setColorScheme.js";
-export { toggleColorScheme } from "./toggleColorScheme.js";
+export { default as getColorScheme } from "./getColorScheme.js";
+export { default as applyColorScheme } from "./applyColorScheme.js";
+export { default as isLightColorScheme } from "./isLightColorScheme.js";
+export { default as isDarkColorScheme } from "./isDarkColorScheme.js";
+export { default as setColorScheme } from "./setColorScheme.js";
+export { default as toggleColorScheme } from "./toggleColorScheme.js";

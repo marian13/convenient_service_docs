@@ -23,7 +23,7 @@ const getComponent = async (root) => {
  * - Prod  (dist/)      — island loads with prerendered HTML and `prerendered-on-build` attribute,
  *                        renderIsland skips hydration and leaves the captured content as-is
  */
-export const renderIsland = async (root) => {
+const renderIsland = async (root) => {
   if (isPrerendered(root) && wasPrerenderedOnBuild(root)) return;
 
   const { Component, props } = await getComponent(root);
@@ -33,3 +33,5 @@ export const renderIsland = async (root) => {
     ? ReactDOM.hydrateRoot(root, element)
     : ReactDOM.createRoot(root).render(element);
 };
+
+export default renderIsland;
