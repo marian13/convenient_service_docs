@@ -123,6 +123,7 @@ module CSDocs
 
         return index_erb_file_path if File.exist?(index_erb_file_path)
       end
+
     end
 
     ##
