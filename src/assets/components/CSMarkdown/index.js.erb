@@ -16,8 +16,8 @@ const addExampleLinks = (rawHtml) => {
   });
 };
 
-const CSMarkdown = ({ src }) => {
-  return html`<${Markdown} src=${src} transformHtml=${addExampleLinks} />`;
+const CSMarkdown = ({ src, content }) => {
+  return html`<${Markdown} src=${src} content=${content} transformHtml=${addExampleLinks} />`;
 };
 
 export default CSMarkdown;

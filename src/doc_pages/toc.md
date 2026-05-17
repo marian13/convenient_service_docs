@@ -4,6 +4,8 @@ title: Table of contents
 
 # Table of contents
 
+- ✅ [TL;DR](/docs/tldr.html).
+
 ## Entities
 
 - ⏳ [Plan](/docs/entities/plan.html).
@@ -21,11 +23,17 @@ title: Table of contents
 - ✅ [Service](/docs/entities/reference/service.html).
 - ✅ [Regular service](/docs/entities/reference/regular_service.html).
 - ✅ [Organizer service](/docs/entities/reference/organizer_service.html).
-- ⏳ [Result](/docs/entities/reference/result.html).
+- ✅ [Result](/docs/entities/reference/result.html).
 - ⏳ [Config](/docs/entities/reference/config.html).
 - ⏳ [Step](/docs/entities/reference/step.html).
 - ⏳ [Service step](/docs/entities/reference/service_step.html).
 - ⏳ [Method step](/docs/entities/reference/method_step.html).
+
+## Debugging
+
+### How-to
+
+- ✅ [How to inspect a result without checking its status?](/docs/debugging/how_to/inspect_result_without_status_check.html).
 
 ## Examples
 
@@ -42,6 +50,8 @@ title: Table of contents
 ### How-to
 
 - ⏳ [How to delay service result calculation?](/docs/usage/how_to/delay_service_result_calculation.html).
+- ✅ [How to disable mandatory result status check?](/docs/usage/how_to/disable_result_status_check.html).
+- ✅ [How to get result data attributes/values via method-accessors?](/docs/usage/how_to/get_result_data_via_method_accessors.html).
 
 ## Setup
 

@@ -86,6 +86,10 @@ module CSDocs
         erb :"doc_page.md", layout: :"layouts/markdown_layout.md"
       end
 
+      def render_react_island(component:, props: {})
+        "<cs-react-island component=\"#{component}\" props='#{props.to_json}'></cs-react-island>"
+      end
+
       def read_erb_file(file_path)
         erb(File.read(file_path), layout: false)
       end
@@ -132,7 +136,7 @@ module CSDocs
       # Example: [{ title: "Service" }, "# Service\n\nShort description.\n"]
       #
       def parse_markdown_file(file_path)
-        content = File.read(file_path)
+        content = read_erb_file(file_path)
 
         return {}, content unless content.start_with?("---\n")
 
@@ -141,7 +145,6 @@ module CSDocs
         return {}, content unless match
 
         frontmatter = YAML.safe_load(match[1], symbolize_names: true) || {}
-
         body = content[match.end(0)..]
 
         [frontmatter, body]

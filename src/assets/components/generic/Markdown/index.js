@@ -3,17 +3,25 @@ import { html } from "@utils/react";
 import { fetch } from "@utils/http";
 import { markdownToHtml } from "@utils/markdown";
 
-const Markdown = ({ src, transformHtml = (html) => html }) => {
-  const [content, setContent] = useState("");
+/**
+ * NOTE: Accepts `src` (fetches from URL) or `content` (inline markdown string).
+ *   <Markdown src="/docs/page.md" />
+ *   <Markdown src="/docs/page.md" transformHtml={addLinks} />
+ *   <Markdown content="# Hello" />
+ *   <Markdown content="# Hello" transformHtml={addLinks} />
+ */
+const Markdown = ({ src, content, transformHtml = (html) => html }) => {
+  const [markdownContent, setMarkdownContent] = useState("");
+
+  const getInitialMarkdown = () => content ? Promise.resolve(content) : fetch(src).then((response) => response.text());
 
   useEffect(() => {
-    fetch(src)
-      .then((response) => response.text())
-      .then((md) => markdownToHtml(md))
-      .then((html) => setContent(transformHtml(html)));
-  }, [src]);
+    getInitialMarkdown()
+      .then((markdown) => markdownToHtml(markdown))
+      .then((html) => setMarkdownContent(transformHtml(html)));
+  }, [src, content]);
 
-  return html`<main dangerouslySetInnerHTML=${{ __html: content }} />`;
+  return html`<main dangerouslySetInnerHTML=${{ __html: markdownContent }} />`;
 };
 
 export default Markdown;
