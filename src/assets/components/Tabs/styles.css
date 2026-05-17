@@ -41,3 +41,9 @@
   margin: 0;
   border-radius: 0;
 }
+
+.cs-doc .cs-tabs__content pre:has(> code.hljs),
+.cs-doc .cs-tabs__content pre:has(> code[class^="language-"]) {
+  border: none;
+  border-radius: 0;
+}

@@ -176,7 +176,7 @@ module CSDocs
     ##
     # URL: /assets/global/loaders/beforePageLoadStarted.js -> File: src/assets/global/loaders/beforePageLoadStarted.js.erb
     #
-    get %r{/assets/(?:components|global|utils)/.+(?<ext>\.(?:js|css|svg|png|ico))} do |ext|
+    get %r{/assets/(?:components|global|utils|stores)/.+(?<ext>\.(?:js|css|svg|png|ico))} do |ext|
       file_path = dynamic_file_path_from(url_path)
 
       content_type ext
