@@ -1,3 +1,7 @@
+---
+title: Naming the Last Step "result"
+---
+
 # Naming the Last Step "result"
 
 TODO: Document the convention that when the last step performs the actual core logic of the service, it should be named `:result` rather than a descriptive name.

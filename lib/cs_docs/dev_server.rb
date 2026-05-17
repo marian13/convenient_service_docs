@@ -128,6 +128,9 @@ module CSDocs
 
       private
 
+      ##
+      # Example: [{ title: "Service" }, "# Service\n\nShort description.\n"]
+      #
       def parse_markdown_file(file_path)
         content = File.read(file_path)
 

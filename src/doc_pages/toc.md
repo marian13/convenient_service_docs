@@ -1,3 +1,7 @@
+---
+title: Table of contents
+---
+
 # Table of contents
 
 ## Entities

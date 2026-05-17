@@ -1,3 +1,7 @@
+---
+title: Test Page
+---
+
 [← Back to root](/)
 
 # Test Page

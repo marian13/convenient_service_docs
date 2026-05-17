@@ -1,3 +1,7 @@
+---
+title: Error result
+---
+
 # Error result
 
 <cs-react-island component="DocAxes" props='{"label":"Entities / Basic / Explanation / Concept"}'></cs-react-island>

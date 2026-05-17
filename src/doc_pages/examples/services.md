@@ -1,3 +1,7 @@
+---
+title: Service examples
+---
+
 # Service examples
 
 <cs-react-island component="DocAxes" props='{"label":"Examples / Basic / Reference / Reference"}'></cs-react-island>

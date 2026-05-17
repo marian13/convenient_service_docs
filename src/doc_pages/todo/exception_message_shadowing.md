@@ -1,3 +1,7 @@
+---
+title: Exception Message Shadowing
+---
+
 # Exception Message Shadowing
 
 TODO: Discuss how wrapping exceptions in `error` results can shadow the original message and lose the backtrace.

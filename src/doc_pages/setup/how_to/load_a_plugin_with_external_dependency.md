@@ -1,3 +1,7 @@
+---
+title: How to load a plugin with external dependency?
+---
+
 # How to load a plugin with external dependency?
 
 <cs-react-island component="DocAxes" props='{"label":"Setup / Basic / How-to / Task"}'></cs-react-island>

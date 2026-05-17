@@ -1,3 +1,7 @@
+---
+title: Benefits of Convenient Service for AI
+---
+
 # Benefits of Convenient Service for AI
 
 TODO: Document how the Convenient Service structure benefits AI assistants working with the codebase.

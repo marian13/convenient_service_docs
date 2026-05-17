@@ -1,3 +1,7 @@
+---
+title: Calling a service
+---
+
 # Calling a service
 
 <cs-react-island component="DocAxes" props='{"label":"Capabilities / Basic / Reference / Reference"}'></cs-react-island>

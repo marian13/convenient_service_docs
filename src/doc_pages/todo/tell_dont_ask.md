@@ -1,3 +1,7 @@
+---
+title: Tell Don't Ask
+---
+
 # Tell Don't Ask
 
 TODO: Write article.

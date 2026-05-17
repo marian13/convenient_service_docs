@@ -1,3 +1,7 @@
+---
+title: Config Namespace Styles in Convenient Service
+---
+
 # Config Namespace Styles in Convenient Service
 
 TODO: Discuss the two naming conventions for config modules and when to use each.

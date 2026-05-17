@@ -1,3 +1,7 @@
+---
+title: Memoized Private Methods in result
+---
+
 # Memoized Private Methods in result
 
 TODO: Document the pattern of extracting intermediate computations inside `result` into memoized private methods.

@@ -1,3 +1,7 @@
+---
+title: Why the last step is named `:result`
+---
+
 # Why the last step is named `:result`
 
 <cs-react-island component="DocAxes" props='{"label":"Entities / Basic / Explanation / Concept"}'></cs-react-island>

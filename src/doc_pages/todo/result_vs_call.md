@@ -1,3 +1,7 @@
+---
+title: result vs call
+---
+
 # result vs call
 
 TODO: Explain the difference between invoking `.result` and `.call` on a Convenient Service service.

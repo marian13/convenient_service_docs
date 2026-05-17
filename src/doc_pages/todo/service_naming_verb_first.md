@@ -1,3 +1,7 @@
+---
+title: Service Naming: Start with a Verb
+---
+
 # Service Naming: Start with a Verb
 
 TODO: Document the convention that Convenient Service service names should start with a verb.

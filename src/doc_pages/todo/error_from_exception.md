@@ -1,3 +1,7 @@
+---
+title: error_from_exception
+---
+
 # error_from_exception
 
 Available since CS 0.24.

@@ -1,3 +1,7 @@
+---
+title: with_fallback
+---
+
 # with_fallback
 
 TODO: Document the `with_fallback` pattern — currently undocumented anywhere.

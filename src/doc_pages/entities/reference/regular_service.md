@@ -1,3 +1,7 @@
+---
+title: Regular service
+---
+
 # Regular service
 
 <cs-react-island component="DocAxes" props='{"label":"Entities / Basic / Reference / Reference"}'></cs-react-island>

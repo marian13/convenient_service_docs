@@ -1,3 +1,7 @@
+---
+title: Why result raises when data is accessed without a status check
+---
+
 # Why result raises when data is accessed without a status check
 
 <cs-react-island component="DocAxes" props='{"label":"Entities / Basic / Explanation / Concept"}'></cs-react-island>

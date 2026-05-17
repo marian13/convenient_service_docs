@@ -1,3 +1,7 @@
+---
+title: Dependency responsibility boundary
+---
+
 # Dependency responsibility boundary
 
 <cs-react-island component="DocAxes" props='{"label":"Setup / Basic / Explanation / Concept"}'></cs-react-island>

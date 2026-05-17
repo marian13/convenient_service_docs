@@ -1,3 +1,7 @@
+---
+title: Practical V1 Config
+---
+
 ```ruby
 require "dry-initializer"
 require "memo_wise"

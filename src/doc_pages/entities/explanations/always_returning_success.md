@@ -1,3 +1,7 @@
+---
+title: Always returning success
+---
+
 # Always returning success
 
 <cs-react-island component="DocAxes" props='{"label":"Entities / Basic / Explanation / Concept"}'></cs-react-island>

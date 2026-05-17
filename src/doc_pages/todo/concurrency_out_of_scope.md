@@ -1,3 +1,7 @@
+---
+title: Concurrency Out of Scope
+---
+
 # Concurrency Out of Scope
 
 TODO: Write article.

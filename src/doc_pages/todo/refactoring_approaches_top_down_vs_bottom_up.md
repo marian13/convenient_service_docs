@@ -1,3 +1,7 @@
+---
+title: Refactoring Approaches: Top-Down vs Bottom-Up
+---
+
 # Refactoring Approaches: Top-Down vs Bottom-Up
 
 TODO: Compare the two approaches when extracting methods into Convenient Service services.

@@ -1,3 +1,7 @@
+---
+title: Memoized Private Methods in Step `in:`
+---
+
 # Memoized Private Methods in Step `in:`
 
 TODO: Document the pattern of using memoized private methods as inputs to steps instead of creating dedicated resolver steps.

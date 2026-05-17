@@ -1,3 +1,7 @@
+---
+title: AI Refactoring Feedback
+---
+
 # AI Refactoring Feedback
 
 Honest impressions from refactoring `builder.rb` into Convenient Service services.

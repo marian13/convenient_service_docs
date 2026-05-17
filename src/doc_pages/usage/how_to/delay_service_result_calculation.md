@@ -1,3 +1,7 @@
+---
+title: How to delay service result calculation?
+---
+
 # How to delay service result calculation?
 
 <cs-react-island component="DocAxes" props='{"label":"Usage / Basic / How-to / Task"}'></cs-react-island>
