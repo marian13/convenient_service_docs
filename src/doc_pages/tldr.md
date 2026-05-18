@@ -6,18 +6,18 @@ title: TL;DR
 
 <cs-react-island component="DocAxes" props='{"label":"Basics / Basic / Tutorial / Task map"}'></cs-react-island>
 
-<cs-dita-short-description>
-
-A complete working example of a CS service — from setup to calling a result.
-
-</cs-dita-short-description>
-
 > I have no time to read tons of docs.
 > Just show me an example use case and I'll quickly craft something similar 😎.
 >
 > — A lazy and productive developer.
 
-## Calling a service
+<cs-dita-short-description>
+
+A complete working example of a Convenient Service usage - from setup to executing a service.
+
+</cs-dita-short-description>
+
+Using `.result` - handle all three statuses explicitly:
 
 ```ruby
 # Any source code in the project.
@@ -47,11 +47,22 @@ def read_file_content(path)
 end
 ```
 
-## Setup
+Using `.call` - returns `data.to_h` on success, `nil` on failure, raises on error:
+
+```ruby
+# Any source code in the project.
+def read_file_content(path)
+  ReadFileContent.call(path: path)&.fetch(:content) || ""
+end
+```
+
+Installation.
 
 ```ruby
 gem "convenient_service", "1.0.0"
 ```
+
+Setup.
 
 <%= render_react_island(
   component: "Tabs",
@@ -113,7 +124,7 @@ gem "convenient_service", "1.0.0"
   }
 ) %>
 
-## Module config
+Config.
 
 <%= render_react_island(
   component: "Tabs",
@@ -204,7 +215,7 @@ gem "convenient_service", "1.0.0"
   }
 ) %>
 
-## Services
+Regular service example.
 
 <%= render_react_island(
   component: "Tabs",
@@ -303,9 +314,7 @@ gem "convenient_service", "1.0.0"
   }
 ) %>
 
-```ruby
-result = AssertFileExists.result(path: "Gemfile")
-```
+One more regular service example.
 
 <%= render_react_island(
   component: "Tabs",
@@ -404,9 +413,7 @@ result = AssertFileExists.result(path: "Gemfile")
   }
 ) %>
 
-```ruby
-result = AssertFileNotEmpty.result(path: "Gemfile")
-```
+Organizer service example (has steps).
 
 <%= render_react_island(
   component: "Tabs",
