@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-require "uri"
 
-require "cs_docs/services/configs/practical/v1"
-require "cs_docs/builder/services/fetch_http_response"
-require "cs_docs/builder/services/write_binary_file"
 
 module CSDocs
   class Builder

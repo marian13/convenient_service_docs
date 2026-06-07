@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require "cs_docs/services/configs/practical/v1"
-require "cs_docs/builder/services/convert_uri_to_dist_path"
-require "cs_docs/builder/services/convert_uri_to_dist_parent_path"
-require "cs_docs/builder/services/touch_folder"
-require "cs_docs/builder/services/write_file"
 
 module CSDocs
   class Builder

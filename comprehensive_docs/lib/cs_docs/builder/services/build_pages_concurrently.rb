@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-require "concurrent"
 
-require "cs_docs/services/configs/practical/v1"
-require "cs_docs/builder/services/build_page"
-require "cs_docs/builder/services/quit_browser"
-require "cs_docs/builder/services/save_assets"
 
 module CSDocs
   class Builder

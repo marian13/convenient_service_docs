@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require 'json'
-require 'sinatra/base'
-require 'sinatra/content_for'
-require 'cs_docs/services/load_config'
+require "json"
+require "sinatra/base"
+require "sinatra/content_for"
+require "yaml"
+
+require_relative "services"
 
 module CSDocs
   class DevServer < Sinatra::Base

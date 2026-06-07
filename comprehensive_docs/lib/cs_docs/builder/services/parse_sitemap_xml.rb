@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require "rexml/document"
 
-require "cs_docs/services/configs/practical/v1"
 
 module CSDocs
   class Builder

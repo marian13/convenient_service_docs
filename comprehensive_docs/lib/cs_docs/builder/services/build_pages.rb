@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "cs_docs/services/configs/practical/v1"
-require "cs_docs/builder/services/build_pages_sequentially"
-require "cs_docs/builder/services/build_pages_concurrently"
 
 module CSDocs
   class Builder

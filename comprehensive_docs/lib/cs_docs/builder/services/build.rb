@@ -1,24 +1,6 @@
 # frozen_string_literal: true
 
-require "concurrent"
-require "ferrum"
-require "logger"
-require "yaml"
 
-require "cs_docs/services/configs/practical/v1"
-require "cs_docs/services/load_config"
-require "cs_docs/builder/services/check_network"
-require "cs_docs/builder/services/find_free_port"
-require "cs_docs/builder/services/resolve_locs"
-require "cs_docs/builder/services/convert_locs_to_uris"
-require "cs_docs/builder/services/remove_folder"
-require "cs_docs/builder/services/touch_folder"
-require "cs_docs/builder/services/spawn_dev_server"
-require "cs_docs/builder/services/wait_server_healthcheck"
-require "cs_docs/builder/services/build_pages"
-require "cs_docs/builder/services/save_sitemap"
-require "cs_docs/builder/services/save_llms_txt"
-require "cs_docs/builder/services/kill_process"
 
 module CSDocs
   class Builder

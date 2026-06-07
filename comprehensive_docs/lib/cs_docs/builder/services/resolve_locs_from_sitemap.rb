@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "cs_docs/services/configs/practical/v1"
-require "cs_docs/builder/services/read_file_content"
-require "cs_docs/builder/services/parse_sitemap_xml"
 
 module CSDocs
   class Builder

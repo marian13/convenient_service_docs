@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "cs_docs/services/configs/practical/v1"
 
 module CSDocs
   class Builder

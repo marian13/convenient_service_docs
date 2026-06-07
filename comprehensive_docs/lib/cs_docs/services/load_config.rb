@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "yaml"
-require "cs_docs/services/configs/practical/v1"
-
 module CSDocs
   module Services
     class LoadConfig

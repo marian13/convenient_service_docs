@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "cs_docs/services/configs/practical/v1"
-require "cs_docs/builder/services/resolve_locs_from_argv"
-require "cs_docs/builder/services/resolve_locs_from_sitemap"
 
 module CSDocs
   class Builder

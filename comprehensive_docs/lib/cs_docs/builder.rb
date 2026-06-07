@@ -1,8 +1,19 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift(File.expand_path('..', __dir__))
+require "concurrent"
+require "ferrum"
+require "fileutils"
+require "logger"
+require "net/http"
+require "retriable"
+require "rexml/document"
+require "socket"
+require "uri"
+require "yaml"
 
-require 'cs_docs/builder/services/build'
+require_relative "validators"
+require_relative "services"
+require_relative "builder/services"
 
 result = CSDocs::Builder::Services::Build.result
 

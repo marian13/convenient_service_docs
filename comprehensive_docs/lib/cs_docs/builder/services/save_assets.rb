@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "cs_docs/services/configs/practical/v1"
-require "cs_docs/builder/services/save_asset"
 
 module CSDocs
   class Builder

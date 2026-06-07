@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-require "net/http"
-require "uri"
-require "retriable"
 
-require "cs_docs/services/configs/practical/v1"
 
 module CSDocs
   class Builder
