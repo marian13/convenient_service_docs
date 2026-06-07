@@ -4,8 +4,6 @@ title: TL;DR
 
 # TL;DR
 
-<cs-react-island component="DocAxes" props='{"label":"Basics / Basic / Tutorial / Task map"}'></cs-react-island>
-
 > I have no time to read tons of docs.
 > Just show me an example use case and I'll quickly craft something similar 😎.
 >

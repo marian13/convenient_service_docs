@@ -1,3 +1,4 @@
+import { kebabCase } from "lodash-es";
 import { html } from "@utils/react";
 import Markdown from "@components/generic/Markdown";
 import { mutateHtmlFromString } from "@utils/html";
@@ -16,8 +17,18 @@ const addExampleLinks = (rawHtml) => {
   });
 };
 
+const applyHeadingAnchors = (rawHtml) => {
+  return mutateHtmlFromString(rawHtml, (doc) => {
+    doc.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((heading) => {
+      heading.id = kebabCase(heading.textContent);
+    });
+  });
+};
+
 const CSMarkdown = ({ src, content }) => {
-  return html`<${Markdown} src=${src} content=${content} transformHtml=${addExampleLinks} />`;
+  const transformHtml = (html) => applyHeadingAnchors(addExampleLinks(html));
+
+  return html`<${Markdown} src=${src} content=${content} transformHtml=${transformHtml} />`;
 };
 
 export default CSMarkdown;

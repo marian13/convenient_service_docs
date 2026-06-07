@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'json'
 require 'sinatra/base'
 require 'sinatra/content_for'
 require 'yaml'
@@ -90,6 +91,11 @@ module CSDocs
         "<cs-react-island component=\"#{component}\" props='#{props.to_json}'></cs-react-island>"
       end
 
+      def render_toc
+        toc_data = JSON.parse(File.read(File.join(root, 'src/toc.json')), symbolize_names: true)
+        render_toc_section(toc_data[:toc][:items], [], 2).join("\n")
+      end
+
       def read_erb_file(file_path)
         erb(File.read(file_path), layout: false)
       end
@@ -131,6 +137,34 @@ module CSDocs
       end
 
       private
+
+      def render_toc_section(items, counters, heading_level)
+        lines = []
+        had_bullets = false
+
+        items.each_with_index do |item, i|
+          num = counters + [i + 1]
+          prefix = num.join('.')
+          title = item[:title]
+          href = item[:link] || item[:url]
+          sub = item[:items]
+
+          if sub || heading_level <= 3
+            hashes = '#' * heading_level
+            label = href ? "#{prefix}. [#{title}](#{href})" : "#{prefix}. #{title}"
+            lines << "#{hashes} #{label}"
+            lines << ''
+            lines.concat(render_toc_section(sub, num, heading_level + 1)) if sub
+          else
+            lines << (href ? "#{prefix}. [#{title}](#{href})" : "#{prefix}. #{title}")
+            lines << "<br>"
+            had_bullets = true
+          end
+        end
+
+        lines << '' if had_bullets
+        lines
+      end
 
       ##
       # Example: [{ title: "Service" }, "# Service\n\nShort description.\n"]
