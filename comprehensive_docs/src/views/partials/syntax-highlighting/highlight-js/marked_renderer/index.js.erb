@@ -1,0 +1,10 @@
+import hljs from "highlight.js";
+
+export default {
+  code({ text, lang }) {
+    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+    const highlighted = hljs.highlight(text, { language }).value;
+
+    return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`;
+  }
+};

@@ -1,0 +1,18 @@
+<% content_for :title do %>
+  <%= @markdown_frontmatter[:title] || "Convenient Service" %>
+<% end %>
+
+<% content_for :head do %>
+  <style>
+    @import "/views/doc_page.css";
+    @import "/assets/global/styles/<%= config[:syntax_highlighting][:provider] %>.css";
+    @import "/assets/components/DocAxes/styles.css";
+  </style>
+<% end %>
+
+<%= render_html_partial 'top-left-corner-header' %>
+<%= render_html_partial 'top-right-corner-header' %>
+
+<div class="cs-doc">
+  <cs-react-island component="CSMarkdown" props='{"src":"<%= @markdown_path %>"}' prerender-on-build></cs-react-island>
+</div>

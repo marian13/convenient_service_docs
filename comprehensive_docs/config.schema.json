@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["syntax_highlighting"],
+  "additionalProperties": false,
+  "properties": {
+    "syntax_highlighting": {
+      "type": "object",
+      "required": ["provider"],
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["highlight-js", "prism-js"]
+        }
+      }
+    }
+  }
+}

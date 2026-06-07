@@ -1,0 +1,38 @@
+{
+  "toc": {
+    "title": "Table of contents",
+    "items": [
+      {
+        "title": "TL;DR",
+        "link": "/docs/tldr.html"
+      },
+      {
+        "title": "Tutorials"
+      },
+      {
+        "title": "The What",
+        "items": [
+          {
+            "title": "Miscellaneous",
+            "items": [
+              {
+                "title": "What is Convenient Service license?",
+                "link": "/docs/the_what/what_is_convenient_service_license.html"
+              },
+              {
+                "title": "Who is Convenient Service author?",
+                "link": "/docs/the_what/who_is_convenient_service_author.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "The How"
+      },
+      {
+        "title": "The Why"
+      }
+    ]
+  }
+}

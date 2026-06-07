@@ -1,0 +1,7 @@
+internal/
+node_modules/
+src/doc_pages/entities/plan.md
+dist/*
+!dist/.gitkeep
+src/docs/todo/
+TODO.md

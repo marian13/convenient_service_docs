@@ -1,0 +1,13 @@
+.cs-loader {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-text);
+  border-radius: 50%;
+  animation: cs-loader-spin 0.6s linear infinite;
+}
+
+@keyframes cs-loader-spin {
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,13 @@
+.cs-loader-pulse {
+  display: block;
+  width: 4rem;
+  height: 1em;
+  background-color: var(--color-border);
+  border-radius: 0.25rem;
+  animation: cs-loader-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes cs-loader-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}

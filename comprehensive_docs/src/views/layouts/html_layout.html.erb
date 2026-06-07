@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title><%= yield_content :title %></title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <%= render_html_partial "syntax-highlighting/#{config[:syntax_highlighting][:provider]}/css_links" %>
+
+  <script src="/assets/global/loaders/beforePageLoadStarted.js"></script>
+
+  <style>
+    @import "https://unpkg.com/modern-normalize";
+
+    @import "/assets/global/styles/base.css";
+    @import "/assets/global/styles/fonts/inter.css";
+    @import "/assets/global/styles/themes/index.css";
+    @import "/assets/global/styles/islands.css";
+
+    @import "/assets/components/generic/Selector/styles.css";
+    @import "/assets/components/ThemeSelector/styles.css";
+    @import "/assets/components/ColorSchemeToggle/styles.css";
+    @import "/assets/components/generic/Loader/styles.css";
+    @import "/assets/components/generic/LoaderPulse/styles.css";
+
+    @import "/assets/components/Tabs/styles.css";
+
+    @import "/views/partials/top-left-corner-header/styles.css";
+    @import "/views/partials/top-right-corner-header/styles.css";
+    @import "/views/partials/button/styles.css";
+  </style>
+
+  <%= yield_content :head %>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18",
+        "react-dom/client": "https://esm.sh/react-dom@18/client",
+        "htm": "https://esm.sh/htm@3",
+        "zustand": "https://esm.sh/zustand@4?deps=react@18",
+        "classnames": "https://esm.sh/classnames@2",
+        "@assets/": "/assets/",
+        "@utils/env": "/assets/utils/env/index.js",
+        "@utils/html": "/assets/utils/html/index.js",
+        "@utils/react": "/assets/utils/react/index.js",
+        "@utils/react/island": "/assets/utils/react/island/index.js",
+        "@utils/colorScheme": "/assets/utils/colorScheme/index.js",
+        "@utils/theme": "/assets/utils/theme/index.js",
+        "@utils/async": "/assets/utils/async/index.js",
+        "@utils/http": "/assets/utils/http/index.js",
+        "@utils/markdown": "/assets/utils/markdown/index.js",
+        "@components/generic/Selector": "/assets/components/generic/Selector/index.js",
+        "@components/ThemeSelector": "/assets/components/ThemeSelector/index.js",
+        "@components/ColorSchemeToggle": "/assets/components/ColorSchemeToggle/index.js",
+        "@components/generic/Loader": "/assets/components/generic/Loader/index.js",
+        "@components/generic/LoaderPulse": "/assets/components/generic/LoaderPulse/index.js",
+        "@icons": "/assets/components/generic/icons/index.js",
+        "lodash-es": "https://esm.sh/lodash-es",
+        "marked": "https://esm.sh/marked",
+        "highlight.js": "https://esm.sh/highlight.js",
+        "prismjs": "https://esm.sh/prismjs",
+        "prismjs/components/prism-ruby": "https://esm.sh/prismjs/components/prism-ruby",
+        "prismjs/components/prism-bash": "https://esm.sh/prismjs/components/prism-bash",
+        "@floating-ui/react": "https://esm.sh/@floating-ui/react?deps=react@18",
+        "@components/generic/Markdown": "/assets/components/generic/Markdown/index.js",
+        "@components/CSMarkdown": "/assets/components/CSMarkdown/index.js",
+        "@components/DocAxes": "/assets/components/DocAxes/index.js",
+        "@components/Tabs": "/assets/components/Tabs/index.js",
+        "@utils/classnames": "/assets/utils/classnames/index.js",
+        "@stores": "/assets/stores/index.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <%= yield %>
+
+  <script type="module" src="/assets/global/loaders/afterPageLoadFinished.js"></script>
+</body>
+</html>

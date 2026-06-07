@@ -1,0 +1,28 @@
+<% content_for :head do %>
+  <style>
+    @import "/custom_pages/home/styles.css";
+  </style>
+<% end %>
+
+<%= render_html_partial 'top-left-corner-header' %>
+<%= render_html_partial 'top-right-corner-header' %>
+
+<main class="cs-pages-home">
+  <h1 class="cs-pages-home__title">Convenient Service</h1>
+
+  <p class="cs-pages-home__logo">
+    <img src="/public/logo.png" width="300" alt="Convenient Service logo">
+  </p>
+
+  <p class="cs-pages-home__description">Manage complex business logic in Ruby applications using Service Objects with Results and Steps.</p>
+  <p class="cs-pages-home__description">Hide technical details with Configs, Plugins, Concerns and Middlewares.</p>
+  <p class="cs-pages-home__description">Group related code by Features with Entries.</p>
+  <p class="cs-pages-home__description">Test with dedicated Helpers and Matchers.</p>
+
+  <div class="cs-pages-home__actions">
+    <%= render_html_partial 'button', locals: { variant: 'secondary', href: '/docs/tldr.html', label: 'TL;DR', target: '_self', rel: '' } %>
+    <%= render_html_partial 'button', locals: { variant: 'secondary', href: '/docs/toc.html', label: 'User Docs', target: '_self', rel: '' } %>
+    <%= render_html_partial 'button', locals: { variant: 'secondary', href: 'https://apidocs.convenientservice.org', label: 'API Docs', target: '_blank', rel: 'noopener noreferrer' } %>
+    <%= render_html_partial 'button', locals: { variant: 'secondary', href: 'https://github.com/marian13/convenient_service', label: 'GitHub', target: '_blank', rel: 'noopener noreferrer' } %>
+  </div>
+</main>
