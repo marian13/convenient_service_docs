@@ -40,8 +40,8 @@ jobs:
           (cd fumadocs/convenient_service_docs && yarn install  --frozen-lockfile)
       - name: Build website
         run: |
-          (cd docusaurus && yarn build)
-          (cd fumadocs/convenient_service_docs  && HOST='https://userdocs.convenientservice.org' yarn build && mv ./build/v1 ../../docusaurus/build/v1)
+          (cd docusaurus && yarn build && mv ./build ../build)
+          (cd fumadocs/convenient_service_docs && HOST='https://userdocs.convenientservice.org' yarn build && mv ./build/v1 ../../build/v1)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -49,5 +49,5 @@ jobs:
           ##
           # NOTE: Build output to publish to the `gh-pages` branch.
           #
-          publish_dir: ./docusaurus/build
+          publish_dir: ./build
           cname: userdocs.convenientservice.org
