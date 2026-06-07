@@ -27,7 +27,7 @@ module CSDocs
           in: :browser
 
         step Services::SaveAssets,
-          in: [:assets, :root, :logger]
+          in: [:assets, :root, :config, :logger]
 
         private
 

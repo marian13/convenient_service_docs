@@ -1,31 +1,32 @@
 # frozen_string_literal: true
 
-
 module CSDocs
   class Builder
     module Services
-      class ConvertUriToDistPath
+      class PostProcessSitemap
         include ::CSDocs::Services::Configs::Practical::V1
-    
-        option :uri
+
         option :root
         option :config
 
-        validates :uri, presence: true
         validates :root, presence: true
         validates :config, presence: true
 
-        def result
+        step :PrefixSitemapLocs
+
+        private
+
+        def PrefixSitemapLocs
           base_path = config.dig(:envs, :build, :base_path).to_s.chomp("/")
 
-          path =
-            if uri.path == "/"
-              File.join(root, "dist", base_path, "index.html")
-            else
-              File.join(root, "dist", base_path, uri.path)
-            end
+          return success if base_path.empty?
 
-          success(dist_path: path)
+          path = File.join(root, "dist", "sitemap.xml")
+          content = File.read(path)
+
+          File.write(path, content.gsub(%r{(<loc>https?://[^/]+)(/)}, "\\1#{base_path}/"))
+
+          success
         end
       end
     end

@@ -54,7 +54,7 @@ module CSDocs
           out: :content
 
         step Services::SavePage,
-          in: [:uri, :content, :root, :logger]
+          in: [:uri, :content, :root, :config, :logger]
 
         before :result do
           logger.debug { "building #{uri}..." }

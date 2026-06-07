@@ -55,6 +55,8 @@ GEM
     multi_json (1.21.1)
     mustermann (3.1.1)
     nio4r (2.7.5)
+    nokogiri (1.19.3-x86_64-darwin)
+      racc (~> 1.4)
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
@@ -65,6 +67,7 @@ GEM
     public_suffix (7.0.5)
     puma (8.0.0)
       nio4r (~> 2.0)
+    racc (1.8.1)
     rack (3.2.6)
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
@@ -110,7 +113,6 @@ GEM
     websocket-extensions (0.1.5)
 
 PLATFORMS
-  ruby
   x86_64-darwin-24
 
 DEPENDENCIES
@@ -122,6 +124,7 @@ DEPENDENCIES
   dry-initializer (= 3.2.0)
   ferrum (= 0.17.2)
   memo_wise (= 1.13.0)
+  nokogiri
   puma (= 8.0.0)
   rackup (= 2.3.1)
   retriable (= 3.1.2)
@@ -155,12 +158,14 @@ CHECKSUMS
   multi_json (1.21.1) sha256=e6126a31808e3b4d19f483c775ceac34df190dffa62adfb63a165ee14ba68080
   mustermann (3.1.1) sha256=4c6170c7234d5499c345562ba7c7dfe73e1754286dcc1abb053064d66a127198
   nio4r (2.7.5) sha256=6c90168e48fb5f8e768419c93abb94ba2b892a1d0602cb06eef16d8b7df1dca1
+  nokogiri (1.19.3-x86_64-darwin) sha256=77f3fba57d46c53ab31e62fc6c28f705109d1bf6264356c76f132b2be5728d4d
   pp (0.6.3) sha256=2951d514450b93ccfeb1df7d021cae0da16e0a7f95ee1e2273719669d0ab9df6
   prettyprint (0.2.0) sha256=2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
   psych (5.3.1) sha256=eb7a57cef10c9d70173ff74e739d843ac3b2c019a003de48447b2963d81b1974
   public_suffix (7.0.5) sha256=1a8bb08f1bbea19228d3bed6e5ed908d1cb4f7c2726d18bd9cadf60bc676f623
   puma (8.0.0) sha256=1681050b8b60fab1d3033255ab58b6aec64cd063e43fc6f8204bcb8bf9364b88
+  racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rack (3.2.6) sha256=5ed78e1f73b2e25679bec7d45ee2d4483cc4146eb1be0264fc4d94cb5ef212c2
   rack-protection (4.2.1) sha256=cf6e2842df8c55f5e4d1a4be015e603e19e9bc3a7178bae58949ccbb58558bac
   rack-session (2.1.2) sha256=595434f8c0c3473ae7d7ac56ecda6cc6dfd9d37c0b2b5255330aa1576967ffe8

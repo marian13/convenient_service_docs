@@ -10,19 +10,21 @@ module CSDocs
         option :uri
         option :content
         option :root
+        option :config
         option :logger
-    
+
         validates :uri, presence: true
         validates :content, presence: true
         validates :root, presence: true
+        validates :config, presence: true
         validates :logger, presence: true
-    
+
         step Services::ConvertUriToDistPath,
-          in: [:uri, :root],
+          in: [:uri, :root, :config],
           out: :dist_path
-    
+
         step Services::ConvertUriToDistParentPath,
-          in: [:uri, :root],
+          in: [:uri, :root, :config],
           out: :dist_parent_path
     
         step Services::TouchFolder,

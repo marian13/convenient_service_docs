@@ -9,12 +9,14 @@ module CSDocs
     
         option :uri
         option :root
-    
+        option :config
+
         validates :uri, presence: true
         validates :root, presence: true
-    
+        validates :config, presence: true
+
         step Services::ConvertUriToDistPath,
-          in: [:uri, :root],
+          in: [:uri, :root, :config],
           out: :dist_path
     
         step :result,

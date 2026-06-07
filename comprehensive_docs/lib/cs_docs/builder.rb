@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "nokogiri"
 require "concurrent"
 require "ferrum"
 require "fileutils"
