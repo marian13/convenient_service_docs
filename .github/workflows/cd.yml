@@ -36,9 +36,9 @@ jobs:
         ##
         # https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-frozen-lockfile
         #
-        run: yarn install --frozen-lockfile
+        run: cd docusaurus && yarn install --frozen-lockfile
       - name: Build website
-        run: yarn build
+        run: cd docusaurus && yarn build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -46,5 +46,5 @@ jobs:
           ##
           # NOTE: Build output to publish to the `gh-pages` branch.
           #
-          publish_dir: ./build
+          publish_dir: ./docusaurus/build
           cname: userdocs.convenientservice.org

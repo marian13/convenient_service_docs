@@ -31,7 +31,7 @@ tasks:
   #
   start:
     cmds:
-      - yarn start --port 8200
+      - cd docusaurus && yarn install && yarn start --port 8200
 
   ##
   # NOTE: Dev only command.

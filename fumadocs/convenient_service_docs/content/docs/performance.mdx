@@ -1,0 +1,29 @@
+---
+title: Performance
+---
+
+## How to switch middleware backends?
+
+There is no public API to switch middleware backends yet.
+
+But just for the curiosity reasons the following monkey-patch can be used.
+
+```ruby
+backends = ConvenientService::Support::Middleware::StackBuilder::Constants::Backends
+```
+
+```ruby
+backends::ALL
+# => [:ruby_middleware, :rack, :stateful, :naive]
+```
+
+```ruby
+backends::DEFAULT
+# => [:naive]
+```
+
+```ruby
+backends::DEFAULT = :ruby_middleware
+```
+
+It is important to keep in mind that it may become stale without any notice after any new version release.
