@@ -1,16 +1,21 @@
 # yaml-language-server: $schema=./config.schema.json
 
-##
-# NOTE: Possible provider values: "highlight-js", "prism-js".
-# - https://highlightjs.org
-# - https://prismjs.com
-#
-code_links:
-  AssertFileExists: /docs/examples/services.html#assert-file-exists
-  AssertFileNotEmpty: /docs/examples/services.html#assert-file-not-empty
-  ReadFileContent: /docs/examples/services.html#read-file-content
-  FindUser: /docs/examples/services.html#find-user
+envs:
+  all:
+    code_links:
+      AssertFileExists: /docs/examples/services.html#assert-file-exists
+      AssertFileNotEmpty: /docs/examples/services.html#assert-file-not-empty
+      ReadFileContent: /docs/examples/services.html#read-file-content
+      FindUser: /docs/examples/services.html#find-user
 
-syntax_highlighting:
-  # provider: highlight-js
-  provider: prism-js
+    ##
+    # NOTE: Possible provider values: "highlight-js", "prism-js".
+    # - https://highlightjs.org
+    # - https://prismjs.com
+    #
+    syntax_highlighting:
+      # provider: highlight-js
+      provider: prism-js
+
+  build:
+    base_path: "/comprehensive_docs"

@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <%= render_html_partial "syntax-highlighting/#{config[:syntax_highlighting][:provider]}/css_links" %>
+  <%= render_html_partial "syntax-highlighting/#{config[:envs][:all][:syntax_highlighting][:provider]}/css_links" %>
 
   <script src="/assets/global/loaders/beforePageLoadStarted.js"></script>
 

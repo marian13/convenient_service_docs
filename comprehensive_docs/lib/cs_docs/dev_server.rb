@@ -3,7 +3,7 @@
 require 'json'
 require 'sinatra/base'
 require 'sinatra/content_for'
-require 'yaml'
+require 'cs_docs/services/load_config'
 
 module CSDocs
   class DevServer < Sinatra::Base
@@ -30,7 +30,7 @@ module CSDocs
 
     helpers do
       def config
-        @config ||= YAML.load_file(File.join(root, 'config.yml'), symbolize_names: true)
+        @config ||= Services::LoadConfig.call(root: root)[:config]
       end
 
       def root

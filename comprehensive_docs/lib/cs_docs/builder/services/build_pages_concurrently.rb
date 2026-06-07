@@ -18,13 +18,15 @@ module CSDocs
         option :assets
         option :pool
         option :root
+        option :config
         option :logger
-    
+
         validates :uris, presence: true
         validates :browser, presence: true
         validates :assets, nil: false
         validates :pool, presence: true
         validates :root, presence: true
+        validates :config, presence: true
         validates :logger, presence: true
     
         step :ProcessUris
@@ -39,7 +41,7 @@ module CSDocs
     
         def ProcessUris
           service_aware_enumerable(uris)
-            .map { |uri| Concurrent::Future.execute(executor: pool) { Services::BuildPage.result(uri: uri, browser: browser, assets: assets, root: root, logger: logger) } }
+            .map { |uri| Concurrent::Future.execute(executor: pool) { Services::BuildPage.result(uri: uri, browser: browser, assets: assets, root: root, config: config, logger: logger) } }
             .lazy
             .service_aware_map { |future| future.value!.tap { |result| pool.kill if result.not_success? } }
             .result

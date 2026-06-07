@@ -15,12 +15,14 @@ module CSDocs
         option :browser
         option :assets
         option :root
+        option :config
         option :logger
 
         validates :uris, presence: true
         validates :browser, presence: true
         validates :assets, nil: false
         validates :root, presence: true
+        validates :config, presence: true
         validates :logger, presence: true
 
         step :ProcessUris
@@ -39,7 +41,7 @@ module CSDocs
           service_aware_enumerable(uris)
             .service_aware_each { |uri|
               step Services::BuildPage,
-                in: [uri: -> { uri }, browser: -> { browser }, assets: -> { assets }, root: -> { root }, logger: -> { logger }]
+                in: [uri: -> { uri }, browser: -> { browser }, assets: -> { assets }, root: -> { root }, config: -> { config }, logger: -> { logger }]
             }
             .result
         end

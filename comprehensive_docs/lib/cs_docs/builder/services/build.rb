@@ -3,8 +3,10 @@
 require "concurrent"
 require "ferrum"
 require "logger"
+require "yaml"
 
 require "cs_docs/services/configs/practical/v1"
+require "cs_docs/services/load_config"
 require "cs_docs/builder/services/check_network"
 require "cs_docs/builder/services/find_free_port"
 require "cs_docs/builder/services/resolve_locs"
@@ -25,6 +27,7 @@ module CSDocs
         include ::CSDocs::Services::Configs::Practical::V1
     
         option :root, default: proc { File.expand_path("../../../..", __dir__) }
+        option :config, default: proc { Services::LoadConfig.call(root: root)[:config] }
         option :logger, default: proc { Logger.new($stdout, level: ENV.fetch("LOG_LEVEL", "info").upcase) }
         option :browser, default: proc { Ferrum::Browser.new(timeout: 15, headless: true) }
         option :pool, default: proc { Concurrent::FixedThreadPool.new(8) }
@@ -58,7 +61,7 @@ module CSDocs
           in: :port
     
         step Services::BuildPages,
-          in: [:uris, :browser, :assets, :pool, :root, :logger]
+          in: [:uris, :browser, :assets, :pool, :root, :config, :logger]
     
         step Services::SaveSitemap,
           in: [:port, :root, :logger]

@@ -2,6 +2,7 @@
 
 require "cs_docs/services/configs/practical/v1"
 require "cs_docs/builder/services/collect_asset"
+require "cs_docs/builder/services/post_process_page"
 require "cs_docs/builder/services/save_page"
 
 module CSDocs
@@ -14,12 +15,14 @@ module CSDocs
         option :browser
         option :assets
         option :root
+        option :config
         option :logger
 
         validates :uri, presence: true
         validates :browser, presence: true
         validates :assets, nil: false
         validates :root, presence: true
+        validates :config, presence: true
         validates :logger, presence: true
 
         step :CreateBrowserPage,
@@ -49,6 +52,10 @@ module CSDocs
 
         step :CloseBrowserPage,
           in: :page
+
+        step Services::PostProcessPage,
+          in: [:content, :config],
+          out: :content
 
         step Services::SavePage,
           in: [:uri, :content, :root, :logger]

@@ -15,20 +15,22 @@ module CSDocs
         option :assets
         option :pool
         option :root
+        option :config
         option :logger
-    
+
         validates :uris, presence: true
         validates :browser, presence: true
         validates :assets, nil: false
         validates :pool, presence: true
         validates :root, presence: true
+        validates :config, presence: true
         validates :logger, presence: true
-    
+
         step Services::BuildPagesSequentially,
-          in: [:uris, :browser, :assets, :root, :logger]
+          in: [:uris, :browser, :assets, :root, :config, :logger]
 
         or_step Services::BuildPagesConcurrently,
-          in: [:uris, :browser, :assets, :pool, :root, :logger]
+          in: [:uris, :browser, :assets, :pool, :root, :config, :logger]
       end
     end
   end
