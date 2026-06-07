@@ -1,3 +1,14 @@
+# Contributing
+
+## Debug
+
+### How to debug complex edge cases, for example, threading issues?
+
+Consider to check the [`lib/convenient_service/debug`](https://github.com/marian13/convenient_service/tree/main/lib/convenient_service/debug) directory.
+
+It may already contain the debugging tools for the common problems.
+
+
 # Installation
 
 import { version } from '../../custom/constants';
@@ -26,6 +37,35 @@ Execute the command below:
 <Callout>
   Convenient Service follows the [Semantic Versioning](https://semver.org/) standard.
 </Callout>
+
+
+# Performance
+
+## How to switch middleware backends?
+
+There is no public API to switch middleware backends yet.
+
+But just for the curiosity reasons the following monkey-patch can be used.
+
+```ruby
+backends = ConvenientService::Support::Middleware::StackBuilder::Constants::Backends
+```
+
+```ruby
+backends::ALL
+# => [:ruby_middleware, :rack, :stateful, :naive]
+```
+
+```ruby
+backends::DEFAULT
+# => [:naive]
+```
+
+```ruby
+backends::DEFAULT = :ruby_middleware
+```
+
+It is important to keep in mind that it may become stale without any notice after any new version release.
 
 
 # Requirements
