@@ -1,5 +1,5 @@
 <p>
-  <a href="https://github.com/marian13/convenient_service"><img align="left" width="150"        src="https://raw.githubusercontent.com/marian13/convenient_service_docs/main/logo.png" alt="Convenient Service User Docs"></a>
+  <a href="https://github.com/marian13/convenient_service"><img align="left" width="150" src="https://raw.githubusercontent.com/marian13/convenient_service_docs/refs/heads/main/comprehensive_docs/src/public/logo.png" alt="Convenient Service User Docs"></a>
   <h1>Convenient Service User Docs</h1>
 </p><br>
 
