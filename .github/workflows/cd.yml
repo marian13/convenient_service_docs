@@ -41,7 +41,7 @@ jobs:
       - name: Build website
         run: |
           (cd docusaurus && yarn build)
-          (cd fumadocs/convenient_service_docs HOST='https://userdocs.convenientservice.org' yarn build && mv ./build/v1 ../../docusaurus/build/v1)
+          (cd fumadocs/convenient_service_docs  && HOST='https://userdocs.convenientservice.org' yarn build && mv ./build/v1 ../../docusaurus/build/v1)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
