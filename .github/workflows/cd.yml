@@ -47,7 +47,7 @@ jobs:
         run: |
           (cd docusaurus && yarn build && mv ./build ../build)
           (cd fumadocs/convenient_service_docs && HOST='https://userdocs.convenientservice.org' yarn build && mv ./build/v1 ../../build/v1)
-          (cd comprehensive_docs && bundle exec ruby lib/cs_docs/builder.rb && mv ./dist/comprehensive_docs ../../build/comprehensive_docs)
+          (cd comprehensive_docs && bundle exec ruby lib/cs_docs/builder.rb && mv ./dist/comprehensive_docs ../build/comprehensive_docs)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
