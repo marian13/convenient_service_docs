@@ -10,6 +10,8 @@ require_relative "dev_server/services"
 
 module CSDocs
   class DevServer < Sinatra::Base
+    set :app_file, __FILE__
+
     class << self
       def port
         @port ||= ENV.fetch('PORT', 8100).to_i
