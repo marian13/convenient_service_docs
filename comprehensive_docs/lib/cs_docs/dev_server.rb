@@ -6,6 +6,7 @@ require "sinatra/content_for"
 require "yaml"
 
 require_relative "services"
+require_relative "dev_server/services"
 
 module CSDocs
   class DevServer < Sinatra::Base
@@ -15,7 +16,7 @@ module CSDocs
       end
 
       def root
-        @root ||= File.expand_path('../..', __dir__)
+        @root ||= Services::GetRoot.call[:root]
       end
     end
 
@@ -32,7 +33,7 @@ module CSDocs
 
     helpers do
       def config
-        @config ||= Services::LoadConfig.call(root: root)[:config]
+        @config ||= Services::LoadConfig.call[:config]
       end
 
       def root
@@ -94,8 +95,7 @@ module CSDocs
       end
 
       def render_toc
-        toc_data = JSON.parse(File.read(File.join(root, 'src/toc.json')), symbolize_names: true)
-        render_toc_section(toc_data[:toc][:items], [], 2).join("\n")
+        GenerateToc.call[:toc]
       end
 
       def read_erb_file(file_path)
@@ -139,34 +139,6 @@ module CSDocs
       end
 
       private
-
-      def render_toc_section(items, counters, heading_level)
-        lines = []
-        had_bullets = false
-
-        items.each_with_index do |item, i|
-          num = counters + [i + 1]
-          prefix = num.join('.')
-          title = item[:title]
-          href = item[:link] || item[:url]
-          sub = item[:items]
-
-          if sub || heading_level <= 3
-            hashes = '#' * heading_level
-            label = href ? "#{prefix}. [#{title}](#{href})" : "#{prefix}. #{title}"
-            lines << "#{hashes} #{label}"
-            lines << ''
-            lines.concat(render_toc_section(sub, num, heading_level + 1)) if sub
-          else
-            lines << (href ? "#{prefix}. [#{title}](#{href})" : "#{prefix}. #{title}")
-            lines << "<br>"
-            had_bullets = true
-          end
-        end
-
-        lines << '' if had_bullets
-        lines
-      end
 
       ##
       # Example: [{ title: "Service" }, "# Service\n\nShort description.\n"]
@@ -262,14 +234,12 @@ module CSDocs
     end
 
     ##
-    # URL: /sitemap.xml -> File: src/sitemap.xml
+    # URL: /sitemap.xml -> generated from src/doc_pages/**/*.md
     #
     get '/sitemap.xml' do
       content_type 'application/xml'
 
-      file_path = static_file_path_from('/sitemap.xml')
-
-      send_static_file file_path
+      Services::GenerateSitemap.call[:sitemap_xml]
     end
 
     ##

@@ -20,3 +20,7 @@ tasks:
   start:build:
     cmds:
       - task build -- {{.CLI_ARGS}} && ruby -run -e httpd dist -p 8101
+
+  dev:run:
+    cmds:
+      - bundle exec ruby -r ./lib/cs_docs/dev_server -e {{.CLI_ARGS}}

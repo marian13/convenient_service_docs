@@ -5,9 +5,11 @@ module CSDocs
     class LoadConfig
       include ::CSDocs::Services::Configs::Practical::V1
 
-      option :root
+      step ::CSDocs::Services::GetRoot,
+        out: :root
 
-      validates :root, presence: true
+      step :result,
+        out: :config
 
       def result
         success(config: YAML.load_file(File.join(root, "config.yml"), symbolize_names: true))

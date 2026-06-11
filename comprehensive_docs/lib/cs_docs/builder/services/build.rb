@@ -9,7 +9,7 @@ module CSDocs
         include ::CSDocs::Services::Configs::Practical::V1
     
         option :root, default: proc { File.expand_path("../../../..", __dir__) }
-        option :config, default: proc { ::CSDocs::Services::LoadConfig.call(root: root)[:config] }
+        option :config, default: proc { ::CSDocs::Services::LoadConfig.call[:config] }
         option :logger, default: proc { Logger.new($stdout, level: ENV.fetch("LOG_LEVEL", "info").upcase) }
         option :browser, default: proc { Ferrum::Browser.new(timeout: 15, headless: true) }
         option :pool, default: proc { Concurrent::FixedThreadPool.new(8) }

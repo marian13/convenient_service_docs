@@ -15,7 +15,6 @@ module CSDocs
           out: :locs
     
         or_step Services::ResolveLocsFromSitemap,
-          in: :root,
           out: :locs
       end
     end

@@ -2,6 +2,8 @@
 
 envs:
   all:
+    base_url: "https://userdocs.convenientservice.org"
+
     code_links:
       AssertFileExists: /docs/examples/services.html#assert-file-exists
       AssertFileNotEmpty: /docs/examples/services.html#assert-file-not-empty
