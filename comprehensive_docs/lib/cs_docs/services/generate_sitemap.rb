@@ -28,7 +28,7 @@ module CSDocs
       private
 
       memo_wise def base_url
-        config.dig(:envs, :all, :base_url).to_s.chomp("/")
+        config[:base_url]
       end
 
       def CollectDocPageLocs

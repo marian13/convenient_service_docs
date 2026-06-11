@@ -1,23 +1,17 @@
 # yaml-language-server: $schema=./config.schema.json
 
-envs:
-  all:
-    base_url: "https://userdocs.convenientservice.org"
+base_url: "https://userdocs.convenientservice.org"
+base_path: "/comprehensive_docs"
 
-    code_links:
-      AssertFileExists: /docs/examples/services.html#assert-file-exists
-      AssertFileNotEmpty: /docs/examples/services.html#assert-file-not-empty
-      ReadFileContent: /docs/examples/services.html#read-file-content
-      FindUser: /docs/examples/services.html#find-user
+syntax_highlighting:
+  # NOTE: Possible provider values: "highlight-js", "prism-js".
+  # - https://highlightjs.org
+  # - https://prismjs.com
+  # provider: highlight-js
+  provider: prism-js
 
-    ##
-    # NOTE: Possible provider values: "highlight-js", "prism-js".
-    # - https://highlightjs.org
-    # - https://prismjs.com
-    #
-    syntax_highlighting:
-      # provider: highlight-js
-      provider: prism-js
-
-  build:
-    base_path: "/comprehensive_docs"
+code_links:
+  AssertFileExists: /docs/examples/services.html#assert-file-exists
+  AssertFileNotEmpty: /docs/examples/services.html#assert-file-not-empty
+  ReadFileContent: /docs/examples/services.html#read-file-content
+  FindUser: /docs/examples/services.html#find-user

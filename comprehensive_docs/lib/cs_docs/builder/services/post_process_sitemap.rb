@@ -17,7 +17,7 @@ module CSDocs
         private
 
         def PrefixSitemapLocs
-          base_path = config.dig(:envs, :build, :base_path).to_s.chomp("/")
+          base_path = config[:base_path]
 
           return success if base_path.empty?
 

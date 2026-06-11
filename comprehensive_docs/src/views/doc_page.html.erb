@@ -5,7 +5,7 @@
 <% content_for :head do %>
   <style>
     @import "/views/doc_page.css";
-    @import "/assets/global/styles/<%= config[:envs][:all][:syntax_highlighting][:provider] %>.css";
+    @import "/assets/global/styles/<%= config[:syntax_highlighting][:provider] %>.css";
     @import "/assets/components/DocAxes/styles.css";
   </style>
 <% end %>

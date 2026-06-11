@@ -16,7 +16,7 @@ module CSDocs
         validates :config, presence: true
 
         def result
-          base_path = config.dig(:envs, :build, :base_path).to_s.chomp("/")
+          base_path = config[:base_path]
 
           path =
             if uri.path == "/"
