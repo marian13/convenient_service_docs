@@ -1,0 +1,21 @@
+.cs-color-scheme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.cs-color-scheme-toggle:hover {
+  background-color: var(--color-border);
+}
+
+.cs-color-scheme-toggle__loader {
+  width: 1rem;
+}

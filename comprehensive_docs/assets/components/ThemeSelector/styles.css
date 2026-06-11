@@ -1,0 +1,7 @@
+.cs-theme-selector {
+  min-width: fit-content;
+}
+
+.cs-theme-selector__dropdown {
+  min-width: 10rem;
+}

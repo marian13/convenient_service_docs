@@ -1,0 +1,34 @@
+import { kebabCase } from "lodash-es";
+import { html } from "@utils/react";
+import Markdown from "@components/generic/Markdown";
+import { mutateHtmlFromString } from "@utils/html";
+
+const EXAMPLE_LINKS = {"AssertFileExists":"/docs/examples/services.html#assert-file-exists","AssertFileNotEmpty":"/docs/examples/services.html#assert-file-not-empty","ReadFileContent":"/docs/examples/services.html#read-file-content","FindUser":"/docs/examples/services.html#find-user"};
+
+const addExampleLinks = (rawHtml) => {
+  return mutateHtmlFromString(rawHtml, (doc) => {
+    doc.querySelectorAll("pre code").forEach((block) => {
+      for (const [className, href] of Object.entries(EXAMPLE_LINKS)) {
+        const regex = new RegExp(`\\b${className}\\b`, "g");
+
+        block.innerHTML = block.innerHTML.replace(regex, `<a href="${href}" class="cs-code-link">${className}</a>`);
+      }
+    });
+  });
+};
+
+const applyHeadingAnchors = (rawHtml) => {
+  return mutateHtmlFromString(rawHtml, (doc) => {
+    doc.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((heading) => {
+      heading.id = kebabCase(heading.textContent);
+    });
+  });
+};
+
+const CSMarkdown = ({ src, content }) => {
+  const transformHtml = (html) => applyHeadingAnchors(addExampleLinks(html));
+
+  return html`<${Markdown} src=${src} content=${content} transformHtml=${transformHtml} />`;
+};
+
+export default CSMarkdown;

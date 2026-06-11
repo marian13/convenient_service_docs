@@ -1,0 +1,54 @@
+.cs-tabs {
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.cs-tabs__bar {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+}
+
+.cs-tabs__tab {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-muted);
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  margin-bottom: -1px;
+}
+
+.cs-tabs__tab:hover {
+  color: var(--color-text);
+}
+
+.cs-tabs__tab:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: -2px;
+}
+
+.cs-tabs__tab--active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-link);
+}
+
+.cs-tabs__content {
+  margin: 0;
+}
+
+.cs-tabs__content pre {
+  margin: 0;
+  border-radius: 0;
+}
+
+.cs-doc .cs-tabs__content pre:has(> code.hljs),
+.cs-doc .cs-tabs__content pre:has(> code[class^="language-"]) {
+  border: none;
+  border-radius: 0;
+}

@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="en" data-theme="flexoki-inspired" data-color-scheme="light"><head>
+  <title>  TL;DR
+</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://unpkg.com/prismjs/themes/prism.css" data-syntax-highlight-theme="light" media="">
+<link rel="stylesheet" href="https://unpkg.com/prismjs/themes/prism-okaidia.css" data-syntax-highlight-theme="dark" media="not all">
+
+
+  <script src="/comprehensive_docs/assets/global/loaders/beforePageLoadStarted.js"></script>
+
+  <style>
+    @import "https://unpkg.com/modern-normalize";
+
+    @import "/comprehensive_docs/assets/global/styles/base.css";
+    @import "/comprehensive_docs/assets/global/styles/fonts/inter.css";
+    @import "/comprehensive_docs/assets/global/styles/themes/index.css";
+    @import "/comprehensive_docs/assets/global/styles/islands.css";
+
+    @import "/comprehensive_docs/assets/components/generic/Selector/styles.css";
+    @import "/comprehensive_docs/assets/components/ThemeSelector/styles.css";
+    @import "/comprehensive_docs/assets/components/ColorSchemeToggle/styles.css";
+    @import "/comprehensive_docs/assets/components/generic/Loader/styles.css";
+    @import "/comprehensive_docs/assets/components/generic/LoaderPulse/styles.css";
+
+    @import "/comprehensive_docs/assets/components/Tabs/styles.css";
+
+    @import "/comprehensive_docs/views/partials/top-left-corner-header/styles.css";
+    @import "/comprehensive_docs/views/partials/top-right-corner-header/styles.css";
+    @import "/comprehensive_docs/views/partials/button/styles.css";
+  </style>
+
+    <style>
+    @import "/comprehensive_docs/views/doc_page.css";
+    @import "/comprehensive_docs/assets/global/styles/prism-js.css";
+    @import "/comprehensive_docs/assets/components/DocAxes/styles.css";
+  </style>
+
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18",
+        "react-dom/client": "https://esm.sh/react-dom@18/client",
+        "htm": "https://esm.sh/htm@3",
+        "zustand": "https://esm.sh/zustand@4?deps=react@18",
+        "classnames": "https://esm.sh/classnames@2",
+        "@assets/": "/comprehensive_docs/assets/",
+        "@utils/env": "/comprehensive_docs/assets/utils/env/index.js",
+        "@utils/html": "/comprehensive_docs/assets/utils/html/index.js",
+        "@utils/react": "/comprehensive_docs/assets/utils/react/index.js",
+        "@utils/react/island": "/comprehensive_docs/assets/utils/react/island/index.js",
+        "@utils/colorScheme": "/comprehensive_docs/assets/utils/colorScheme/index.js",
+        "@utils/theme": "/comprehensive_docs/assets/utils/theme/index.js",
+        "@utils/async": "/comprehensive_docs/assets/utils/async/index.js",
+        "@utils/http": "/comprehensive_docs/assets/utils/http/index.js",
+        "@utils/markdown": "/comprehensive_docs/assets/utils/markdown/index.js",
+        "@components/generic/Selector": "/comprehensive_docs/assets/components/generic/Selector/index.js",
+        "@components/ThemeSelector": "/comprehensive_docs/assets/components/ThemeSelector/index.js",
+        "@components/ColorSchemeToggle": "/comprehensive_docs/assets/components/ColorSchemeToggle/index.js",
+        "@components/generic/Loader": "/comprehensive_docs/assets/components/generic/Loader/index.js",
+        "@components/generic/LoaderPulse": "/comprehensive_docs/assets/components/generic/LoaderPulse/index.js",
+        "@icons": "/comprehensive_docs/assets/components/generic/icons/index.js",
+        "lodash-es": "https://esm.sh/lodash-es",
+        "marked": "https://esm.sh/marked",
+        "highlight.js": "https://esm.sh/highlight.js",
+        "prismjs": "https://esm.sh/prismjs",
+        "prismjs/components/prism-ruby": "https://esm.sh/prismjs/components/prism-ruby",
+        "prismjs/components/prism-bash": "https://esm.sh/prismjs/components/prism-bash",
+        "@floating-ui/react": "https://esm.sh/@floating-ui/react?deps=react@18",
+        "@components/generic/Markdown": "/comprehensive_docs/assets/components/generic/Markdown/index.js",
+        "@components/CSMarkdown": "/comprehensive_docs/assets/components/CSMarkdown/index.js",
+        "@components/DocAxes": "/comprehensive_docs/assets/components/DocAxes/index.js",
+        "@components/Tabs": "/comprehensive_docs/assets/components/Tabs/index.js",
+        "@utils/classnames": "/comprehensive_docs/assets/utils/classnames/index.js",
+        "@stores": "/comprehensive_docs/assets/stores/index.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  
+
+<header class="cs-top-left-corner-header">
+  <a href="/comprehensive_docs/" class="cs-top-left-corner-header__logo-link">
+    <img src="/comprehensive_docs/public/logo.png" alt="Convenient Service" class="cs-top-left-corner-header__logo">
+  </a>
+</header>
+<header class="cs-top-right-corner-header">
+  <div class="cs-top-right-corner-header__controls">
+    <cs-react-island component="ThemeSelector"><div class="cs-selector cs-theme-selector"><button class="cs-selector__trigger"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle></svg></button></div></cs-react-island>
+    <cs-react-island component="ColorSchemeToggle"><button class="cs-color-scheme-toggle" aria-label="Toggle theme color scheme"><span class="cs-loader-pulse cs-color-scheme-toggle__loader"></span></button></cs-react-island>
+  </div>
+</header>
+
+<div class="cs-doc">
+  <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/tldr.md&quot;}" prerendered-on-build=""><main><h1 id="tl-dr">TL;DR</h1>
+<blockquote>
+<p>I have no time to read tons of docs.
+Just show me an example use case and I'll quickly craft something similar 😎.</p>
+<p>— A lazy and productive developer.</p>
+</blockquote>
+<cs-dita-short-description><p>A complete working example of a Convenient Service usage - from setup to executing a service.</p>
+</cs-dita-short-description><p>Using <code>.result</code> - handle all three statuses explicitly:</p>
+<pre><code class="language-ruby"><span class="token comment"># Any source code in the project.</span>
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">read_file_content</span></span><span class="token punctuation">(</span>path<span class="token punctuation">)</span>
+  result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/examples/services.html#read-file-content" class="cs-code-link">ReadFileContent</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span> path<span class="token punctuation">)</span>
+
+  <span class="token keyword">if</span> result<span class="token punctuation">.</span>success<span class="token operator">?</span>
+    <span class="token comment">##</span>
+    <span class="token comment"># Service tried to read the file content and completed it.</span>
+    <span class="token comment">#</span>
+    result<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token symbol">:content</span><span class="token punctuation">]</span> <span class="token comment"># File content.</span>
+  <span class="token keyword">elsif</span> result<span class="token punctuation">.</span>failure<span class="token operator">?</span>
+    <span class="token comment">##</span>
+    <span class="token comment"># Service tried to read file content, but did NOT complete it due to some expected reason.</span>
+    <span class="token comment">#</span>
+    App<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>warn <span class="token punctuation">{</span> result<span class="token punctuation">.</span>message<span class="token punctuation">.</span>to_s <span class="token punctuation">}</span>
+
+    <span class="token string-literal"><span class="token string">""</span></span> <span class="token comment"># Fallback value or any other reasonable fallback behavior.</span>
+  <span class="token keyword">else</span> <span class="token comment"># result.error?</span>
+    <span class="token comment">##</span>
+    <span class="token comment"># Service NOT even tried to complete reading of file content due to a validation issue or exception.</span>
+    <span class="token comment">#</span>
+    App<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>error <span class="token punctuation">{</span> result<span class="token punctuation">.</span>message<span class="token punctuation">.</span>to_s <span class="token punctuation">}</span>
+
+    <span class="token keyword">raise</span> VerboseException<span class="token punctuation">,</span> result<span class="token punctuation">.</span>message<span class="token punctuation">.</span>to_s <span class="token comment"># Self-explanatory exception or any other reasonable exception handling behavior.</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span></code></pre><p>Using <code>.call</code> - returns <code>data.to_h</code> on success, <code>nil</code> on failure, raises on error:</p>
+<pre><code class="language-ruby"><span class="token comment"># Any source code in the project.</span>
+<span class="token keyword">def</span> <span class="token method-definition"><span class="token function">read_file_content</span></span><span class="token punctuation">(</span>path<span class="token punctuation">)</span>
+  <a href="/comprehensive_docs/docs/examples/services.html#read-file-content" class="cs-code-link">ReadFileContent</a><span class="token punctuation">.</span>call<span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span> path<span class="token punctuation">)</span><span class="token operator">&amp;.</span>fetch<span class="token punctuation">(</span><span class="token symbol">:content</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token string-literal"><span class="token string">""</span></span>
+<span class="token keyword">end</span></code></pre><p>Installation.</p>
+<pre><code class="language-ruby">gem <span class="token string-literal"><span class="token string">"convenient_service"</span></span><span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"1.0.0"</span></span></code></pre><p>Setup.</p>
+<p><cs-react-island component="Tabs" props="{&quot;tabs&quot;:[{&quot;label&quot;:&quot;Standard&quot;,&quot;content&quot;:&quot;```ruby\nrequire \&quot;convenient_service\&quot;\n```&quot;},{&quot;label&quot;:&quot;Rails&quot;,&quot;content&quot;:&quot;```ruby\nrequire \&quot;active_model\&quot; # NOTE: Minimal `active_model` version - `5.2.0`.\n\nrequire \&quot;convenient_service\&quot;\n\nrequire \&quot;convenient_service/extras/standard/config/options/active_model_attribute_assignment\&quot;\nrequire \&quot;convenient_service/extras/standard/config/options/active_model_attributes\&quot;\nrequire \&quot;convenient_service/extras/standard/config/options/active_model_validations\&quot;\n```&quot;},{&quot;label&quot;:&quot;Dry&quot;,&quot;content&quot;:&quot;```ruby\nrequire \&quot;dry-initializer\&quot; # NOTE: Minimal `dry-initializer` version - `3.0.0`.\nrequire \&quot;dry-validation\&quot; # NOTE: Minimal `dry-validation` version - `1.5.0`.\n\nrequire \&quot;convenient_service\&quot;\n\nrequire \&quot;convenient_service/extras/standard/config/options/dry_initializer\&quot;\nrequire \&quot;convenient_service/extras/standard/config/options/dry_validation\&quot;\n```&quot;},{&quot;label&quot;:&quot;Custom&quot;,&quot;content&quot;:&quot;```ruby\nrequire \&quot;active_model\&quot; # NOTE: Minimal `active_model` version - `5.2.0`.\nrequire \&quot;dry-initializer\&quot; # NOTE: Minimal `dry-initializer` version - `3.0.0`.\nrequire \&quot;awesome_print\&quot; # NOTE: Minimal `awesome_print` version - `1.0.0`.\n\nrequire \&quot;convenient_service\&quot;\n\nrequire \&quot;convenient_service/extras/standard/config/options/active_model_validations\&quot;\nrequire \&quot;convenient_service/extras/standard/config/options/dry_initializer\&quot;\nrequire \&quot;convenient_service/extras/standard/config/options/awesome_print_inspect\&quot; if Rails.env.development? || Rails.env.test?\n```&quot;}]}"></cs-react-island></p><div class="cs-tabs"><div class="cs-tabs__bar"><button class="cs-tabs__tab cs-tabs__tab--active">Standard</button><button class="cs-tabs__tab">Rails</button><button class="cs-tabs__tab">Dry</button><button class="cs-tabs__tab">Custom</button></div><div class="cs-tabs__content"><main><pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span></code></pre></main></div></div></main></cs-react-island><p></p>
+<p>Config.</p>
+<p><cs-react-island component="Tabs" props="{&quot;tabs&quot;:[{&quot;label&quot;:&quot;Standard&quot;,&quot;content&quot;:&quot;```ruby\nmodule ApplicationService\n  module Config\n    include ConvenientService::Config\n\n    included do\n      include ConvenientService::Standard::Config\n    end\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Rails&quot;,&quot;content&quot;:&quot;```ruby\nmodule RailsService\n  module Config\n    include ConvenientService::Config\n\n    included do\n      include ConvenientService::Standard::Config\n        .with(\n          :active_model_attribute_assignment,\n          :active_model_attributes,\n          :active_model_validations\n        )\n    end\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Dry&quot;,&quot;content&quot;:&quot;```ruby\nmodule DryService\n  module Config\n    include ConvenientService::Config\n\n    included do\n      include ConvenientService::Standard::Config\n        .with(\n          :dry_initializer,\n          :dry_validation\n        )\n    end\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Custom&quot;,&quot;content&quot;:&quot;```ruby\nmodule CustomService\n  module Config\n    include ConvenientService::Config\n\n    included do\n      include ConvenientService::Standard::Config\n        .with(\n          :dry_initializer,\n          :active_model_validations,\n          awesome_print_inspect: Rails.env.local?\n        )\n        .without(\n          fault_tolerance: Rails.env.test?\n        )\n    end\n  end\nend\n```&quot;}]}"></cs-react-island></p><div class="cs-tabs"><div class="cs-tabs__bar"><button class="cs-tabs__tab cs-tabs__tab--active">Standard</button><button class="cs-tabs__tab">Rails</button><button class="cs-tabs__tab">Dry</button><button class="cs-tabs__tab">Custom</button></div><div class="cs-tabs__content"><main><pre><code class="language-ruby"><span class="token keyword">module</span> <span class="token class-name">ApplicationService</span>
+  <span class="token keyword">module</span> <span class="token class-name">Config</span>
+    <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Config
+
+    included <span class="token keyword">do</span>
+      <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span></code></pre></main></div></div><p></p>
+<p>Regular service example.</p>
+<p><cs-react-island component="Tabs" props="{&quot;tabs&quot;:[{&quot;label&quot;:&quot;Standard&quot;,&quot;content&quot;:&quot;```ruby\nclass AssertFileExists\n  include ApplicationService::Config\n\n  attr_reader :path\n\n  def initialize(path:)\n    @path = path\n  end\n\n  def result\n    return error(\&quot;Path is `nil`\&quot;) if path.nil?\n    return error(\&quot;Path is empty\&quot;) if path.empty?\n\n    return failure(\&quot;File does not exist at path `#{path}`\&quot;) unless File.exist?(path)\n\n    success\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Rails&quot;,&quot;content&quot;:&quot;```ruby\nclass AssertFileExists\n  include RailsService::Config\n\n  attribute :path, :string\n\n  validates :path, presence: true\n\n  def result\n    return failure(\&quot;File does not exist at path `#{path}`\&quot;) unless File.exist?(path)\n\n    success\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Dry&quot;,&quot;content&quot;:&quot;```ruby\nclass AssertFileExists\n  include DryService::Config\n\n  option :path\n\n  contract do\n    schema do\n      required(:path).value(:string)\n    end\n  end\n\n  def result\n    return failure(\&quot;File does not exist at path `#{path}`\&quot;) unless File.exist?(path)\n\n    success\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Custom&quot;,&quot;content&quot;:&quot;```ruby\nclass AssertFileExists\n  include CustomService::Config\n\n  option :path\n\n  validates :path, presence: true\n\n  def result\n    return failure(\&quot;File does not exist at path `#{path}`\&quot;) unless File.exist?(path)\n\n    success\n  end\nend\n```&quot;}]}"></cs-react-island></p><div class="cs-tabs"><div class="cs-tabs__bar"><button class="cs-tabs__tab cs-tabs__tab--active">Standard</button><button class="cs-tabs__tab">Rails</button><button class="cs-tabs__tab">Dry</button><button class="cs-tabs__tab">Custom</button></div><div class="cs-tabs__content"><main><pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name"><a href="/comprehensive_docs/docs/examples/services.html#assert-file-exists" class="cs-code-link">AssertFileExists</a></span>
+  <span class="token keyword">include</span> ApplicationService<span class="token double-colon punctuation">::</span>Config
+
+  attr_reader <span class="token symbol">:path</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span><span class="token punctuation">)</span>
+    <span class="token variable">@path</span> <span class="token operator">=</span> path
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
+    <span class="token keyword">return</span> error<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"Path is `nil`"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> path<span class="token punctuation">.</span><span class="token keyword">nil</span><span class="token operator">?</span>
+    <span class="token keyword">return</span> error<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"Path is empty"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> path<span class="token punctuation">.</span>empty<span class="token operator">?</span>
+
+    <span class="token keyword">return</span> failure<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"File does not exist at path `</span><span class="token interpolation"><span class="token delimiter punctuation">#{</span><span class="token content">path</span><span class="token delimiter punctuation">}</span></span><span class="token string">`"</span></span><span class="token punctuation">)</span> <span class="token keyword">unless</span> <span class="token builtin">File</span><span class="token punctuation">.</span>exist<span class="token operator">?</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span>
+
+    success
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span></code></pre></main></div></div><p></p>
+<p>One more regular service example.</p>
+<p><cs-react-island component="Tabs" props="{&quot;tabs&quot;:[{&quot;label&quot;:&quot;Standard&quot;,&quot;content&quot;:&quot;```ruby\nclass AssertFileNotEmpty\n  include ApplicationService::Config\n\n  attr_reader :path\n\n  def initialize(path:)\n    @path = path\n  end\n\n  def result\n    return error(\&quot;Path is `nil`\&quot;) if path.nil?\n    return error(\&quot;Path is empty\&quot;) if path.empty?\n\n    return failure(\&quot;File is empty at path `#{path}`\&quot;) if File.zero?(path)\n\n    success\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Rails&quot;,&quot;content&quot;:&quot;```ruby\nclass AssertFileNotEmpty\n  include RailsService::Config\n\n  attribute :path, :string\n\n  validates :path, presence: true\n\n  def result\n    return failure(\&quot;File is empty at path `#{path}`\&quot;) if File.zero?(path)\n\n    success\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Dry&quot;,&quot;content&quot;:&quot;```ruby\nclass AssertFileNotEmpty\n  include DryService::Config\n\n  option :path\n\n  contract do\n    schema do\n      required(:path).value(:string)\n    end\n  end\n\n  def result\n    return failure(\&quot;File is empty at path `#{path}`\&quot;) if File.zero?(path)\n\n    success\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Custom&quot;,&quot;content&quot;:&quot;```ruby\nclass AssertFileNotEmpty\n  include CustomService::Config\n\n  option :path\n\n  validates :path, presence: true\n\n  def result\n    return failure(\&quot;File is empty at path `#{path}`\&quot;) if File.zero?(path)\n\n    success\n  end\nend\n```&quot;}]}"></cs-react-island></p><div class="cs-tabs"><div class="cs-tabs__bar"><button class="cs-tabs__tab cs-tabs__tab--active">Standard</button><button class="cs-tabs__tab">Rails</button><button class="cs-tabs__tab">Dry</button><button class="cs-tabs__tab">Custom</button></div><div class="cs-tabs__content"><main><pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name"><a href="/comprehensive_docs/docs/examples/services.html#assert-file-not-empty" class="cs-code-link">AssertFileNotEmpty</a></span>
+  <span class="token keyword">include</span> ApplicationService<span class="token double-colon punctuation">::</span>Config
+
+  attr_reader <span class="token symbol">:path</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span><span class="token punctuation">)</span>
+    <span class="token variable">@path</span> <span class="token operator">=</span> path
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
+    <span class="token keyword">return</span> error<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"Path is `nil`"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> path<span class="token punctuation">.</span><span class="token keyword">nil</span><span class="token operator">?</span>
+    <span class="token keyword">return</span> error<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"Path is empty"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> path<span class="token punctuation">.</span>empty<span class="token operator">?</span>
+
+    <span class="token keyword">return</span> failure<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"File is empty at path `</span><span class="token interpolation"><span class="token delimiter punctuation">#{</span><span class="token content">path</span><span class="token delimiter punctuation">}</span></span><span class="token string">`"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> <span class="token builtin">File</span><span class="token punctuation">.</span>zero<span class="token operator">?</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span>
+
+    success
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span></code></pre></main></div></div><p></p>
+<p>Organizer service example (has steps).</p>
+<p><cs-react-island component="Tabs" props="{&quot;tabs&quot;:[{&quot;label&quot;:&quot;Standard&quot;,&quot;content&quot;:&quot;```ruby\nclass ReadFileContent\n  include ApplicationService::Config\n\n  attr_reader :path\n\n  step :validate_path\n  step AssertFileExists, in: :path\n  step AssertFileNotEmpty, in: :path\n  step :result, in: :path, out: :content\n\n  def initialize(path:)\n    @path = path\n  end\n\n  def result\n    success(content: File.read(path))\n  end\n\n  private\n\n  def validate_path\n    return error(\&quot;Path is `nil`\&quot;) if path.nil?\n    return error(\&quot;Path is empty\&quot;) if path.empty?\n\n    success\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Rails&quot;,&quot;content&quot;:&quot;```ruby\nclass ReadFileContent\n  include RailsService::Config\n\n  attribute :path, :string\n\n  validates :path, presence: true\n\n  step AssertFileExists, in: :path\n  step AssertFileNotEmpty, in: :path\n  step :result, in: :path, out: :content\n\n  def result\n    success(content: File.read(path))\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Dry&quot;,&quot;content&quot;:&quot;```ruby\nclass ReadFileContent\n  include DryService::Config\n\n  option :path\n\n  contract do\n    schema do\n      required(:path).value(:string)\n    end\n  end\n\n  step AssertFileExists, in: :path\n  step AssertFileNotEmpty, in: :path\n  step :result, in: :path, out: :content\n\n  def result\n    success(content: File.read(path))\n  end\nend\n```&quot;},{&quot;label&quot;:&quot;Custom&quot;,&quot;content&quot;:&quot;```ruby\nclass ReadFileContent\n  include CustomService::Config\n\n  option :path\n\n  validates :path, presence: true\n\n  step AssertFileExists, in: :path\n  step AssertFileNotEmpty, in: :path\n  step :result, in: :path, out: :content\n\n  def result\n    success(content: File.read(path))\n  end\nend\n```&quot;}]}"></cs-react-island></p><div class="cs-tabs"><div class="cs-tabs__bar"><button class="cs-tabs__tab cs-tabs__tab--active">Standard</button><button class="cs-tabs__tab">Rails</button><button class="cs-tabs__tab">Dry</button><button class="cs-tabs__tab">Custom</button></div><div class="cs-tabs__content"><main><pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name"><a href="/comprehensive_docs/docs/examples/services.html#read-file-content" class="cs-code-link">ReadFileContent</a></span>
+  <span class="token keyword">include</span> ApplicationService<span class="token double-colon punctuation">::</span>Config
+
+  attr_reader <span class="token symbol">:path</span>
+
+  step <span class="token symbol">:validate_path</span>
+  step <a href="/comprehensive_docs/docs/examples/services.html#assert-file-exists" class="cs-code-link">AssertFileExists</a><span class="token punctuation">,</span> <span class="token symbol">in</span><span class="token operator">:</span> <span class="token symbol">:path</span>
+  step <a href="/comprehensive_docs/docs/examples/services.html#assert-file-not-empty" class="cs-code-link">AssertFileNotEmpty</a><span class="token punctuation">,</span> <span class="token symbol">in</span><span class="token operator">:</span> <span class="token symbol">:path</span>
+  step <span class="token symbol">:result</span><span class="token punctuation">,</span> <span class="token symbol">in</span><span class="token operator">:</span> <span class="token symbol">:path</span><span class="token punctuation">,</span> <span class="token symbol">out</span><span class="token operator">:</span> <span class="token symbol">:content</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span><span class="token punctuation">)</span>
+    <span class="token variable">@path</span> <span class="token operator">=</span> path
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
+    success<span class="token punctuation">(</span><span class="token symbol">content</span><span class="token operator">:</span> <span class="token builtin">File</span><span class="token punctuation">.</span>read<span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">private</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">validate_path</span></span>
+    <span class="token keyword">return</span> error<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"Path is `nil`"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> path<span class="token punctuation">.</span><span class="token keyword">nil</span><span class="token operator">?</span>
+    <span class="token keyword">return</span> error<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"Path is empty"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> path<span class="token punctuation">.</span>empty<span class="token operator">?</span>
+
+    success
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span></code></pre></main></div></div><p></p>
+<pre><code class="language-ruby">result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/examples/services.html#read-file-content" class="cs-code-link">ReadFileContent</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"Gemfile"</span></span><span class="token punctuation">)</span></code></pre><p>See more <a href="https://github.com/marian13/convenient_service/tree/main/lib/convenient_service/examples">examples</a> with <a href="https://github.com/marian13/convenient_service/tree/main/spec/lib/convenient_service/examples">specs</a> in the Convenient Service <a href="https://github.com/marian13/convenient_service">repo</a>.</p>
+
+</div>
+
+
+  <script type="module" src="/comprehensive_docs/assets/global/loaders/afterPageLoadFinished.js"></script>
+
+
+
+</body></html>
