@@ -22,6 +22,7 @@
     @import "/comprehensive_docs/assets/components/generic/Selector/styles.css";
     @import "/comprehensive_docs/assets/components/ThemeSelector/styles.css";
     @import "/comprehensive_docs/assets/components/ColorSchemeToggle/styles.css";
+    @import "/comprehensive_docs/assets/components/TocLink/styles.css";
     @import "/comprehensive_docs/assets/components/generic/Loader/styles.css";
     @import "/comprehensive_docs/assets/components/generic/LoaderPulse/styles.css";
 
@@ -60,6 +61,7 @@
         "@components/generic/Selector": "/comprehensive_docs/assets/components/generic/Selector/index.js",
         "@components/ThemeSelector": "/comprehensive_docs/assets/components/ThemeSelector/index.js",
         "@components/ColorSchemeToggle": "/comprehensive_docs/assets/components/ColorSchemeToggle/index.js",
+        "@components/TocLink": "/comprehensive_docs/assets/components/TocLink/index.js",
         "@components/generic/Loader": "/comprehensive_docs/assets/components/generic/Loader/index.js",
         "@components/generic/LoaderPulse": "/comprehensive_docs/assets/components/generic/LoaderPulse/index.js",
         "@icons": "/comprehensive_docs/assets/components/generic/icons/index.js",
@@ -90,6 +92,7 @@
 </header>
 <header class="cs-top-right-corner-header">
   <div class="cs-top-right-corner-header__controls">
+    <cs-react-island component="TocLink"><a href="/comprehensive_docs/docs/toc.html" class="cs-toc-link" aria-label="Table of contents"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a></cs-react-island>
     <cs-react-island component="ThemeSelector"><div class="cs-selector cs-theme-selector"><button class="cs-selector__trigger"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle></svg></button></div></cs-react-island>
     <cs-react-island component="ColorSchemeToggle"><button class="cs-color-scheme-toggle" aria-label="Toggle theme color scheme"><span class="cs-loader-pulse cs-color-scheme-toggle__loader"></span></button></cs-react-island>
   </div>

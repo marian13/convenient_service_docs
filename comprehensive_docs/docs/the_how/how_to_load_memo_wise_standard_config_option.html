@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en" data-theme="flexoki-inspired" data-color-scheme="light"><head>
+  <title>  Convenient Service
+</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://unpkg.com/prismjs/themes/prism.css" data-syntax-highlight-theme="light" media="">
+<link rel="stylesheet" href="https://unpkg.com/prismjs/themes/prism-okaidia.css" data-syntax-highlight-theme="dark" media="not all">
+
+
+  <script src="/comprehensive_docs/assets/global/loaders/beforePageLoadStarted.js"></script>
+
+  <style>
+    @import "https://unpkg.com/modern-normalize";
+
+    @import "/comprehensive_docs/assets/global/styles/base.css";
+    @import "/comprehensive_docs/assets/global/styles/fonts/inter.css";
+    @import "/comprehensive_docs/assets/global/styles/themes/index.css";
+    @import "/comprehensive_docs/assets/global/styles/islands.css";
+
+    @import "/comprehensive_docs/assets/components/generic/Selector/styles.css";
+    @import "/comprehensive_docs/assets/components/ThemeSelector/styles.css";
+    @import "/comprehensive_docs/assets/components/ColorSchemeToggle/styles.css";
+    @import "/comprehensive_docs/assets/components/TocLink/styles.css";
+    @import "/comprehensive_docs/assets/components/generic/Loader/styles.css";
+    @import "/comprehensive_docs/assets/components/generic/LoaderPulse/styles.css";
+
+    @import "/comprehensive_docs/assets/components/Tabs/styles.css";
+
+    @import "/comprehensive_docs/views/partials/top-left-corner-header/styles.css";
+    @import "/comprehensive_docs/views/partials/top-right-corner-header/styles.css";
+    @import "/comprehensive_docs/views/partials/button/styles.css";
+  </style>
+
+    <style>
+    @import "/comprehensive_docs/views/doc_page.css";
+    @import "/comprehensive_docs/assets/global/styles/prism-js.css";
+    @import "/comprehensive_docs/assets/components/DocAxes/styles.css";
+  </style>
+
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18",
+        "react-dom/client": "https://esm.sh/react-dom@18/client",
+        "htm": "https://esm.sh/htm@3",
+        "zustand": "https://esm.sh/zustand@4?deps=react@18",
+        "classnames": "https://esm.sh/classnames@2",
+        "@assets/": "/comprehensive_docs/assets/",
+        "@utils/env": "/comprehensive_docs/assets/utils/env/index.js",
+        "@utils/html": "/comprehensive_docs/assets/utils/html/index.js",
+        "@utils/react": "/comprehensive_docs/assets/utils/react/index.js",
+        "@utils/react/island": "/comprehensive_docs/assets/utils/react/island/index.js",
+        "@utils/colorScheme": "/comprehensive_docs/assets/utils/colorScheme/index.js",
+        "@utils/theme": "/comprehensive_docs/assets/utils/theme/index.js",
+        "@utils/async": "/comprehensive_docs/assets/utils/async/index.js",
+        "@utils/http": "/comprehensive_docs/assets/utils/http/index.js",
+        "@utils/markdown": "/comprehensive_docs/assets/utils/markdown/index.js",
+        "@components/generic/Selector": "/comprehensive_docs/assets/components/generic/Selector/index.js",
+        "@components/ThemeSelector": "/comprehensive_docs/assets/components/ThemeSelector/index.js",
+        "@components/ColorSchemeToggle": "/comprehensive_docs/assets/components/ColorSchemeToggle/index.js",
+        "@components/TocLink": "/comprehensive_docs/assets/components/TocLink/index.js",
+        "@components/generic/Loader": "/comprehensive_docs/assets/components/generic/Loader/index.js",
+        "@components/generic/LoaderPulse": "/comprehensive_docs/assets/components/generic/LoaderPulse/index.js",
+        "@icons": "/comprehensive_docs/assets/components/generic/icons/index.js",
+        "lodash-es": "https://esm.sh/lodash-es",
+        "marked": "https://esm.sh/marked",
+        "highlight.js": "https://esm.sh/highlight.js",
+        "prismjs": "https://esm.sh/prismjs",
+        "prismjs/components/prism-ruby": "https://esm.sh/prismjs/components/prism-ruby",
+        "prismjs/components/prism-bash": "https://esm.sh/prismjs/components/prism-bash",
+        "@floating-ui/react": "https://esm.sh/@floating-ui/react?deps=react@18",
+        "@components/generic/Markdown": "/comprehensive_docs/assets/components/generic/Markdown/index.js",
+        "@components/CSMarkdown": "/comprehensive_docs/assets/components/CSMarkdown/index.js",
+        "@components/DocAxes": "/comprehensive_docs/assets/components/DocAxes/index.js",
+        "@components/Tabs": "/comprehensive_docs/assets/components/Tabs/index.js",
+        "@utils/classnames": "/comprehensive_docs/assets/utils/classnames/index.js",
+        "@stores": "/comprehensive_docs/assets/stores/index.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  
+
+<header class="cs-top-left-corner-header">
+  <a href="/comprehensive_docs/" class="cs-top-left-corner-header__logo-link">
+    <img src="/comprehensive_docs/public/logo.png" alt="Convenient Service" class="cs-top-left-corner-header__logo">
+  </a>
+</header>
+<header class="cs-top-right-corner-header">
+  <div class="cs-top-right-corner-header__controls">
+    <cs-react-island component="TocLink"><a href="/comprehensive_docs/docs/toc.html" class="cs-toc-link" aria-label="Table of contents"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a></cs-react-island>
+    <cs-react-island component="ThemeSelector"><div class="cs-selector cs-theme-selector"><button class="cs-selector__trigger"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle></svg></button></div></cs-react-island>
+    <cs-react-island component="ColorSchemeToggle"><button class="cs-color-scheme-toggle" aria-label="Toggle theme color scheme"><span class="cs-loader-pulse cs-color-scheme-toggle__loader"></span></button></cs-react-island>
+  </div>
+</header>
+
+<div class="cs-doc">
+  <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_how/how_to_load_memo_wise_standard_config_option.md&quot;}" prerendered-on-build=""><main><h2 id="how-to-load-memo-wise-standard-config-option">How to load memo_wise standard config option?</h2>
+<ul>
+<li><p>Enables <code>memo_wise</code> memoization decorator for service methods via <a href="https://github.com/panorama-ed/memo_wise"><code>memo_wise</code></a>.</p>
+</li>
+<li><p>Require <code>convenient_service</code> and the extra.</p>
+<pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
+<span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service/extras/standard/config/options/memo_wise"</span></span></code></pre></li>
+<li><p>Services can now use <code>memo_wise</code> and <code>.with(:memo_wise)</code>.</p>
+<pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Service</span>
+  <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config<span class="token punctuation">.</span>with<span class="token punctuation">(</span><span class="token symbol">:memo_wise</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
+    success<span class="token punctuation">(</span><span class="token symbol">foo</span><span class="token operator">:</span> foo<span class="token punctuation">,</span> <span class="token symbol">bar</span><span class="token operator">:</span> bar<span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">private</span>
+
+  memo_wise \
+    <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">foo</span></span>
+      <span class="token symbol">:foo</span>
+    <span class="token keyword">end</span>
+
+  memo_wise \
+    <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">bar</span></span>
+      <span class="token symbol">:bar</span>
+    <span class="token keyword">end</span>
+<span class="token keyword">end</span></code></pre></li>
+</ul>
+<h3 id="see-also">See also</h3>
+<ul>
+<li><a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_extra.html">What is Convenient Service extra?</a></li>
+</ul>
+</main></cs-react-island>
+</div>
+
+
+  <script type="module" src="/comprehensive_docs/assets/global/loaders/afterPageLoadFinished.js"></script>
+
+
+
+</body></html>

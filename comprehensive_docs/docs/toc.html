@@ -22,6 +22,7 @@
     @import "/comprehensive_docs/assets/components/generic/Selector/styles.css";
     @import "/comprehensive_docs/assets/components/ThemeSelector/styles.css";
     @import "/comprehensive_docs/assets/components/ColorSchemeToggle/styles.css";
+    @import "/comprehensive_docs/assets/components/TocLink/styles.css";
     @import "/comprehensive_docs/assets/components/generic/Loader/styles.css";
     @import "/comprehensive_docs/assets/components/generic/LoaderPulse/styles.css";
 
@@ -60,6 +61,7 @@
         "@components/generic/Selector": "/comprehensive_docs/assets/components/generic/Selector/index.js",
         "@components/ThemeSelector": "/comprehensive_docs/assets/components/ThemeSelector/index.js",
         "@components/ColorSchemeToggle": "/comprehensive_docs/assets/components/ColorSchemeToggle/index.js",
+        "@components/TocLink": "/comprehensive_docs/assets/components/TocLink/index.js",
         "@components/generic/Loader": "/comprehensive_docs/assets/components/generic/Loader/index.js",
         "@components/generic/LoaderPulse": "/comprehensive_docs/assets/components/generic/LoaderPulse/index.js",
         "@icons": "/comprehensive_docs/assets/components/generic/icons/index.js",
@@ -90,6 +92,7 @@
 </header>
 <header class="cs-top-right-corner-header">
   <div class="cs-top-right-corner-header__controls">
+    <cs-react-island component="TocLink"><a href="/comprehensive_docs/docs/toc.html" class="cs-toc-link" aria-label="Table of contents"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a></cs-react-island>
     <cs-react-island component="ThemeSelector"><div class="cs-selector cs-theme-selector"><button class="cs-selector__trigger"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle></svg></button></div></cs-react-island>
     <cs-react-island component="ColorSchemeToggle"><button class="cs-color-scheme-toggle" aria-label="Toggle theme color scheme"><span class="cs-loader-pulse cs-color-scheme-toggle__loader"></span></button></cs-react-island>
   </div>
@@ -109,17 +112,33 @@
 <br></p>
 <h3 id="3-2-plugins">3.2. Plugins</h3>
 <p>3.2.1. <a href="/comprehensive_docs/docs/the_what/what_is_a_plugin.html">What is a plugin?</a>
-<br>
-3.2.2. <a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_extra.html">What is Convenient Service extra?</a>
 <br></p>
-<h3 id="3-3-miscellaneous">3.3. Miscellaneous</h3>
-<p>3.3.1. <a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_license.html">What is Convenient Service license?</a>
+<h3 id="3-3-extras">3.3. Extras</h3>
+<p>3.3.1. <a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_extra.html">What is Convenient Service extra?</a>
+<br></p>
+<h3 id="3-4-miscellaneous">3.4. Miscellaneous</h3>
+<p>3.4.1. <a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_license.html">What is Convenient Service license?</a>
 <br>
-3.3.2. <a href="/comprehensive_docs/docs/the_what/who_is_convenient_service_author.html">Who is Convenient Service author?</a>
+3.4.2. <a href="/comprehensive_docs/docs/the_what/who_is_convenient_service_author.html">Who is Convenient Service author?</a>
 <br></p>
 <h2 id="4-the-how">4. The How</h2>
 <h3 id="4-1-dependencies">4.1. Dependencies</h3>
 <p>4.1.1. <a href="/comprehensive_docs/docs/the_how/how_to_load_dynamic_dependencies.html">How to load dynamic dependencies?</a>
+<br></p>
+<h3 id="4-2-extras">4.2. Extras</h3>
+<p>4.2.1. <a href="/comprehensive_docs/docs/the_how/how_to_load_cs_alias.html">How to load CS alias?</a>
+<br>
+4.2.2. <a href="/comprehensive_docs/docs/the_how/how_to_load_rspec_extensions.html">How to load RSpec extensions?</a>
+<br>
+4.2.3. <a href="/comprehensive_docs/docs/the_how/how_to_load_active_model_validations_standard_config_option.html">How to load active_model_validations standard config option?</a>
+<br>
+4.2.4. <a href="/comprehensive_docs/docs/the_how/how_to_load_amazing_print_inspect_standard_config_option.html">How to load amazing_print_inspect standard config option?</a>
+<br>
+4.2.5. <a href="/comprehensive_docs/docs/the_how/how_to_load_awesome_print_inspect_standard_config_option.html">How to load awesome_print_inspect standard config option?</a>
+<br>
+4.2.6. <a href="/comprehensive_docs/docs/the_how/how_to_load_dry_initializer_standard_config_option.html">How to load dry_initializer standard config option?</a>
+<br>
+4.2.7. <a href="/comprehensive_docs/docs/the_how/how_to_load_memo_wise_standard_config_option.html">How to load memo_wise standard config option?</a>
 <br></p>
 <h2 id="5-the-why">5. The Why</h2>
 </main></cs-react-island>
