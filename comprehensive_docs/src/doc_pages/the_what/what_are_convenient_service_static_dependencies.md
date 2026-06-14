@@ -5,16 +5,16 @@ tags:
 sources:
   - https://github.com/marian13/convenient_service/blob/main/lib/convenient_service/dependencies/built_in.rb
   - https://github.com/marian13/convenient_service/blob/main/convenient_service.gemspec
-  - https://github.com/marian13/convenient_service/wiki/Docs:-Dependencies
+  - https://github.com/marian13/convenient_service/blob/main/lib/convenient_service/dependencies/extractions.rb
 ---
 
-## What is Convenient Service static dependencies?
+## What are Convenient Service static dependencies?
 
 - Static dependencies are always loaded when `require "convenient_service"` is called.
 
 - Static dependencies are grouped as built-in and extractions.
 
-- The current state of static dependencies can be found at [`built_in.rb`](https://github.com/marian13/convenient_service/blob/main/lib/convenient_service/dependencies/built_in.rb) and [`convenient_service.gemspec`](https://github.com/marian13/convenient_service/blob/main/convenient_service.gemspec).
+- The current state of static dependencies can be found at [`built_in.rb`](https://github.com/marian13/convenient_service/blob/main/lib/convenient_service/dependencies/built_in.rb), [`extractions.rb`](https://github.com/marian13/convenient_service/blob/main/lib/convenient_service/dependencies/extractions.rb), and [`convenient_service.gemspec`](https://github.com/marian13/convenient_service/blob/main/convenient_service.gemspec).
 
 ### Built-in (Ruby standard library)
 
@@ -35,3 +35,7 @@ sources:
 - [`ActiveSupport::BacktraceCleaner`](https://github.com/rails/rails/blob/v7.1.2/activesupport/lib/active_support/backtrace_cleaner.rb) - extracted from ActiveSupport v7.1.2.
 
 - [`ruby-middleware`](https://github.com/Ibsciss/ruby-middleware/tree/v0.4.2) - extracted from ruby-middleware v0.4.2.
+
+### See also
+
+- [What are Convenient Service dynamic dependencies?](/docs/the_what/what_are_convenient_service_dynamic_dependencies.html)

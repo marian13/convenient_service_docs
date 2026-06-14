@@ -13,6 +13,36 @@
         "title": "The What",
         "items": [
           {
+            "title": "Dependencies",
+            "items": [
+              {
+                "title": "What are Convenient Service dependencies?",
+                "link": "/docs/the_what/what_are_convenient_service_dependencies.html"
+              },
+              {
+                "title": "What are Convenient Service static dependencies?",
+                "link": "/docs/the_what/what_are_convenient_service_static_dependencies.html"
+              },
+              {
+                "title": "What are Convenient Service dynamic dependencies?",
+                "link": "/docs/the_what/what_are_convenient_service_dynamic_dependencies.html"
+              }
+            ]
+          },
+          {
+            "title": "Plugins",
+            "items": [
+              {
+                "title": "What is a plugin?",
+                "link": "/docs/the_what/what_is_a_plugin.html"
+              },
+              {
+                "title": "What is Convenient Service extra?",
+                "link": "/docs/the_what/what_is_convenient_service_extra.html"
+              }
+            ]
+          },
+          {
             "title": "Miscellaneous",
             "items": [
               {
@@ -22,18 +52,6 @@
               {
                 "title": "Who is Convenient Service author?",
                 "link": "/docs/the_what/who_is_convenient_service_author.html"
-              },
-              {
-                "title": "What is Convenient Service dependencies?",
-                "link": "/docs/the_what/what_is_convenient_service_dependencies.html"
-              },
-              {
-                "title": "What is Convenient Service static dependencies?",
-                "link": "/docs/the_what/what_is_convenient_service_static_dependencies.html"
-              },
-              {
-                "title": "What is Convenient Service dynamic dependencies?",
-                "link": "/docs/the_what/what_is_convenient_service_dynamic_dependencies.html"
               }
             ]
           }
