@@ -22,6 +22,18 @@
               {
                 "title": "Who is Convenient Service author?",
                 "link": "/docs/the_what/who_is_convenient_service_author.html"
+              },
+              {
+                "title": "What is Convenient Service dependencies?",
+                "link": "/docs/the_what/what_is_convenient_service_dependencies.html"
+              },
+              {
+                "title": "What is Convenient Service static dependencies?",
+                "link": "/docs/the_what/what_is_convenient_service_static_dependencies.html"
+              },
+              {
+                "title": "What is Convenient Service dynamic dependencies?",
+                "link": "/docs/the_what/what_is_convenient_service_dynamic_dependencies.html"
               }
             ]
           }
