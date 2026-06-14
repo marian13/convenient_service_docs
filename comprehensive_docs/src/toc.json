@@ -35,7 +35,12 @@
               {
                 "title": "What is a plugin?",
                 "link": "/docs/the_what/what_is_a_plugin.html"
-              },
+              }
+            ]
+          },
+          {
+            "title": "Extras",
+            "items": [
               {
                 "title": "What is Convenient Service extra?",
                 "link": "/docs/the_what/what_is_convenient_service_extra.html"
@@ -66,6 +71,39 @@
               {
                 "title": "How to load dynamic dependencies?",
                 "link": "/docs/the_how/how_to_load_dynamic_dependencies.html"
+              }
+            ]
+          },
+          {
+            "title": "Extras",
+            "items": [
+              {
+                "title": "How to load CS alias?",
+                "link": "/docs/the_how/how_to_load_cs_alias.html"
+              },
+              {
+                "title": "How to load RSpec extensions?",
+                "link": "/docs/the_how/how_to_load_rspec_extensions.html"
+              },
+              {
+                "title": "How to load active_model_validations standard config option?",
+                "link": "/docs/the_how/how_to_load_active_model_validations_standard_config_option.html"
+              },
+              {
+                "title": "How to load amazing_print_inspect standard config option?",
+                "link": "/docs/the_how/how_to_load_amazing_print_inspect_standard_config_option.html"
+              },
+              {
+                "title": "How to load awesome_print_inspect standard config option?",
+                "link": "/docs/the_how/how_to_load_awesome_print_inspect_standard_config_option.html"
+              },
+              {
+                "title": "How to load dry_initializer standard config option?",
+                "link": "/docs/the_how/how_to_load_dry_initializer_standard_config_option.html"
+              },
+              {
+                "title": "How to load memo_wise standard config option?",
+                "link": "/docs/the_how/how_to_load_memo_wise_standard_config_option.html"
               }
             ]
           }
