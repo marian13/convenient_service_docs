@@ -58,7 +58,18 @@
         ]
       },
       {
-        "title": "The How"
+        "title": "The How",
+        "items": [
+          {
+            "title": "Dependencies",
+            "items": [
+              {
+                "title": "How to load dynamic dependencies?",
+                "link": "/docs/the_how/how_to_load_dynamic_dependencies.html"
+              }
+            ]
+          }
+        ]
       },
       {
         "title": "The Why"
