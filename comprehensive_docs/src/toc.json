@@ -39,11 +39,24 @@
             ]
           },
           {
+            "title": "Configs",
+            "items": [
+              {
+                "title": "What is config options?",
+                "link": "/docs/the_what/what_is_config_options.html"
+              }
+            ]
+          },
+          {
             "title": "Extras",
             "items": [
               {
                 "title": "What is Convenient Service extra?",
                 "link": "/docs/the_what/what_is_convenient_service_extra.html"
+              },
+              {
+                "title": "What extras are available?",
+                "link": "/docs/the_what/what_extras_are_available.html"
               }
             ]
           },

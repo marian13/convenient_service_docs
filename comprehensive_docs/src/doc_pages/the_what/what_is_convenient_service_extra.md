@@ -7,22 +7,37 @@ sources:
 
 ## What is Convenient Service extra?
 
-- An extra is a way to load common configurations as a simple `require`.
+- An extra is a way to replace multiple often repeated plugin-specific `require` calls with a single one.
+
+  For example, without an extra:
+
+  ```ruby
+  require "awesome_print"
+  require "convenient_service"
+  
+  require "convenient_service/service/plugins/has_awesome_print_inspect"
+  require "convenient_service/service/plugins/has_j_send_result/entities/result/plugins/has_awesome_print_inspect"
+  require "convenient_service/service/plugins/has_j_send_result/entities/result/plugins/has_j_send_status_and_attributes/entities/data/plugins/has_awesome_print_inspect"
+  require "convenient_service/service/plugins/has_j_send_result/entities/result/plugins/has_j_send_status_and_attributes/entities/message/plugins/has_awesome_print_inspect"
+  require "convenient_service/service/plugins/has_j_send_result/entities/result/plugins/has_j_send_status_and_attributes/entities/status/plugins/has_awesome_print_inspect"
+  require "convenient_service/service/plugins/has_j_send_result/entities/result/plugins/has_j_send_status_and_attributes/entities/code/plugins/has_awesome_print_inspect"
+  require "convenient_service/service/plugins/can_have_steps/entities/step/plugins/has_awesome_print_inspect"
+  require "convenient_service/feature/plugins/has_awesome_print_inspect"
+  ```
+
+  With an extra:
+
+  ```ruby
+  require "awesome_print"
+  require "convenient_service"
+
+  require "convenient_service/extras/standard/config/options/awesome_print_inspect"
+  ```
 
 - Extras are expected to be loaded from project entry points such as Rails initializers or `spec_helper.rb`.
 
 ### See also
 
-- [How to load CS alias?](/docs/the_how/how_to_load_cs_alias.html)
+- [What are Convenient Service dynamic dependencies?](/docs/the_what/what_are_convenient_service_dynamic_dependencies.html)
 
-- [How to load RSpec extensions?](/docs/the_how/how_to_load_rspec_extensions.html)
-
-- [How to load active_model_validations standard config option?](/docs/the_how/how_to_load_active_model_validations_standard_config_option.html)
-
-- [How to load amazing_print_inspect standard config option?](/docs/the_how/how_to_load_amazing_print_inspect_standard_config_option.html)
-
-- [How to load awesome_print_inspect standard config option?](/docs/the_how/how_to_load_awesome_print_inspect_standard_config_option.html)
-
-- [How to load dry_initializer standard config option?](/docs/the_how/how_to_load_dry_initializer_standard_config_option.html)
-
-- [How to load memo_wise standard config option?](/docs/the_how/how_to_load_memo_wise_standard_config_option.html)
+- [What extras are available?](/docs/the_what/what_extras_are_available.html)

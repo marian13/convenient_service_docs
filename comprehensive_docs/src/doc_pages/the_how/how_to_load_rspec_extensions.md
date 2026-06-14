@@ -8,16 +8,16 @@ sources:
 
 ## How to load RSpec extensions?
 
-- Loads RSpec matchers (`be_success`, `be_failure`, `be_error`) and helpers (`stub_service`) for testing Convenient Service services.
+- RSpec extensions extra loads RSpec matchers (`be_success`, `be_failure`, `be_error`) and helpers (`stub_service`) for testing Convenient Service services.
 
-- Require `convenient_service` and the extra from `spec_helper.rb`.
+- In order to load it, require `convenient_service` and the extra from `spec_helper.rb`.
 
   ```ruby
   require "convenient_service"
   require "convenient_service/extras/rspec"
   ```
 
-- Matchers and helpers are now available in spec files.
+- Once loaded, matchers and helpers are available in spec files.
 
   ```ruby
   # In some spec file like `service_spec.rb`
