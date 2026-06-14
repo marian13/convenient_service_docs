@@ -32,4 +32,9 @@
 
 ## 4. The How
 
+### 4.1. Dependencies
+
+4.1.1. [How to load dynamic dependencies?](/docs/the_how/how_to_load_dynamic_dependencies.html)
+<br>
+
 ## 5. The Why

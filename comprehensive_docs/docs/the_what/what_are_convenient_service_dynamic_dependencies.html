@@ -98,14 +98,21 @@
 <div class="cs-doc">
   <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_what/what_are_convenient_service_dynamic_dependencies.md&quot;}" prerendered-on-build=""><main><h2 id="what-are-convenient-service-dynamic-dependencies">What are Convenient Service dynamic dependencies?</h2>
 <ul>
-<li><p>Dynamic dependencies are loaded on demand, when a plugin that depends on them is required.</p>
+<li><p>Dynamic dependencies are loaded on demand.</p>
 </li>
-<li><p>It is a decision left to the end-user whether to require them or not.</p>
+<li><p><a href="https://github.com/dry-rb/dry-initializer"><code>dry-initializer</code></a>, <a href="https://github.com/dry-rb/dry-validation"><code>dry-validation</code></a>, <a href="https://github.com/rails/rails/tree/main/activemodel"><code>active_model</code></a>, <a href="https://github.com/rails/rails/tree/main/activerecord"><code>active_record</code></a>, <a href="https://github.com/panorama-ed/memo_wise"><code>memo_wise</code></a>, <a href="https://github.com/awesome-print/awesome_print"><code>awesome_print</code></a>, <a href="https://github.com/amazing-print/amazing_print"><code>amazing_print</code></a> are examples of dynamic dependencies.</p>
+</li>
+<li><p>They serve as backends for optional plugins - each dynamic dependency powers a specific category such as validation, memoization, constructor assignment, pretty printing, and more.</p>
+</li>
+<li><p>It is a decision left to the end-user whether to require them or not - they can load them manually, or via dependencies queries or extras.</p>
 </li>
 </ul>
 <h3 id="see-also">See also</h3>
 <ul>
-<li><a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_static_dependencies.html">What are Convenient Service static dependencies?</a></li>
+<li><p><a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_static_dependencies.html">What are Convenient Service static dependencies?</a></p>
+</li>
+<li><p><a href="/comprehensive_docs/docs/the_how/how_to_load_dynamic_dependencies.html">How to load dynamic dependencies?</a></p>
+</li>
 </ul>
 </main></cs-react-island>
 </div>

@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="en" data-theme="flexoki-inspired" data-color-scheme="light"><head>
+  <title>  Convenient Service
+</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://unpkg.com/prismjs/themes/prism.css" data-syntax-highlight-theme="light" media="">
+<link rel="stylesheet" href="https://unpkg.com/prismjs/themes/prism-okaidia.css" data-syntax-highlight-theme="dark" media="not all">
+
+
+  <script src="/comprehensive_docs/assets/global/loaders/beforePageLoadStarted.js"></script>
+
+  <style>
+    @import "https://unpkg.com/modern-normalize";
+
+    @import "/comprehensive_docs/assets/global/styles/base.css";
+    @import "/comprehensive_docs/assets/global/styles/fonts/inter.css";
+    @import "/comprehensive_docs/assets/global/styles/themes/index.css";
+    @import "/comprehensive_docs/assets/global/styles/islands.css";
+
+    @import "/comprehensive_docs/assets/components/generic/Selector/styles.css";
+    @import "/comprehensive_docs/assets/components/ThemeSelector/styles.css";
+    @import "/comprehensive_docs/assets/components/ColorSchemeToggle/styles.css";
+    @import "/comprehensive_docs/assets/components/generic/Loader/styles.css";
+    @import "/comprehensive_docs/assets/components/generic/LoaderPulse/styles.css";
+
+    @import "/comprehensive_docs/assets/components/Tabs/styles.css";
+
+    @import "/comprehensive_docs/views/partials/top-left-corner-header/styles.css";
+    @import "/comprehensive_docs/views/partials/top-right-corner-header/styles.css";
+    @import "/comprehensive_docs/views/partials/button/styles.css";
+  </style>
+
+    <style>
+    @import "/comprehensive_docs/views/doc_page.css";
+    @import "/comprehensive_docs/assets/global/styles/prism-js.css";
+    @import "/comprehensive_docs/assets/components/DocAxes/styles.css";
+  </style>
+
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18",
+        "react-dom/client": "https://esm.sh/react-dom@18/client",
+        "htm": "https://esm.sh/htm@3",
+        "zustand": "https://esm.sh/zustand@4?deps=react@18",
+        "classnames": "https://esm.sh/classnames@2",
+        "@assets/": "/comprehensive_docs/assets/",
+        "@utils/env": "/comprehensive_docs/assets/utils/env/index.js",
+        "@utils/html": "/comprehensive_docs/assets/utils/html/index.js",
+        "@utils/react": "/comprehensive_docs/assets/utils/react/index.js",
+        "@utils/react/island": "/comprehensive_docs/assets/utils/react/island/index.js",
+        "@utils/colorScheme": "/comprehensive_docs/assets/utils/colorScheme/index.js",
+        "@utils/theme": "/comprehensive_docs/assets/utils/theme/index.js",
+        "@utils/async": "/comprehensive_docs/assets/utils/async/index.js",
+        "@utils/http": "/comprehensive_docs/assets/utils/http/index.js",
+        "@utils/markdown": "/comprehensive_docs/assets/utils/markdown/index.js",
+        "@components/generic/Selector": "/comprehensive_docs/assets/components/generic/Selector/index.js",
+        "@components/ThemeSelector": "/comprehensive_docs/assets/components/ThemeSelector/index.js",
+        "@components/ColorSchemeToggle": "/comprehensive_docs/assets/components/ColorSchemeToggle/index.js",
+        "@components/generic/Loader": "/comprehensive_docs/assets/components/generic/Loader/index.js",
+        "@components/generic/LoaderPulse": "/comprehensive_docs/assets/components/generic/LoaderPulse/index.js",
+        "@icons": "/comprehensive_docs/assets/components/generic/icons/index.js",
+        "lodash-es": "https://esm.sh/lodash-es",
+        "marked": "https://esm.sh/marked",
+        "highlight.js": "https://esm.sh/highlight.js",
+        "prismjs": "https://esm.sh/prismjs",
+        "prismjs/components/prism-ruby": "https://esm.sh/prismjs/components/prism-ruby",
+        "prismjs/components/prism-bash": "https://esm.sh/prismjs/components/prism-bash",
+        "@floating-ui/react": "https://esm.sh/@floating-ui/react?deps=react@18",
+        "@components/generic/Markdown": "/comprehensive_docs/assets/components/generic/Markdown/index.js",
+        "@components/CSMarkdown": "/comprehensive_docs/assets/components/CSMarkdown/index.js",
+        "@components/DocAxes": "/comprehensive_docs/assets/components/DocAxes/index.js",
+        "@components/Tabs": "/comprehensive_docs/assets/components/Tabs/index.js",
+        "@utils/classnames": "/comprehensive_docs/assets/utils/classnames/index.js",
+        "@stores": "/comprehensive_docs/assets/stores/index.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  
+
+<header class="cs-top-left-corner-header">
+  <a href="/comprehensive_docs/" class="cs-top-left-corner-header__logo-link">
+    <img src="/comprehensive_docs/public/logo.png" alt="Convenient Service" class="cs-top-left-corner-header__logo">
+  </a>
+</header>
+<header class="cs-top-right-corner-header">
+  <div class="cs-top-right-corner-header__controls">
+    <cs-react-island component="ThemeSelector"><div class="cs-selector cs-theme-selector"><button class="cs-selector__trigger"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle></svg></button></div></cs-react-island>
+    <cs-react-island component="ColorSchemeToggle"><button class="cs-color-scheme-toggle" aria-label="Toggle theme color scheme"><span class="cs-loader-pulse cs-color-scheme-toggle__loader"></span></button></cs-react-island>
+  </div>
+</header>
+
+<div class="cs-doc">
+  <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_how/how_to_load_dynamic_dependencies.md&quot;}" prerendered-on-build=""><main><h2 id="how-to-load-dynamic-dependencies">How to load dynamic dependencies?</h2>
+<ul>
+<li><p>There are multiple ways to load a dynamic dependency - lower and higher interfaces exist to support different levels of customization.</p>
+</li>
+<li><p>Less customization needed, use a higher level; more customization needed, use a lower level.</p>
+</li>
+<li><p><code>dry-initializer</code> is used as an example below.</p>
+</li>
+</ul>
+<h3 id="lowest-level">Lowest level</h3>
+<ul>
+<li><p>Call the plugin-level dependency query directly.</p>
+<pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"dry-initializer"</span></span>
+<span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
+
+ConvenientService<span class="token double-colon punctuation">::</span>Dependencies<span class="token punctuation">.</span>require_assigns_attributes_in_constructor_using_dry_initializer_plugin</code></pre></li>
+<li><p>Config must include the plugin explicitly via <code>concerns</code> and/or middlewares (this example has no middlewares).</p>
+<pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name"><a href="/comprehensive_docs/docs/examples/services.html#assert-file-exists" class="cs-code-link">AssertFileExists</a></span>
+  <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
+
+  concerns <span class="token keyword">do</span>
+    use ConvenientService<span class="token double-colon punctuation">::</span>Plugins<span class="token double-colon punctuation">::</span>Common<span class="token double-colon punctuation">::</span>AssignsAttributesInConstructor<span class="token double-colon punctuation">::</span>UsingDryInitializer<span class="token double-colon punctuation">::</span>Concern
+  <span class="token keyword">end</span>
+
+  option <span class="token symbol">:path</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
+    <span class="token keyword">return</span> failure<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"File does not exist at path `</span><span class="token interpolation"><span class="token delimiter punctuation">#{</span><span class="token content">path</span><span class="token delimiter punctuation">}</span></span><span class="token string">`"</span></span><span class="token punctuation">)</span> <span class="token keyword">unless</span> <span class="token builtin">File</span><span class="token punctuation">.</span>exist<span class="token operator">?</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span>
+
+    success
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span></code></pre></li>
+</ul>
+<h3 id="higher-level">Higher level</h3>
+<ul>
+<li><p>Call the config option dependency query directly after requiring <code>convenient_service</code>.</p>
+<pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"dry-initializer"</span></span>
+<span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
+
+ConvenientService<span class="token double-colon punctuation">::</span>Dependencies<span class="token punctuation">.</span>require_dry_initializer_standard_config_option</code></pre></li>
+<li><p>Config uses <code>.with(:dry_initializer)</code>.</p>
+<pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name"><a href="/comprehensive_docs/docs/examples/services.html#assert-file-exists" class="cs-code-link">AssertFileExists</a></span>
+  <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config<span class="token punctuation">.</span>with<span class="token punctuation">(</span><span class="token symbol">:dry_initializer</span><span class="token punctuation">)</span>
+
+  option <span class="token symbol">:path</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
+    <span class="token keyword">return</span> failure<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"File does not exist at path `</span><span class="token interpolation"><span class="token delimiter punctuation">#{</span><span class="token content">path</span><span class="token delimiter punctuation">}</span></span><span class="token string">`"</span></span><span class="token punctuation">)</span> <span class="token keyword">unless</span> <span class="token builtin">File</span><span class="token punctuation">.</span>exist<span class="token operator">?</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span>
+
+    success
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span></code></pre></li>
+</ul>
+<h3 id="highest-level">Highest level</h3>
+<ul>
+<li><p>Use the extra - it handles the full require chain internally.</p>
+<pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"dry-initializer"</span></span>
+<span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
+<span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service/extras/standard/config/options/dry_initializer"</span></span></code></pre></li>
+<li><p>Config uses <code>.with(:dry_initializer)</code> - same service code as Higher level.</p>
+</li>
+<li><p>In all three levels above, <code>require "dry-initializer"</code> can be skipped since any CS helpers load it internally, but explicit loading is still good practice.</p>
+</li>
+</ul>
+<h3 id="see-also">See also</h3>
+<ul>
+<li><a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_dynamic_dependencies.html">What are Convenient Service dynamic dependencies?</a></li>
+</ul>
+</main></cs-react-island>
+</div>
+
+
+  <script type="module" src="/comprehensive_docs/assets/global/loaders/afterPageLoadFinished.js"></script>
+
+
+
+</body></html>
