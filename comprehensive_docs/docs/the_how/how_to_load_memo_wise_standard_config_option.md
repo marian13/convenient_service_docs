@@ -1,16 +1,16 @@
 
 ## How to load memo_wise standard config option?
 
-- Enables `memo_wise` memoization decorator for service methods via [`memo_wise`](https://github.com/panorama-ed/memo_wise).
+- `memo_wise` standard config option enables `memo_wise` memoization decorator for service methods via [`memo_wise`](https://github.com/panorama-ed/memo_wise).
 
-- Require `convenient_service` and the extra.
+- In order to load it, require `convenient_service` and the extra.
 
   ```ruby
   require "convenient_service"
   require "convenient_service/extras/standard/config/options/memo_wise"
   ```
 
-- Services can now use `memo_wise` and `.with(:memo_wise)`.
+- When config with `.with(:memo_wise)` is used, services can utilize `memo_wise`.
 
   ```ruby
   class Service

@@ -1,16 +1,16 @@
 
 ## How to load amazing_print_inspect standard config option?
 
-- Enables colored `inspect` output for services and results via [`amazing_print`](https://github.com/amazing-print/amazing_print).
+- `amazing_print_inspect` standard config option enables colored `inspect` output for CS entities via [`amazing_print`](https://github.com/amazing-print/amazing_print).
 
-- Require `convenient_service` and the extra.
+- In order to load it, require `convenient_service` and the extra.
 
   ```ruby
   require "convenient_service"
   require "convenient_service/extras/standard/config/options/amazing_print_inspect"
   ```
 
-- Services can now use `.with(:amazing_print_inspect)` and `ap` prints colored output.
+- When config with `.with(:amazing_print_inspect)` is used, `ap` prints colored output.
 
   ```ruby
   class Service

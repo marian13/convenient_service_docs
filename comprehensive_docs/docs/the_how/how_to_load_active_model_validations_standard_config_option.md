@@ -1,16 +1,16 @@
 
 ## How to load active_model_validations standard config option?
 
-- Enables `validates` DSL for service result params validation via [`active_model`](https://github.com/rails/rails/tree/main/activemodel).
+- `active_model_validations` standard config option enables `validates` DSL for service result params validation via [`active_model`](https://github.com/rails/rails/tree/main/activemodel).
 
-- Require `convenient_service` and the extra.
+- In order to load it, require `convenient_service` and the extra.
 
   ```ruby
   require "convenient_service"
   require "convenient_service/extras/standard/config/options/active_model_validations"
   ```
 
-- Services can now use `validates` and `.with(:active_model_validations)`.
+- When config with `.with(:active_model_validations)` is used, services can utilize `validates`.
 
   ```ruby
   class Service

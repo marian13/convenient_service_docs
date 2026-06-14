@@ -101,12 +101,12 @@
 <div class="cs-doc">
   <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_how/how_to_load_cs_alias.md&quot;}" prerendered-on-build=""><main><h2 id="how-to-load-cs-alias">How to load CS alias?</h2>
 <ul>
-<li><p>Makes <code>CS</code> available as a shorthand for <code>ConvenientService</code>.</p>
+<li><p>CS alias extra makes <code>CS</code> available as a shorthand for <code>ConvenientService</code>.</p>
 </li>
-<li><p>Require <code>convenient_service</code> and the extra.</p>
+<li><p>In order to load it, require <code>convenient_service</code> and the extra.</p>
 <pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
 <span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service/extras/alias"</span></span></code></pre></li>
-<li><p><code>CS</code> can now be used in place of <code>ConvenientService</code>.</p>
+<li><p>Once loaded, <code>CS</code> can be used in place of <code>ConvenientService</code>.</p>
 <pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Service</span>
   <span class="token keyword">include</span> <span class="token constant">CS</span><span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
 

@@ -21,16 +21,23 @@
 3.2.1. [What is a plugin?](/docs/the_what/what_is_a_plugin.html)
 <br>
 
-### 3.3. Extras
+### 3.3. Configs
 
-3.3.1. [What is Convenient Service extra?](/docs/the_what/what_is_convenient_service_extra.html)
+3.3.1. [What is config options?](/docs/the_what/what_is_config_options.html)
 <br>
 
-### 3.4. Miscellaneous
+### 3.4. Extras
 
-3.4.1. [What is Convenient Service license?](/docs/the_what/what_is_convenient_service_license.html)
+3.4.1. [What is Convenient Service extra?](/docs/the_what/what_is_convenient_service_extra.html)
 <br>
-3.4.2. [Who is Convenient Service author?](/docs/the_what/who_is_convenient_service_author.html)
+3.4.2. [What extras are available?](/docs/the_what/what_extras_are_available.html)
+<br>
+
+### 3.5. Miscellaneous
+
+3.5.1. [What is Convenient Service license?](/docs/the_what/what_is_convenient_service_license.html)
+<br>
+3.5.2. [Who is Convenient Service author?](/docs/the_what/who_is_convenient_service_author.html)
 <br>
 
 ## 4. The How

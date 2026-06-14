@@ -1,16 +1,16 @@
 
 ## How to load dry_initializer standard config option?
 
-- Enables `option` DSL for service constructor via [`dry-initializer`](https://github.com/dry-rb/dry-initializer).
+- `dry_initializer` standard config option enables `option` DSL for service constructor via [`dry-initializer`](https://github.com/dry-rb/dry-initializer).
 
-- Require `convenient_service` and the extra.
+- In order to load it, require `convenient_service` and the extra.
 
   ```ruby
   require "convenient_service"
   require "convenient_service/extras/standard/config/options/dry_initializer"
   ```
 
-- Services can now use `option` and `.with(:dry_initializer)`.
+- When config with `.with(:dry_initializer)` is used, services can utilize `option`.
 
   ```ruby
   class Service

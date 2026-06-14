@@ -101,12 +101,12 @@
 <div class="cs-doc">
   <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_how/how_to_load_rspec_extensions.md&quot;}" prerendered-on-build=""><main><h2 id="how-to-load-r-spec-extensions">How to load RSpec extensions?</h2>
 <ul>
-<li><p>Loads RSpec matchers (<code>be_success</code>, <code>be_failure</code>, <code>be_error</code>) and helpers (<code>stub_service</code>) for testing Convenient Service services.</p>
+<li><p>RSpec extensions extra loads RSpec matchers (<code>be_success</code>, <code>be_failure</code>, <code>be_error</code>) and helpers (<code>stub_service</code>) for testing Convenient Service services.</p>
 </li>
-<li><p>Require <code>convenient_service</code> and the extra from <code>spec_helper.rb</code>.</p>
+<li><p>In order to load it, require <code>convenient_service</code> and the extra from <code>spec_helper.rb</code>.</p>
 <pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
 <span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service/extras/rspec"</span></span></code></pre></li>
-<li><p>Matchers and helpers are now available in spec files.</p>
+<li><p>Once loaded, matchers and helpers are available in spec files.</p>
 <pre><code class="language-ruby"><span class="token comment"># In some spec file like `service_spec.rb`</span>
 RSpec<span class="token punctuation">.</span>describe Service <span class="token keyword">do</span>
   <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>RSpec<span class="token double-colon punctuation">::</span>Matchers<span class="token double-colon punctuation">::</span>Results

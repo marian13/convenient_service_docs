@@ -101,12 +101,12 @@
 <div class="cs-doc">
   <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_how/how_to_load_memo_wise_standard_config_option.md&quot;}" prerendered-on-build=""><main><h2 id="how-to-load-memo-wise-standard-config-option">How to load memo_wise standard config option?</h2>
 <ul>
-<li><p>Enables <code>memo_wise</code> memoization decorator for service methods via <a href="https://github.com/panorama-ed/memo_wise"><code>memo_wise</code></a>.</p>
+<li><p><code>memo_wise</code> standard config option enables <code>memo_wise</code> memoization decorator for service methods via <a href="https://github.com/panorama-ed/memo_wise"><code>memo_wise</code></a>.</p>
 </li>
-<li><p>Require <code>convenient_service</code> and the extra.</p>
+<li><p>In order to load it, require <code>convenient_service</code> and the extra.</p>
 <pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
 <span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service/extras/standard/config/options/memo_wise"</span></span></code></pre></li>
-<li><p>Services can now use <code>memo_wise</code> and <code>.with(:memo_wise)</code>.</p>
+<li><p>When config with <code>.with(:memo_wise)</code> is used, services can utilize <code>memo_wise</code>.</p>
 <pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Service</span>
   <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config<span class="token punctuation">.</span>with<span class="token punctuation">(</span><span class="token symbol">:memo_wise</span><span class="token punctuation">)</span>
 

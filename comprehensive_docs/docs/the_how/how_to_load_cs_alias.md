@@ -1,16 +1,16 @@
 
 ## How to load CS alias?
 
-- Makes `CS` available as a shorthand for `ConvenientService`.
+- CS alias extra makes `CS` available as a shorthand for `ConvenientService`.
 
-- Require `convenient_service` and the extra.
+- In order to load it, require `convenient_service` and the extra.
 
   ```ruby
   require "convenient_service"
   require "convenient_service/extras/alias"
   ```
 
-- `CS` can now be used in place of `ConvenientService`.
+- Once loaded, `CS` can be used in place of `ConvenientService`.
 
   ```ruby
   class Service

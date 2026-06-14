@@ -101,12 +101,12 @@
 <div class="cs-doc">
   <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_how/how_to_load_dry_initializer_standard_config_option.md&quot;}" prerendered-on-build=""><main><h2 id="how-to-load-dry-initializer-standard-config-option">How to load dry_initializer standard config option?</h2>
 <ul>
-<li><p>Enables <code>option</code> DSL for service constructor via <a href="https://github.com/dry-rb/dry-initializer"><code>dry-initializer</code></a>.</p>
+<li><p><code>dry_initializer</code> standard config option enables <code>option</code> DSL for service constructor via <a href="https://github.com/dry-rb/dry-initializer"><code>dry-initializer</code></a>.</p>
 </li>
-<li><p>Require <code>convenient_service</code> and the extra.</p>
+<li><p>In order to load it, require <code>convenient_service</code> and the extra.</p>
 <pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
 <span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service/extras/standard/config/options/dry_initializer"</span></span></code></pre></li>
-<li><p>Services can now use <code>option</code> and <code>.with(:dry_initializer)</code>.</p>
+<li><p>When config with <code>.with(:dry_initializer)</code> is used, services can utilize <code>option</code>.</p>
 <pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Service</span>
   <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config<span class="token punctuation">.</span>with<span class="token punctuation">(</span><span class="token symbol">:dry_initializer</span><span class="token punctuation">)</span>
 
