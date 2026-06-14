@@ -13,6 +13,12 @@
 <br>
 3.1.2. [Who is Convenient Service author?](/docs/the_what/who_is_convenient_service_author.html)
 <br>
+3.1.3. [What is Convenient Service dependencies?](/docs/the_what/what_is_convenient_service_dependencies.html)
+<br>
+3.1.4. [What is Convenient Service static dependencies?](/docs/the_what/what_is_convenient_service_static_dependencies.html)
+<br>
+3.1.5. [What is Convenient Service dynamic dependencies?](/docs/the_what/what_is_convenient_service_dynamic_dependencies.html)
+<br>
 
 ## 4. The How
 
