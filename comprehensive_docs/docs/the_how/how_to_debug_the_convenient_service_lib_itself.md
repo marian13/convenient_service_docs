@@ -37,7 +37,7 @@
   ConvenientService.logger.level = Logger::DEBUG
   ```
 
-- To step through Convenient Service source code with a debugger, open the gem in your editor with `bundle open`.
+- To step through Convenient Service source code with a debugger, open the gem in your editor with [`bundle open`](https://bundler.io/man/bundle-open.1.html).
 
   ```bash
   bundle open convenient_service
@@ -54,6 +54,8 @@
 ### See also
 
 - [What are Convenient Service dependencies?](/docs/the_what/what_are_convenient_service_dependencies.html)
+- [What is Convenient Service logger?](/docs/the_what/what_is_convenient_service_logger.html)
+- [How to configure Convenient Service logger?](/docs/the_how/how_to_configure_convenient_service_logger.html)
 
 ### Sources
 

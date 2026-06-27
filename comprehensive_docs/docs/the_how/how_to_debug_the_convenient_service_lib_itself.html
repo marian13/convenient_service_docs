@@ -116,7 +116,7 @@ ConvenientService<span class="token punctuation">.</span>debug<span class="token
 <pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
 
 ConvenientService<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>level <span class="token operator">=</span> Logger<span class="token double-colon punctuation">::</span><span class="token constant">DEBUG</span></code></pre></li>
-<li><p>To step through Convenient Service source code with a debugger, open the gem in your editor with <code>bundle open</code>.</p>
+<li><p>To step through Convenient Service source code with a debugger, open the gem in your editor with <a href="https://bundler.io/man/bundle-open.1.html"><code>bundle open</code></a>.</p>
 <pre><code class="language-bash">bundle <span class="token function">open</span> convenient_service</code></pre><p>Add <a href="https://github.com/ruby/debug"><code>binding.break</code></a> at the suspect location, then trigger the code path via <a href="https://github.com/ruby/irb"><code>irb</code></a>, Rails console, <a href="https://rspec.info/">RSpec</a>, or <a href="https://github.com/ruby/rake">Rake</a>. Remove the breakpoint after debugging.</p>
 <pre><code class="language-ruby">binding<span class="token punctuation">.</span><span class="token keyword">break</span></code></pre></li>
 <li><p><a href="https://github.com/pry/pry"><code>binding.pry</code></a> is a REPL, not a debugger - use <a href="https://github.com/ruby/debug"><code>binding.break</code></a>, <a href="https://github.com/deivid-rodriguez/byebug"><code>byebug</code></a>, or extend pry with <a href="https://github.com/deivid-rodriguez/pry-byebug"><code>pry-byebug</code></a> or similar when you need to step through code.</p>
@@ -125,6 +125,8 @@ ConvenientService<span class="token punctuation">.</span>logger<span class="toke
 <h3 id="see-also">See also</h3>
 <ul>
 <li><a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_dependencies.html">What are Convenient Service dependencies?</a></li>
+<li><a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_logger.html">What is Convenient Service logger?</a></li>
+<li><a href="/comprehensive_docs/docs/the_how/how_to_configure_convenient_service_logger.html">How to configure Convenient Service logger?</a></li>
 </ul>
 <h3 id="sources">Sources</h3>
 <ul>

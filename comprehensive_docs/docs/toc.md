@@ -39,6 +39,8 @@
 <br>
 3.5.2. [Who is Convenient Service author?](/docs/the_what/who_is_convenient_service_author.html)
 <br>
+3.5.3. [What is Convenient Service logger?](/docs/the_what/what_is_convenient_service_logger.html)
+<br>
 
 ## 4. The How
 
@@ -50,6 +52,8 @@
 ### 4.2. Debugging
 
 4.2.1. [How to debug the Convenient Service lib itself?](/docs/the_how/how_to_debug_the_convenient_service_lib_itself.html)
+<br>
+4.2.2. [How to configure Convenient Service logger?](/docs/the_how/how_to_configure_convenient_service_logger.html)
 <br>
 
 ### 4.3. Extras
