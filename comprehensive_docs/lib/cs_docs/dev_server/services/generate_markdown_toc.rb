@@ -9,17 +9,17 @@ module CSDocs
 
       validates :request, presence: true
 
-      step LoadTocData,
-        out: :toc_data
+      step LoadTocConfig,
+        out: :toc_config
 
       step :result,
-        in: [:toc_data, :request],
+        in: [:toc_config, :request],
         out: :toc
 
       def result
         return failure if request.params['source'] != 'markdown'
 
-        success(toc: render_section(toc_data[:toc][:items], 0).join("\n"))
+        success(toc: render_section(toc_config[:toc][:items], 0).join("\n"))
       end
 
       private

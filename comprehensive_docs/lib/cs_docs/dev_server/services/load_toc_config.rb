@@ -2,7 +2,7 @@
 
 module CSDocs
   class DevServer < Sinatra::Base
-    class LoadTocData
+    class LoadTocConfig
       include ::CSDocs::Services::Configs::Practical::V1
 
       step ::CSDocs::Services::GetRoot,
@@ -10,12 +10,12 @@ module CSDocs
 
       step :result,
         in: :root,
-        out: :toc_data
+        out: :toc_config
 
       def result
-        toc_data = JSON.parse(File.read(File.join(root, 'src/toc.json')), symbolize_names: true)
+        toc_config = JSON.parse(File.read(File.join(root, 'src/toc.json')), symbolize_names: true)
 
-        success(toc_data: toc_data)
+        success(toc_config: toc_config)
       end
     end
   end
