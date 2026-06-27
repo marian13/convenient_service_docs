@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en" data-theme="flexoki-inspired" data-color-scheme="light"><head>
-  <title>  Table of contents
+  <title>  Convenient Service
 </title>
 
   <meta charset="UTF-8">
@@ -99,63 +99,25 @@
 </header>
 
 <div class="cs-doc">
-  <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/toc.md&quot;}" prerendered-on-build=""><main><h1 id="table-of-contents">Table of contents</h1>
-<h2 id="1-tl-dr">1. <a href="/comprehensive_docs/docs/tldr.html">TL;DR</a></h2>
-<h2 id="2-tutorials">2. Tutorials</h2>
-<h2 id="3-the-what">3. The What</h2>
-<h3 id="3-1-dependencies">3.1. Dependencies</h3>
-<p>3.1.1. <a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_dependencies.html">What are Convenient Service dependencies?</a>
-<br>
-3.1.2. <a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_static_dependencies.html">What are Convenient Service static dependencies?</a>
-<br>
-3.1.3. <a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_dynamic_dependencies.html">What are Convenient Service dynamic dependencies?</a>
-<br></p>
-<h3 id="3-2-plugins">3.2. Plugins</h3>
-<p>3.2.1. <a href="/comprehensive_docs/docs/the_what/what_is_a_plugin.html">What is a plugin?</a>
-<br></p>
-<h3 id="3-3-configs">3.3. Configs</h3>
-<p>3.3.1. <a href="/comprehensive_docs/docs/the_what/what_is_config_options.html">What is config options?</a>
-<br></p>
-<h3 id="3-4-extras">3.4. Extras</h3>
-<p>3.4.1. <a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_extra.html">What is Convenient Service extra?</a>
-<br>
-3.4.2. <a href="/comprehensive_docs/docs/the_what/what_extras_are_available.html">What extras are available?</a>
-<br></p>
-<h3 id="3-5-miscellaneous">3.5. Miscellaneous</h3>
-<p>3.5.1. <a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_license.html">What is Convenient Service license?</a>
-<br>
-3.5.2. <a href="/comprehensive_docs/docs/the_what/who_is_convenient_service_author.html">Who is Convenient Service author?</a>
-<br>
-3.5.3. <a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_logger.html">What is Convenient Service logger?</a>
-<br></p>
-<h2 id="4-the-how">4. The How</h2>
-<h3 id="4-1-dependencies">4.1. Dependencies</h3>
-<p>4.1.1. <a href="/comprehensive_docs/docs/the_how/how_to_load_dynamic_dependencies.html">How to load dynamic dependencies?</a>
-<br></p>
-<h3 id="4-2-debugging">4.2. Debugging</h3>
-<p>4.2.1. <a href="/comprehensive_docs/docs/the_how/how_to_debug_the_convenient_service_lib_itself.html">How to debug the Convenient Service lib itself?</a>
-<br>
-4.2.2. <a href="/comprehensive_docs/docs/the_how/how_to_configure_convenient_service_logger.html">How to configure Convenient Service logger?</a>
-<br></p>
-<h3 id="4-3-miscellaneous">4.3. Miscellaneous</h3>
-<p>4.3.1. <a href="/comprehensive_docs/docs/the_how/how_to_get_convenient_service_root_folder.html">How to get Convenient Service root folder?</a>
-<br></p>
-<h3 id="4-4-extras">4.4. Extras</h3>
-<p>4.4.1. <a href="/comprehensive_docs/docs/the_how/how_to_load_cs_alias.html">How to load CS alias?</a>
-<br>
-4.4.2. <a href="/comprehensive_docs/docs/the_how/how_to_load_rspec_extensions.html">How to load RSpec extensions?</a>
-<br>
-4.4.3. <a href="/comprehensive_docs/docs/the_how/how_to_load_active_model_validations_standard_config_option.html">How to load active_model_validations standard config option?</a>
-<br>
-4.4.4. <a href="/comprehensive_docs/docs/the_how/how_to_load_amazing_print_inspect_standard_config_option.html">How to load amazing_print_inspect standard config option?</a>
-<br>
-4.4.5. <a href="/comprehensive_docs/docs/the_how/how_to_load_awesome_print_inspect_standard_config_option.html">How to load awesome_print_inspect standard config option?</a>
-<br>
-4.4.6. <a href="/comprehensive_docs/docs/the_how/how_to_load_dry_initializer_standard_config_option.html">How to load dry_initializer standard config option?</a>
-<br>
-4.4.7. <a href="/comprehensive_docs/docs/the_how/how_to_load_memo_wise_standard_config_option.html">How to load memo_wise standard config option?</a>
-<br></p>
-<h2 id="5-the-why">5. The Why</h2>
+  <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_how/how_to_get_convenient_service_root_folder.md&quot;}" prerendered-on-build=""><main><h2 id="how-to-get-convenient-service-root-folder">How to get Convenient Service root folder?</h2>
+<ul>
+<li><p>Call <code>ConvenientService.root</code> to get the gem's installation directory as a <a href="https://ruby-doc.org/stdlib-2.7.0/libdoc/pathname/rdoc/Pathname.html"><code>Pathname</code></a>.</p>
+<pre><code class="language-ruby">ConvenientService<span class="token punctuation">.</span>root
+<span class="token comment"># =&gt; #&lt;Pathname:/path/to/gems/convenient_service-1.0.0&gt;</span></code></pre></li>
+<li><p>Since the returned value is a <a href="https://ruby-doc.org/stdlib-2.7.0/libdoc/pathname/rdoc/Pathname.html"><code>Pathname</code></a>, all standard path operations are available.</p>
+<pre><code class="language-ruby">ConvenientService<span class="token punctuation">.</span>root<span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"lib"</span></span><span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"convenient_service.rb"</span></span><span class="token punctuation">)</span>
+<span class="token comment"># =&gt; #&lt;Pathname:/path/to/gems/convenient_service-1.0.0/lib/convenient_service.rb&gt;</span>
+
+ConvenientService<span class="token punctuation">.</span>root<span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"lib"</span></span><span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"convenient_service.rb"</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span>exist<span class="token operator">?</span>
+<span class="token comment"># =&gt; true</span></code></pre></li>
+<li><p><code>ConvenientService.root</code> is inspired by <a href="https://api.rubyonrails.org/classes/Rails.html#method-c-root"><code>Rails.root</code></a>.</p>
+</li>
+</ul>
+<h3 id="sources">Sources</h3>
+<ul>
+<li><a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service.rb">lib/convenient_service.rb</a></li>
+<li><a href="https://github.com/marian13/convenient_service/blob/v0.24.0/spec/lib/convenient_service_spec.rb">spec/lib/convenient_service_spec.rb</a></li>
+</ul>
 </main></cs-react-island>
 </div>
 

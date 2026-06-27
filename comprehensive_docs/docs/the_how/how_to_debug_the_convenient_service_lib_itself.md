@@ -12,8 +12,6 @@
 - To check at runtime whether debug mode is active, call `ConvenientService.debug?`.
 
   ```ruby
-  require "convenient_service"
-
   ConvenientService.debug?
   # => false
   ```
@@ -23,8 +21,6 @@
   ```
 
   ```ruby
-  require "convenient_service"
-
   ConvenientService.debug?
   # => true
   ```
@@ -32,8 +28,6 @@
 - To enable verbose logging without the environment variable, set the logger level directly.
 
   ```ruby
-  require "convenient_service"
-
   ConvenientService.logger.level = Logger::DEBUG
   ```
 

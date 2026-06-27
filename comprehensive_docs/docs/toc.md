@@ -56,21 +56,26 @@
 4.2.2. [How to configure Convenient Service logger?](/docs/the_how/how_to_configure_convenient_service_logger.html)
 <br>
 
-### 4.3. Extras
+### 4.3. Miscellaneous
 
-4.3.1. [How to load CS alias?](/docs/the_how/how_to_load_cs_alias.html)
+4.3.1. [How to get Convenient Service root folder?](/docs/the_how/how_to_get_convenient_service_root_folder.html)
 <br>
-4.3.2. [How to load RSpec extensions?](/docs/the_how/how_to_load_rspec_extensions.html)
+
+### 4.4. Extras
+
+4.4.1. [How to load CS alias?](/docs/the_how/how_to_load_cs_alias.html)
 <br>
-4.3.3. [How to load active_model_validations standard config option?](/docs/the_how/how_to_load_active_model_validations_standard_config_option.html)
+4.4.2. [How to load RSpec extensions?](/docs/the_how/how_to_load_rspec_extensions.html)
 <br>
-4.3.4. [How to load amazing_print_inspect standard config option?](/docs/the_how/how_to_load_amazing_print_inspect_standard_config_option.html)
+4.4.3. [How to load active_model_validations standard config option?](/docs/the_how/how_to_load_active_model_validations_standard_config_option.html)
 <br>
-4.3.5. [How to load awesome_print_inspect standard config option?](/docs/the_how/how_to_load_awesome_print_inspect_standard_config_option.html)
+4.4.4. [How to load amazing_print_inspect standard config option?](/docs/the_how/how_to_load_amazing_print_inspect_standard_config_option.html)
 <br>
-4.3.6. [How to load dry_initializer standard config option?](/docs/the_how/how_to_load_dry_initializer_standard_config_option.html)
+4.4.5. [How to load awesome_print_inspect standard config option?](/docs/the_how/how_to_load_awesome_print_inspect_standard_config_option.html)
 <br>
-4.3.7. [How to load memo_wise standard config option?](/docs/the_how/how_to_load_memo_wise_standard_config_option.html)
+4.4.6. [How to load dry_initializer standard config option?](/docs/the_how/how_to_load_dry_initializer_standard_config_option.html)
+<br>
+4.4.7. [How to load memo_wise standard config option?](/docs/the_how/how_to_load_memo_wise_standard_config_option.html)
 <br>
 
 ## 5. The Why
