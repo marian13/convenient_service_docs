@@ -88,6 +88,15 @@
             ]
           },
           {
+            "title": "Debugging",
+            "items": [
+              {
+                "title": "How to debug the Convenient Service lib itself?",
+                "link": "/docs/the_how/how_to_debug_the_convenient_service_lib_itself.html"
+              }
+            ]
+          },
+          {
             "title": "Extras",
             "items": [
               {
