@@ -2,6 +2,7 @@ import { kebabCase } from "lodash-es";
 import { html } from "@utils/react";
 import Markdown from "@components/generic/Markdown";
 import { mutateHtmlFromString } from "@utils/html";
+import { appendQueryParams } from "@utils/url";
 
 const EXAMPLE_LINKS = {"AssertFileExists":"/docs/examples/services.html#assert-file-exists","AssertFileNotEmpty":"/docs/examples/services.html#assert-file-not-empty","ReadFileContent":"/docs/examples/services.html#read-file-content","FindUser":"/docs/examples/services.html#find-user"};
 
@@ -28,7 +29,7 @@ const applyHeadingAnchors = (rawHtml) => {
 const CSMarkdown = ({ src, content }) => {
   const transformHtml = (html) => applyHeadingAnchors(addExampleLinks(html));
 
-  return html`<${Markdown} src=${src} content=${content} transformHtml=${transformHtml} />`;
+  return html`<${Markdown} src=${appendQueryParams(src, { source: "web" })} content=${content} transformHtml=${transformHtml} />`;
 };
 
 export default CSMarkdown;
