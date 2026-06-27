@@ -47,21 +47,26 @@
 4.1.1. [How to load dynamic dependencies?](/docs/the_how/how_to_load_dynamic_dependencies.html)
 <br>
 
-### 4.2. Extras
+### 4.2. Debugging
 
-4.2.1. [How to load CS alias?](/docs/the_how/how_to_load_cs_alias.html)
+4.2.1. [How to debug the Convenient Service lib itself?](/docs/the_how/how_to_debug_the_convenient_service_lib_itself.html)
 <br>
-4.2.2. [How to load RSpec extensions?](/docs/the_how/how_to_load_rspec_extensions.html)
+
+### 4.3. Extras
+
+4.3.1. [How to load CS alias?](/docs/the_how/how_to_load_cs_alias.html)
 <br>
-4.2.3. [How to load active_model_validations standard config option?](/docs/the_how/how_to_load_active_model_validations_standard_config_option.html)
+4.3.2. [How to load RSpec extensions?](/docs/the_how/how_to_load_rspec_extensions.html)
 <br>
-4.2.4. [How to load amazing_print_inspect standard config option?](/docs/the_how/how_to_load_amazing_print_inspect_standard_config_option.html)
+4.3.3. [How to load active_model_validations standard config option?](/docs/the_how/how_to_load_active_model_validations_standard_config_option.html)
 <br>
-4.2.5. [How to load awesome_print_inspect standard config option?](/docs/the_how/how_to_load_awesome_print_inspect_standard_config_option.html)
+4.3.4. [How to load amazing_print_inspect standard config option?](/docs/the_how/how_to_load_amazing_print_inspect_standard_config_option.html)
 <br>
-4.2.6. [How to load dry_initializer standard config option?](/docs/the_how/how_to_load_dry_initializer_standard_config_option.html)
+4.3.5. [How to load awesome_print_inspect standard config option?](/docs/the_how/how_to_load_awesome_print_inspect_standard_config_option.html)
 <br>
-4.2.7. [How to load memo_wise standard config option?](/docs/the_how/how_to_load_memo_wise_standard_config_option.html)
+4.3.6. [How to load dry_initializer standard config option?](/docs/the_how/how_to_load_dry_initializer_standard_config_option.html)
+<br>
+4.3.7. [How to load memo_wise standard config option?](/docs/the_how/how_to_load_memo_wise_standard_config_option.html)
 <br>
 
 ## 5. The Why

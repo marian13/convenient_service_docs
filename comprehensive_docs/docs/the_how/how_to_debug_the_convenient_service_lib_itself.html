@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en" data-theme="flexoki-inspired" data-color-scheme="light"><head>
-  <title>  Table of contents
+  <title>  Convenient Service
 </title>
 
   <meta charset="UTF-8">
@@ -99,56 +99,39 @@
 </header>
 
 <div class="cs-doc">
-  <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/toc.md&quot;}" prerendered-on-build=""><main><h1 id="table-of-contents">Table of contents</h1>
-<h2 id="1-tl-dr">1. <a href="/comprehensive_docs/docs/tldr.html">TL;DR</a></h2>
-<h2 id="2-tutorials">2. Tutorials</h2>
-<h2 id="3-the-what">3. The What</h2>
-<h3 id="3-1-dependencies">3.1. Dependencies</h3>
-<p>3.1.1. <a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_dependencies.html">What are Convenient Service dependencies?</a>
-<br>
-3.1.2. <a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_static_dependencies.html">What are Convenient Service static dependencies?</a>
-<br>
-3.1.3. <a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_dynamic_dependencies.html">What are Convenient Service dynamic dependencies?</a>
-<br></p>
-<h3 id="3-2-plugins">3.2. Plugins</h3>
-<p>3.2.1. <a href="/comprehensive_docs/docs/the_what/what_is_a_plugin.html">What is a plugin?</a>
-<br></p>
-<h3 id="3-3-configs">3.3. Configs</h3>
-<p>3.3.1. <a href="/comprehensive_docs/docs/the_what/what_is_config_options.html">What is config options?</a>
-<br></p>
-<h3 id="3-4-extras">3.4. Extras</h3>
-<p>3.4.1. <a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_extra.html">What is Convenient Service extra?</a>
-<br>
-3.4.2. <a href="/comprehensive_docs/docs/the_what/what_extras_are_available.html">What extras are available?</a>
-<br></p>
-<h3 id="3-5-miscellaneous">3.5. Miscellaneous</h3>
-<p>3.5.1. <a href="/comprehensive_docs/docs/the_what/what_is_convenient_service_license.html">What is Convenient Service license?</a>
-<br>
-3.5.2. <a href="/comprehensive_docs/docs/the_what/who_is_convenient_service_author.html">Who is Convenient Service author?</a>
-<br></p>
-<h2 id="4-the-how">4. The How</h2>
-<h3 id="4-1-dependencies">4.1. Dependencies</h3>
-<p>4.1.1. <a href="/comprehensive_docs/docs/the_how/how_to_load_dynamic_dependencies.html">How to load dynamic dependencies?</a>
-<br></p>
-<h3 id="4-2-debugging">4.2. Debugging</h3>
-<p>4.2.1. <a href="/comprehensive_docs/docs/the_how/how_to_debug_the_convenient_service_lib_itself.html">How to debug the Convenient Service lib itself?</a>
-<br></p>
-<h3 id="4-3-extras">4.3. Extras</h3>
-<p>4.3.1. <a href="/comprehensive_docs/docs/the_how/how_to_load_cs_alias.html">How to load CS alias?</a>
-<br>
-4.3.2. <a href="/comprehensive_docs/docs/the_how/how_to_load_rspec_extensions.html">How to load RSpec extensions?</a>
-<br>
-4.3.3. <a href="/comprehensive_docs/docs/the_how/how_to_load_active_model_validations_standard_config_option.html">How to load active_model_validations standard config option?</a>
-<br>
-4.3.4. <a href="/comprehensive_docs/docs/the_how/how_to_load_amazing_print_inspect_standard_config_option.html">How to load amazing_print_inspect standard config option?</a>
-<br>
-4.3.5. <a href="/comprehensive_docs/docs/the_how/how_to_load_awesome_print_inspect_standard_config_option.html">How to load awesome_print_inspect standard config option?</a>
-<br>
-4.3.6. <a href="/comprehensive_docs/docs/the_how/how_to_load_dry_initializer_standard_config_option.html">How to load dry_initializer standard config option?</a>
-<br>
-4.3.7. <a href="/comprehensive_docs/docs/the_how/how_to_load_memo_wise_standard_config_option.html">How to load memo_wise standard config option?</a>
-<br></p>
-<h2 id="5-the-why">5. The Why</h2>
+  <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_how/how_to_debug_the_convenient_service_lib_itself.md&quot;}" prerendered-on-build=""><main><h2 id="how-to-debug-the-convenient-service-lib-itself">How to debug the Convenient Service lib itself?</h2>
+<ul>
+<li><p>When something behaves unexpectedly and you suspect a bug in Convenient Service, enable debug mode by setting <code>CONVENIENT_SERVICE_DEBUG=true</code> before running your script.</p>
+<pre><code class="language-bash"><span class="token assign-left variable">CONVENIENT_SERVICE_DEBUG</span><span class="token operator">=</span>true ruby your_script.rb</code></pre><p>This automatically sets the Convenient Service internal logger level to <a href="https://ruby-doc.org/stdlib-2.7.0/libdoc/logger/rdoc/Logger.html#DEBUG"><code>Logger::DEBUG</code></a>, producing verbose log output and full backtraces.</p>
+</li>
+<li><p>To check at runtime whether debug mode is active, call <code>ConvenientService.debug?</code>.</p>
+<pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
+
+ConvenientService<span class="token punctuation">.</span>debug<span class="token operator">?</span>
+<span class="token comment"># =&gt; false</span></code></pre><pre><code class="language-bash"><span class="token assign-left variable">CONVENIENT_SERVICE_DEBUG</span><span class="token operator">=</span>true ruby your_script.rb</code></pre><pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
+
+ConvenientService<span class="token punctuation">.</span>debug<span class="token operator">?</span>
+<span class="token comment"># =&gt; true</span></code></pre></li>
+<li><p>To enable verbose logging without the environment variable, set the logger level directly.</p>
+<pre><code class="language-ruby"><span class="token keyword">require</span> <span class="token string-literal"><span class="token string">"convenient_service"</span></span>
+
+ConvenientService<span class="token punctuation">.</span>logger<span class="token punctuation">.</span>level <span class="token operator">=</span> Logger<span class="token double-colon punctuation">::</span><span class="token constant">DEBUG</span></code></pre></li>
+<li><p>To step through Convenient Service source code with a debugger, open the gem in your editor with <code>bundle open</code>.</p>
+<pre><code class="language-bash">bundle <span class="token function">open</span> convenient_service</code></pre><p>Add <a href="https://github.com/ruby/debug"><code>binding.break</code></a> at the suspect location, then trigger the code path via <a href="https://github.com/ruby/irb"><code>irb</code></a>, Rails console, <a href="https://rspec.info/">RSpec</a>, or <a href="https://github.com/ruby/rake">Rake</a>. Remove the breakpoint after debugging.</p>
+<pre><code class="language-ruby">binding<span class="token punctuation">.</span><span class="token keyword">break</span></code></pre></li>
+<li><p><a href="https://github.com/pry/pry"><code>binding.pry</code></a> is a REPL, not a debugger - use <a href="https://github.com/ruby/debug"><code>binding.break</code></a>, <a href="https://github.com/deivid-rodriguez/byebug"><code>byebug</code></a>, or extend pry with <a href="https://github.com/deivid-rodriguez/pry-byebug"><code>pry-byebug</code></a> or similar when you need to step through code.</p>
+</li>
+</ul>
+<h3 id="see-also">See also</h3>
+<ul>
+<li><a href="/comprehensive_docs/docs/the_what/what_are_convenient_service_dependencies.html">What are Convenient Service dependencies?</a></li>
+</ul>
+<h3 id="sources">Sources</h3>
+<ul>
+<li><a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service.rb">lib/convenient_service.rb</a></li>
+<li><a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/dependencies/queries.rb">lib/convenient_service/dependencies/queries.rb</a></li>
+<li><a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/logger.rb">lib/convenient_service/logger.rb</a></li>
+</ul>
 </main></cs-react-island>
 </div>
 
