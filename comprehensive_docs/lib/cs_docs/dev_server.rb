@@ -97,7 +97,9 @@ module CSDocs
       end
 
       def render_toc
-        GenerateToc.call[:toc]
+        request.params['source'] ||= 'markdown'
+
+        GenerateToc.call(request: request)[:toc]
       end
 
       def read_erb_file(file_path)
