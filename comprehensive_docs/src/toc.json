@@ -87,6 +87,15 @@
         "title": "The How",
         "items": [
           {
+            "title": "Installation",
+            "items": [
+              {
+                "title": "How to install Convenient Service?",
+                "link": "/docs/the_how/how_to_install_convenient_service.html"
+              }
+            ]
+          },
+          {
             "title": "Dependencies",
             "items": [
               {
