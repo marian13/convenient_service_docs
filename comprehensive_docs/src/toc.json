@@ -74,6 +74,10 @@
               {
                 "title": "What is Convenient Service logger?",
                 "link": "/docs/the_what/what_is_convenient_service_logger.html"
+              },
+              {
+                "title": "What are Convenient Service's Ruby requirements?",
+                "link": "/docs/the_what/what_are_convenient_service_ruby_requirements.html"
               }
             ]
           }

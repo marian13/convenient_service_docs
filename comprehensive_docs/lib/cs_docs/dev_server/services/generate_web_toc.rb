@@ -26,7 +26,6 @@ module CSDocs
 
       def render_section(items, counters, heading_level)
         lines = []
-        had_bullets = false
 
         items.each_with_index do |item, i|
           num = counters + [i + 1]
@@ -34,21 +33,13 @@ module CSDocs
           title = item[:title]
           href = item[:link] || item[:url]
           sub = item[:items]
+          level = num.length
 
-          if sub || heading_level <= 3
-            hashes = '#' * heading_level
-            label = href ? "#{prefix}. [#{title}](#{href})" : "#{prefix}. #{title}"
-            lines << "#{hashes} #{label}"
-            lines << ''
-            lines.concat(render_section(sub, num, heading_level + 1)) if sub
-          else
-            lines << (href ? "#{prefix}. [#{title}](#{href})" : "#{prefix}. #{title}")
-            lines << "<br>"
-            had_bullets = true
-          end
+          label = href ? "<a href=\"#{href}\">#{title}</a>" : title
+          lines << "<div class=\"cs-toc-level-#{level}\"><span class=\"cs-toc-num-#{level}\">#{prefix}.</span> #{label}</div>"
+          lines.concat(render_section(sub, num, heading_level + 1)) if sub
         end
 
-        lines << '' if had_bullets
         lines
       end
     end
