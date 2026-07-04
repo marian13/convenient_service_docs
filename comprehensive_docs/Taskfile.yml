@@ -21,6 +21,32 @@ tasks:
     cmds:
       - task build -- {{.CLI_ARGS}} && ruby -run -e httpd dist -p 8101
 
+  stop:
+    cmds:
+      - task stop:dev
+
+  stop:dev:
+    cmds:
+      - lsof -ti tcp:8100 | xargs -r kill -9
+
+  stop:build:
+    cmds:
+      - lsof -ti tcp:8101 | xargs -r kill -9
+
+  restart:
+    cmds:
+      - task restart:dev
+
+  restart:dev:
+    cmds:
+      - task stop:dev
+      - task start:dev
+
+  restart:build:
+    cmds:
+      - task stop:build
+      - task start:build -- {{.CLI_ARGS}}
+
   dev:run:
     cmds:
       - bundle exec ruby -r ./lib/cs_docs/dev_server -e {{.CLI_ARGS}}

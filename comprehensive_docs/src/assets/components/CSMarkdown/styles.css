@@ -14,7 +14,7 @@
 .cs-toc-num-5 { min-width: 5.5rem; }
 
 .cs-toc-level-1 { padding-left: 0; font-size: 1.25em; font-weight: bold; padding-top: 0.5rem; }
-.cs-toc-level-2 { padding-left: 1.5rem; font-size: 1em; font-weight: bold; padding-top: 0rem; }
+.cs-toc-level-2 { padding-left: 1.5rem; font-size: 1em; font-weight: bold; padding-top: 0.3rem; }
 .cs-toc-level-3 { padding-left: 3rem; }
 .cs-toc-level-4 { padding-left: 4.5rem; }
 .cs-toc-level-5 { padding-left: 6rem; }
