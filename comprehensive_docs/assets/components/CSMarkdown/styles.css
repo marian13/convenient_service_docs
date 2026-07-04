@@ -1,0 +1,20 @@
+.cs-toc-num-1,
+.cs-toc-num-2,
+.cs-toc-num-3,
+.cs-toc-num-4,
+.cs-toc-num-5 {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+.cs-toc-num-1 { min-width: 1.5rem; }
+.cs-toc-num-2 { min-width: 2.5rem; }
+.cs-toc-num-3 { min-width: 3.5rem; }
+.cs-toc-num-4 { min-width: 4.5rem; }
+.cs-toc-num-5 { min-width: 5.5rem; }
+
+.cs-toc-level-1 { padding-left: 0; font-size: 1.25em; font-weight: bold; padding-top: 0.5rem; }
+.cs-toc-level-2 { padding-left: 1.5rem; font-size: 1em; font-weight: bold; padding-top: 0rem; }
+.cs-toc-level-3 { padding-left: 3rem; }
+.cs-toc-level-4 { padding-left: 4.5rem; }
+.cs-toc-level-5 { padding-left: 6rem; }
