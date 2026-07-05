@@ -119,7 +119,7 @@ Service<span class="token punctuation">.</span>result
 <li><p>Calling a service always returns a <a href="https://github.com/omniti-labs/jsend">JSend</a>-style result object, not a raw value.</p>
 <pre><code class="language-ruby">Service<span class="token punctuation">.</span>result<span class="token punctuation">.</span>success<span class="token operator">?</span>
 <span class="token comment"># =&gt; true</span></code></pre></li>
-<li><p>Besides <code>result</code>, a service can also be called with <code>call</code>, at the class or instance level. <code>result</code> returns the full result object; <code>call</code> returns just its data hash.</p>
+<li><p>Besides <code>result</code>, a service can also be called with <code>call</code>, at the class or instance level. <code>result</code> always returns the full result object; <code>call</code> returns the result's data hash on <code>success</code>, <code>nil</code> on <code>failure</code>, and raises on <code>error</code>.</p>
 <pre><code class="language-ruby">Service<span class="token punctuation">.</span>result        <span class="token comment"># =&gt; &lt;Service::Result status: :success, data_keys: [:value]&gt;</span>
 Service<span class="token punctuation">.</span>call          <span class="token comment"># =&gt; {value: 42}</span>
 <span class="token class-name">Service</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>result    <span class="token comment"># =&gt; &lt;Service::Result status: :success, data_keys: [:value]&gt;</span>
