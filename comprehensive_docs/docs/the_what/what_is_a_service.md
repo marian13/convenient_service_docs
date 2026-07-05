@@ -3,7 +3,7 @@
 
 - A service is an object that does exactly one operation, [nothing more, nothing less](https://ludwig.guru/s/nothing+more+and+nothing+less).
 
-- In Convenient Service, a service is a plain Ruby class that includes [`ConvenientService::Standard::Config`](https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/service/configs/aliases.rb) and defines a single `result` method.
+- In Convenient Service, a service is a plain Ruby class that includes [`ConvenientService::Standard::Config`](https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/service/configs/aliases.rb) and is invoked via `result` (or `call`).
 
   ```ruby
   class Service

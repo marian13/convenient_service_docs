@@ -105,7 +105,7 @@
 <ul>
 <li><p>A service is an object that does exactly one operation, <a href="https://ludwig.guru/s/nothing+more+and+nothing+less">nothing more, nothing less</a>.</p>
 </li>
-<li><p>In Convenient Service, a service is a plain Ruby class that includes <a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/service/configs/aliases.rb"><code>ConvenientService::Standard::Config</code></a> and defines a single <code>result</code> method.</p>
+<li><p>In Convenient Service, a service is a plain Ruby class that includes <a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/service/configs/aliases.rb"><code>ConvenientService::Standard::Config</code></a> and is invoked via <code>result</code> (or <code>call</code>).</p>
 <pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Service</span>
   <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
 
