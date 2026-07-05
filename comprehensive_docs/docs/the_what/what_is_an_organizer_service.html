@@ -162,7 +162,9 @@ result<span class="token punctuation">.</span>success<span class="token operator
 result<span class="token punctuation">.</span>original_service<span class="token punctuation">.</span><span class="token keyword">class</span>
 <span class="token comment"># =&gt; <a href="/comprehensive_docs/docs/examples/services.html#assert-file-exists" class="cs-code-link">AssertFileExists</a></span></code></pre></li>
 <li><p>The same applies to <code>AssertFileNotEmpty</code> - when it fails, <code>step :result</code> is skipped.</p>
-<pre><code class="language-ruby">result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/examples/services.html#read-file-content" class="cs-code-link">ReadFileContent</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"/tmp/empty.txt"</span></span><span class="token punctuation">)</span>
+<pre><code class="language-ruby"><span class="token builtin">File</span><span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"/tmp/empty.txt"</span></span><span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">""</span></span><span class="token punctuation">)</span>
+
+result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/examples/services.html#read-file-content" class="cs-code-link">ReadFileContent</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"/tmp/empty.txt"</span></span><span class="token punctuation">)</span>
 
 result<span class="token punctuation">.</span>success<span class="token operator">?</span>
 <span class="token comment"># =&gt; false</span>
@@ -170,7 +172,9 @@ result<span class="token punctuation">.</span>success<span class="token operator
 result<span class="token punctuation">.</span>original_service<span class="token punctuation">.</span><span class="token keyword">class</span>
 <span class="token comment"># =&gt; <a href="/comprehensive_docs/docs/examples/services.html#assert-file-not-empty" class="cs-code-link">AssertFileNotEmpty</a></span></code></pre></li>
 <li><p>When every step succeeds, <code>ReadFileContent</code> returns the final <code>step :result</code> result.</p>
-<pre><code class="language-ruby">result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/examples/services.html#read-file-content" class="cs-code-link">ReadFileContent</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"/tmp/hello.txt"</span></span><span class="token punctuation">)</span>
+<pre><code class="language-ruby"><span class="token builtin">File</span><span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"/tmp/hello.txt"</span></span><span class="token punctuation">,</span> <span class="token string-literal"><span class="token string">"Hello!"</span></span><span class="token punctuation">)</span>
+
+result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/examples/services.html#read-file-content" class="cs-code-link">ReadFileContent</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">path</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"/tmp/hello.txt"</span></span><span class="token punctuation">)</span>
 
 result<span class="token punctuation">.</span>success<span class="token operator">?</span>
 <span class="token comment"># =&gt; true</span>

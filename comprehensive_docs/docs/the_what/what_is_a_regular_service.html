@@ -116,11 +116,11 @@
   <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
     <span class="token keyword">return</span> error<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"Id is `nil`"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> id<span class="token punctuation">.</span><span class="token keyword">nil</span><span class="token operator">?</span>
 
-    user <span class="token operator">=</span> User<span class="token punctuation">.</span>find_by<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> id<span class="token punctuation">)</span>
+    users <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">1</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token symbol">name</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"John"</span></span><span class="token punctuation">}</span><span class="token punctuation">}</span>
 
-    <span class="token keyword">return</span> failure<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"User with id `</span><span class="token interpolation"><span class="token delimiter punctuation">#{</span><span class="token content">id</span><span class="token delimiter punctuation">}</span></span><span class="token string">` does not exist"</span></span><span class="token punctuation">)</span> <span class="token keyword">unless</span> user
+    <span class="token keyword">return</span> failure<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"User with id `</span><span class="token interpolation"><span class="token delimiter punctuation">#{</span><span class="token content">id</span><span class="token delimiter punctuation">}</span></span><span class="token string">` does not exist"</span></span><span class="token punctuation">)</span> <span class="token keyword">unless</span> users<span class="token punctuation">.</span>key<span class="token operator">?</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
 
-    success<span class="token punctuation">(</span><span class="token symbol">user</span><span class="token operator">:</span> user<span class="token punctuation">)</span>
+    success<span class="token punctuation">(</span><span class="token symbol">user</span><span class="token operator">:</span> users<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
   <span class="token keyword">end</span>
 <span class="token keyword">end</span>
 
@@ -129,7 +129,8 @@ result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/e
 result<span class="token punctuation">.</span>success<span class="token operator">?</span>
 <span class="token comment"># =&gt; true</span>
 
-result<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token symbol">:user</span><span class="token punctuation">]</span></code></pre></li>
+result<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token symbol">:user</span><span class="token punctuation">]</span>
+<span class="token comment"># =&gt; {name: "John"}</span></code></pre></li>
 <li><p>A regular service is contrasted with an <a href="/comprehensive_docs/docs/the_what/what_is_an_organizer_service.html">organizer service</a>, which composes other services via <code>step</code>s instead of implementing the logic directly.</p>
 </li>
 </ul>

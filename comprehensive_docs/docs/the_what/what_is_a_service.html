@@ -110,21 +110,49 @@
   <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
 
   <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
-    success
+    success<span class="token punctuation">(</span><span class="token symbol">value</span><span class="token operator">:</span> <span class="token number">42</span><span class="token punctuation">)</span>
   <span class="token keyword">end</span>
 <span class="token keyword">end</span>
 
 Service<span class="token punctuation">.</span>result
-<span class="token comment"># =&gt; #&lt;Service::Result status: :success ...&gt;</span></code></pre></li>
+<span class="token comment"># =&gt; &lt;Service::Result status: :success, data_keys: [:value]&gt;</span></code></pre></li>
 <li><p>Calling a service always returns a <a href="https://github.com/omniti-labs/jsend">JSend</a>-style result object, not a raw value.</p>
 <pre><code class="language-ruby">Service<span class="token punctuation">.</span>result<span class="token punctuation">.</span>success<span class="token operator">?</span>
 <span class="token comment"># =&gt; true</span></code></pre></li>
 <li><p>Besides <code>result</code>, a service can also be called with <code>call</code>, at the class or instance level. <code>result</code> returns the full result object; <code>call</code> returns just its data hash.</p>
-<pre><code class="language-ruby">Service<span class="token punctuation">.</span>result        <span class="token comment"># =&gt; #&lt;Service::Result ...&gt;</span>
+<pre><code class="language-ruby">Service<span class="token punctuation">.</span>result        <span class="token comment"># =&gt; &lt;Service::Result status: :success, data_keys: [:value]&gt;</span>
 Service<span class="token punctuation">.</span>call          <span class="token comment"># =&gt; {value: 42}</span>
-<span class="token class-name">Service</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>result    <span class="token comment"># =&gt; #&lt;Service::Result ...&gt;</span>
+<span class="token class-name">Service</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>result    <span class="token comment"># =&gt; &lt;Service::Result status: :success, data_keys: [:value]&gt;</span>
 <span class="token class-name">Service</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>call      <span class="token comment"># =&gt; {value: 42}</span></code></pre></li>
-<li><p>A service is either a <a href="/comprehensive_docs/docs/the_what/what_is_a_regular_service.html">regular service</a> (implements <code>result</code> directly) or an <a href="/comprehensive_docs/docs/the_what/what_is_an_organizer_service.html">organizer service</a> (composes other services via <code>step</code>s).</p>
+<li><p>A service either implements <code>result</code> directly, or composes other services via <code>step</code>s.</p>
+<pre><code class="language-ruby"><span class="token comment">##</span>
+<span class="token comment"># Without steps.</span>
+<span class="token comment">#</span>
+<span class="token keyword">class</span> <span class="token class-name">Service</span>
+  <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
+    success<span class="token punctuation">(</span><span class="token symbol">value</span><span class="token operator">:</span> <span class="token number">42</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token comment">##</span>
+<span class="token comment"># With steps.</span>
+<span class="token comment">#</span>
+<span class="token keyword">class</span> <span class="token class-name">OrganizerService</span>
+  <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
+
+  step Service<span class="token punctuation">,</span> <span class="token symbol">out</span><span class="token operator">:</span> <span class="token symbol">:value</span>
+<span class="token keyword">end</span>
+
+result <span class="token operator">=</span> OrganizerService<span class="token punctuation">.</span>result
+
+result<span class="token punctuation">.</span>success<span class="token operator">?</span>
+<span class="token comment"># =&gt; true</span>
+
+result<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token symbol">:value</span><span class="token punctuation">]</span>
+<span class="token comment"># =&gt; 42</span></code></pre></li>
+<li><p>The first style is a <a href="/comprehensive_docs/docs/the_what/what_is_a_regular_service.html">regular service</a>; the second is an <a href="/comprehensive_docs/docs/the_what/what_is_an_organizer_service.html">organizer service</a>.</p>
 </li>
 </ul>
 <h3 id="see-also">See also</h3>

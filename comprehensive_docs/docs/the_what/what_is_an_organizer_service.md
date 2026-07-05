@@ -70,6 +70,8 @@
 - The same applies to `AssertFileNotEmpty` - when it fails, `step :result` is skipped.
 
   ```ruby
+  File.write("/tmp/empty.txt", "")
+
   result = ReadFileContent.result(path: "/tmp/empty.txt")
 
   result.success?
@@ -82,6 +84,8 @@
 - When every step succeeds, `ReadFileContent` returns the final `step :result` result.
 
   ```ruby
+  File.write("/tmp/hello.txt", "Hello!")
+
   result = ReadFileContent.result(path: "/tmp/hello.txt")
 
   result.success?

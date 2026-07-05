@@ -104,7 +104,27 @@
   <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_what/what_is_a_result.md&quot;}" prerendered-on-build=""><main><h2 id="what-is-a-result">What is a result?</h2>
 <ul>
 <li><p>A result is the <a href="https://github.com/omniti-labs/jsend">JSend</a>-style data structure every Convenient Service service returns. It provides a unified way to check the outcome of an operation and access its data, message, and code.</p>
-<pre><code class="language-ruby">result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name"><a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a></span>
+  <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
+
+  attr_reader <span class="token symbol">:id</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span><span class="token punctuation">)</span>
+    <span class="token variable">@id</span> <span class="token operator">=</span> id
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
+    <span class="token keyword">return</span> error<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"Id is `nil`"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> id<span class="token punctuation">.</span><span class="token keyword">nil</span><span class="token operator">?</span>
+
+    users <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">1</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token symbol">name</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"John"</span></span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> failure<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"User with id `</span><span class="token interpolation"><span class="token delimiter punctuation">#{</span><span class="token content">id</span><span class="token delimiter punctuation">}</span></span><span class="token string">` does not exist"</span></span><span class="token punctuation">)</span> <span class="token keyword">unless</span> users<span class="token punctuation">.</span>key<span class="token operator">?</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+
+    success<span class="token punctuation">(</span><span class="token symbol">user</span><span class="token operator">:</span> users<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">)</span>
 
 result<span class="token punctuation">.</span><span class="token keyword">class</span>
 <span class="token comment"># =&gt; <a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a>::Result</span>
@@ -117,7 +137,8 @@ result<span class="token punctuation">.</span>status<span class="token punctuati
 <pre><code class="language-ruby">result<span class="token punctuation">.</span>success<span class="token operator">?</span>
 <span class="token comment"># =&gt; true</span>
 
-result<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token symbol">:user</span><span class="token punctuation">]</span></code></pre></li>
+result<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token symbol">:user</span><span class="token punctuation">]</span>
+<span class="token comment"># =&gt; {name: "John"}</span></code></pre></li>
 <li><p>Data keys are also accessible as methods: <code>result.data.user</code> is equivalent to <code>result.data[:user]</code>.</p>
 <pre><code class="language-ruby">result<span class="token punctuation">.</span>data<span class="token punctuation">.</span>user
 <span class="token comment"># =&gt; {name: "John"}</span></code></pre></li>
@@ -128,7 +149,7 @@ result<span class="token punctuation">.</span>data
 <span class="token comment"># raises ConvenientService::Service::Plugins::HasJSendResult::Entities::Result::Plugins::RaisesOnNotCheckedResultStatus::Exceptions::StatusIsNotChecked</span></code></pre></li>
 <li><p><code>ud</code>, <code>um</code>, and <code>uc</code> are debugger-friendly shortcuts for <code>unsafe_data</code>, <code>unsafe_message</code>, and <code>unsafe_code</code> - they skip the status check, which is convenient when inspecting a result in a debugger session.</p>
 <pre><code class="language-ruby">result<span class="token punctuation">.</span>ud
-<span class="token comment"># =&gt; #&lt;<a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a>::Result::Data user: {name: "John"}&gt;</span></code></pre></li>
+<span class="token comment"># =&gt; &lt;<a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a>::Result::Data user: {name: "John"}&gt;</span></code></pre></li>
 </ul>
 <h3 id="see-also">See also</h3>
 <ul>
