@@ -7,11 +7,86 @@
         "link": "/docs/tldr.html"
       },
       {
-        "title": "Tutorials"
+        "title": "Tutorials",
+        "items": [
+          {
+            "title": "Basics",
+            "link": "/docs/tutorials/basics.html"
+          }
+        ]
       },
       {
         "title": "The What",
         "items": [
+          {
+            "title": "Requirements",
+            "items": [
+              {
+                "title": "What are Convenient Service's Ruby requirements?",
+                "link": "/docs/the_what/what_are_convenient_service_ruby_requirements.html"
+              }
+            ]
+          },
+          {
+            "title": "Services",
+            "items": [
+              {
+                "title": "What is a service?",
+                "link": "/docs/the_what/what_is_a_service.html"
+              },
+              {
+                "title": "What is a regular service?",
+                "link": "/docs/the_what/what_is_a_regular_service.html"
+              },
+              {
+                "title": "What is an organizer service?",
+                "link": "/docs/the_what/what_is_an_organizer_service.html"
+              },
+              {
+                "title": "What is a result?",
+                "link": "/docs/the_what/what_is_a_result.html"
+              }
+            ]
+          },
+          {
+            "title": "Steps",
+            "items": [
+              {
+                "title": "What is a step?",
+                "link": "/docs/the_what/what_is_a_step.html"
+              },
+              {
+                "title": "What is a service step?",
+                "link": "/docs/the_what/what_is_a_service_step.html"
+              },
+              {
+                "title": "What is a method step?",
+                "link": "/docs/the_what/what_is_a_method_step.html"
+              }
+            ]
+          },
+          {
+            "title": "Configs",
+            "items": [
+              {
+                "title": "What is config options?",
+                "link": "/docs/the_what/what_is_config_options.html"
+              },
+              {
+                "title": "What is a config?",
+                "link": "/docs/the_what/what_is_a_config.html"
+              }
+            ]
+          },
+          {
+            "title": "Plugins",
+            "items": [
+              {
+                "title": "What is a plugin?",
+                "link": "/docs/the_what/what_is_a_plugin.html"
+              }
+            ]
+          },
           {
             "title": "Dependencies",
             "items": [
@@ -30,20 +105,11 @@
             ]
           },
           {
-            "title": "Plugins",
+            "title": "Service Aware Enumerables",
             "items": [
               {
-                "title": "What is a plugin?",
-                "link": "/docs/the_what/what_is_a_plugin.html"
-              }
-            ]
-          },
-          {
-            "title": "Configs",
-            "items": [
-              {
-                "title": "What is config options?",
-                "link": "/docs/the_what/what_is_config_options.html"
+                "title": "What are service-aware enumerables?",
+                "link": "/docs/the_what/what_are_service_aware_enumerables.html"
               }
             ]
           },
@@ -74,10 +140,6 @@
               {
                 "title": "What is Convenient Service logger?",
                 "link": "/docs/the_what/what_is_convenient_service_logger.html"
-              },
-              {
-                "title": "What are Convenient Service's Ruby requirements?",
-                "link": "/docs/the_what/what_are_convenient_service_ruby_requirements.html"
               }
             ]
           }
@@ -118,15 +180,6 @@
             ]
           },
           {
-            "title": "Miscellaneous",
-            "items": [
-              {
-                "title": "How to get Convenient Service root folder?",
-                "link": "/docs/the_how/how_to_get_convenient_service_root_folder.html"
-              }
-            ]
-          },
-          {
             "title": "Extras",
             "items": [
               {
@@ -158,11 +211,31 @@
                 "link": "/docs/the_how/how_to_load_memo_wise_standard_config_option.html"
               }
             ]
+          },
+          {
+            "title": "Miscellaneous",
+            "items": [
+              {
+                "title": "How to get Convenient Service root folder?",
+                "link": "/docs/the_how/how_to_get_convenient_service_root_folder.html"
+              }
+            ]
           }
         ]
       },
       {
-        "title": "The Why"
+        "title": "The Why",
+        "items": [
+          {
+            "title": "Services",
+            "items": [
+              {
+                "title": "Why do we need services?",
+                "link": "/docs/the_why/why_do_we_need_services.html"
+              }
+            ]
+          }
+        ]
       }
     ]
   }
