@@ -13,6 +13,26 @@ sources:
 - A result is the [JSend](https://github.com/omniti-labs/jsend)-style data structure every Convenient Service service returns. It provides a unified way to check the outcome of an operation and access its data, message, and code.
 
   ```ruby
+  class FindUser
+    include ConvenientService::Standard::Config
+
+    attr_reader :id
+
+    def initialize(id:)
+      @id = id
+    end
+
+    def result
+      return error("Id is `nil`") if id.nil?
+
+      users = {1 => {name: "John"}}
+
+      return failure("User with id `#{id}` does not exist") unless users.key?(id)
+
+      success(user: users[id])
+    end
+  end
+
   result = FindUser.result(id: 1)
 
   result.class
@@ -31,6 +51,7 @@ sources:
   # => true
 
   result.data[:user]
+  # => {name: "John"}
   ```
 
 - Data keys are also accessible as methods: `result.data.user` is equivalent to `result.data[:user]`.
@@ -53,7 +74,7 @@ sources:
 
   ```ruby
   result.ud
-  # => #<FindUser::Result::Data user: {name: "John"}>
+  # => <FindUser::Result::Data user: {name: "John"}>
   ```
 
 ### See also

@@ -16,12 +16,12 @@ sources:
     include ConvenientService::Standard::Config
 
     def result
-      success
+      success(value: 42)
     end
   end
 
   Service.result
-  # => #<Service::Result status: :success ...>
+  # => <Service::Result status: :success, data_keys: [:value]>
   ```
 
 - Calling a service always returns a [JSend](https://github.com/omniti-labs/jsend)-style result object, not a raw value.
@@ -34,13 +34,45 @@ sources:
 - Besides `result`, a service can also be called with `call`, at the class or instance level. `result` returns the full result object; `call` returns just its data hash.
 
   ```ruby
-  Service.result        # => #<Service::Result ...>
+  Service.result        # => <Service::Result status: :success, data_keys: [:value]>
   Service.call          # => {value: 42}
-  Service.new.result    # => #<Service::Result ...>
+  Service.new.result    # => <Service::Result status: :success, data_keys: [:value]>
   Service.new.call      # => {value: 42}
   ```
 
-- A service is either a [regular service](/docs/the_what/what_is_a_regular_service.html) (implements `result` directly) or an [organizer service](/docs/the_what/what_is_an_organizer_service.html) (composes other services via `step`s).
+- A service either implements `result` directly, or composes other services via `step`s.
+
+  ```ruby
+  ##
+  # Without steps.
+  #
+  class Service
+    include ConvenientService::Standard::Config
+
+    def result
+      success(value: 42)
+    end
+  end
+
+  ##
+  # With steps.
+  #
+  class OrganizerService
+    include ConvenientService::Standard::Config
+
+    step Service, out: :value
+  end
+
+  result = OrganizerService.result
+
+  result.success?
+  # => true
+
+  result.data[:value]
+  # => 42
+  ```
+
+- The first style is a [regular service](/docs/the_what/what_is_a_regular_service.html); the second is an [organizer service](/docs/the_what/what_is_an_organizer_service.html).
 
 ### See also
 

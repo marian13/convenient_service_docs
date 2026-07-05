@@ -22,11 +22,11 @@ sources:
     def result
       return error("Id is `nil`") if id.nil?
 
-      user = User.find_by(id: id)
+      users = {1 => {name: "John"}}
 
-      return failure("User with id `#{id}` does not exist") unless user
+      return failure("User with id `#{id}` does not exist") unless users.key?(id)
 
-      success(user: user)
+      success(user: users[id])
     end
   end
 
@@ -36,6 +36,7 @@ sources:
   # => true
 
   result.data[:user]
+  # => {name: "John"}
   ```
 
 - A regular service is contrasted with an [organizer service](/docs/the_what/what_is_an_organizer_service.html), which composes other services via `step`s instead of implementing the logic directly.
