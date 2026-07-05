@@ -31,7 +31,7 @@ sources:
   # => true
   ```
 
-- Besides `result`, a service can also be called with `call`, at the class or instance level. `result` returns the full result object; `call` returns just its data hash.
+- Besides `result`, a service can also be called with `call`, at the class or instance level. `result` always returns the full result object; `call` returns the result's data hash on `success`, `nil` on `failure`, and raises on `error`.
 
   ```ruby
   Service.result        # => <Service::Result status: :success, data_keys: [:value]>
