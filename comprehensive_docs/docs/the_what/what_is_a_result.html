@@ -139,9 +139,6 @@ result<span class="token punctuation">.</span>status<span class="token punctuati
 
 result<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token symbol">:user</span><span class="token punctuation">]</span>
 <span class="token comment"># =&gt; {name: "John"}</span></code></pre></li>
-<li><p>Data keys are also accessible as methods: <code>result.data.user</code> is equivalent to <code>result.data[:user]</code>.</p>
-<pre><code class="language-ruby">result<span class="token punctuation">.</span>data<span class="token punctuation">.</span>user
-<span class="token comment"># =&gt; {name: "John"}</span></code></pre></li>
 <li><p>Accessing <code>data</code>, <code>message</code>, or <code>code</code> before checking the result's status raises an error.</p>
 <pre><code class="language-ruby">result <span class="token operator">=</span> <a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">)</span>
 
