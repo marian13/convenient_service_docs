@@ -133,7 +133,7 @@ result<span class="token punctuation">.</span>success<span class="token operator
 
 result<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token symbol">:value</span><span class="token punctuation">]</span>
 <span class="token comment"># =&gt; 42</span></code></pre></li>
-<li><p>Invoking a service always returns a result object, not a raw value. It is inspired by <a href="https://github.com/omniti-labs/jsend">JSend</a>, not compatible with it. Its status is always one of <code>success</code>, <code>failure</code>, or <code>error</code>.</p>
+<li><p>Invoking a service always returns a result object, not a raw value. It is inspired by <a href="https://github.com/omniti-labs/jsend">JSend</a>, but not JSend-compatible. Its status is always one of <code>success</code>, <code>failure</code>, or <code>error</code>.</p>
 <pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name"><a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a></span>
   <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
 

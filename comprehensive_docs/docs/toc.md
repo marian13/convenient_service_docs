@@ -12,6 +12,7 @@
 <div class="cs-toc-level-3"><span class="cs-toc-num-3">3.2.2.</span> <a href="/docs/the_what/what_is_a_regular_service.html">What is a regular service?</a></div>
 <div class="cs-toc-level-3"><span class="cs-toc-num-3">3.2.3.</span> <a href="/docs/the_what/what_is_an_organizer_service.html">What is an organizer service?</a></div>
 <div class="cs-toc-level-3"><span class="cs-toc-num-3">3.2.4.</span> <a href="/docs/the_what/what_is_a_result.html">What is a result?</a></div>
+<div class="cs-toc-level-3"><span class="cs-toc-num-3">3.2.5.</span> <a href="/docs/the_what/what_is_the_difference_between_failure_and_error.html">What is the difference between `failure` and `error`?</a></div>
 <div class="cs-toc-level-2"><span class="cs-toc-num-2">3.3.</span> Steps</div>
 <div class="cs-toc-level-3"><span class="cs-toc-num-3">3.3.1.</span> <a href="/docs/the_what/what_is_a_step.html">What is a step?</a></div>
 <div class="cs-toc-level-3"><span class="cs-toc-num-3">3.3.2.</span> <a href="/docs/the_what/what_is_a_service_step.html">What is a service step?</a></div>
