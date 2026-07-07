@@ -54,13 +54,6 @@ sources:
   # => {name: "John"}
   ```
 
-- Data keys are also accessible as methods: `result.data.user` is equivalent to `result.data[:user]`.
-
-  ```ruby
-  result.data.user
-  # => {name: "John"}
-  ```
-
 - Accessing `data`, `message`, or `code` before checking the result's status raises an error.
 
   ```ruby
