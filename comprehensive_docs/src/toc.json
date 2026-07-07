@@ -45,6 +45,10 @@
               {
                 "title": "What is a result?",
                 "link": "/docs/the_what/what_is_a_result.html"
+              },
+              {
+                "title": "What is the difference between `failure` and `error`?",
+                "link": "/docs/the_what/what_is_the_difference_between_failure_and_error.html"
               }
             ]
           },

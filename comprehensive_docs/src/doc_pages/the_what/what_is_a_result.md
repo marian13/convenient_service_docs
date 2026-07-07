@@ -10,7 +10,7 @@ sources:
 
 ## What is a result?
 
-- A result is the [JSend](https://github.com/omniti-labs/jsend)-style data structure every Convenient Service service returns. It provides a unified way to check the outcome of an operation and access its data, message, and code.
+- A result is the data structure every Convenient Service service returns. It is inspired by [JSend](https://github.com/omniti-labs/jsend), but not JSend-compatible. It provides a unified way to check the outcome of an operation and access its data, message, and code.
 
   ```ruby
   class FindUser

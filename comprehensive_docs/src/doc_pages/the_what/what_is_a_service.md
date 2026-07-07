@@ -41,7 +41,7 @@ sources:
   # => 42
   ```
 
-- Invoking a service always returns a result object, not a raw value. It is inspired by [JSend](https://github.com/omniti-labs/jsend), not compatible with it. Its status is always one of `success`, `failure`, or `error`.
+- Invoking a service always returns a result object, not a raw value. It is inspired by [JSend](https://github.com/omniti-labs/jsend), but not JSend-compatible. Its status is always one of `success`, `failure`, or `error`.
 
   ```ruby
   class FindUser
