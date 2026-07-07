@@ -103,27 +103,8 @@
 <div class="cs-doc">
   <cs-react-island component="CSMarkdown" props="{&quot;src&quot;:&quot;/docs/the_what/what_is_a_service.md&quot;}" prerendered-on-build=""><main><h2 id="what-is-a-service">What is a service?</h2>
 <ul>
-<li><p>A service is an object that does exactly one operation, <a href="https://ludwig.guru/s/nothing+more+and+nothing+less">nothing more, nothing less</a>.</p>
+<li><p>In Convenient Service, a service is a plain Ruby class that includes a <a href="/comprehensive_docs/docs/the_what/what_is_a_config.html">config</a> (<a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/service/configs/standard.rb"><code>ConvenientService::Standard::Config</code></a> most of the time).</p>
 </li>
-<li><p>In Convenient Service, a service is a plain Ruby class that includes <a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/service/configs/aliases.rb"><code>ConvenientService::Standard::Config</code></a> and is invoked via <code>result</code> (or <code>call</code>).</p>
-<pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Service</span>
-  <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
-
-  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
-    success<span class="token punctuation">(</span><span class="token symbol">value</span><span class="token operator">:</span> <span class="token number">42</span><span class="token punctuation">)</span>
-  <span class="token keyword">end</span>
-<span class="token keyword">end</span>
-
-Service<span class="token punctuation">.</span>result
-<span class="token comment"># =&gt; &lt;Service::Result status: :success, data_keys: [:value]&gt;</span></code></pre></li>
-<li><p>Calling a service always returns a <a href="https://github.com/omniti-labs/jsend">JSend</a>-style result object, not a raw value.</p>
-<pre><code class="language-ruby">Service<span class="token punctuation">.</span>result<span class="token punctuation">.</span>success<span class="token operator">?</span>
-<span class="token comment"># =&gt; true</span></code></pre></li>
-<li><p>Besides <code>result</code>, a service can also be called with <code>call</code>, at the class or instance level. <code>result</code> always returns the full result object; <code>call</code> returns the result's data hash on <code>success</code>, <code>nil</code> on <code>failure</code>, and raises on <code>error</code>.</p>
-<pre><code class="language-ruby">Service<span class="token punctuation">.</span>result        <span class="token comment"># =&gt; &lt;Service::Result status: :success, data_keys: [:value]&gt;</span>
-Service<span class="token punctuation">.</span>call          <span class="token comment"># =&gt; {value: 42}</span>
-<span class="token class-name">Service</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>result    <span class="token comment"># =&gt; &lt;Service::Result status: :success, data_keys: [:value]&gt;</span>
-<span class="token class-name">Service</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">.</span>call      <span class="token comment"># =&gt; {value: 42}</span></code></pre></li>
 <li><p>A service either implements <code>result</code> directly, or composes other services via <code>step</code>s.</p>
 <pre><code class="language-ruby"><span class="token comment">##</span>
 <span class="token comment"># Without steps.</span>
@@ -152,6 +133,53 @@ result<span class="token punctuation">.</span>success<span class="token operator
 
 result<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token symbol">:value</span><span class="token punctuation">]</span>
 <span class="token comment"># =&gt; 42</span></code></pre></li>
+<li><p>Invoking a service always returns a result object, not a raw value. It is inspired by <a href="https://github.com/omniti-labs/jsend">JSend</a>, not compatible with it. Its status is always one of <code>success</code>, <code>failure</code>, or <code>error</code>.</p>
+<pre><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name"><a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a></span>
+  <span class="token keyword">include</span> ConvenientService<span class="token double-colon punctuation">::</span>Standard<span class="token double-colon punctuation">::</span>Config
+
+  attr_reader <span class="token symbol">:id</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span><span class="token punctuation">)</span>
+    <span class="token variable">@id</span> <span class="token operator">=</span> id
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">result</span></span>
+    <span class="token keyword">return</span> error<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"Id is `nil`"</span></span><span class="token punctuation">)</span> <span class="token keyword">if</span> id<span class="token punctuation">.</span><span class="token keyword">nil</span><span class="token operator">?</span>
+
+    users <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">1</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token symbol">name</span><span class="token operator">:</span> <span class="token string-literal"><span class="token string">"John"</span></span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> failure<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">"User with id `</span><span class="token interpolation"><span class="token delimiter punctuation">#{</span><span class="token content">id</span><span class="token delimiter punctuation">}</span></span><span class="token string">` does not exist"</span></span><span class="token punctuation">)</span> <span class="token keyword">unless</span> users<span class="token punctuation">.</span>key<span class="token operator">?</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+
+    success<span class="token punctuation">(</span><span class="token symbol">user</span><span class="token operator">:</span> users<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>success<span class="token operator">?</span>
+<span class="token comment"># =&gt; true</span>
+
+<a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span>failure<span class="token operator">?</span>
+<span class="token comment"># =&gt; true</span>
+
+<a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a><span class="token punctuation">.</span>result<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token keyword">nil</span><span class="token punctuation">)</span><span class="token punctuation">.</span>error<span class="token operator">?</span>
+<span class="token comment"># =&gt; true</span></code></pre></li>
+<li><p><code>failure</code> is for an anticipated negative outcome (a business rule was not met, e.g. a user was not found).</p>
+</li>
+<li><p><code>error</code> is for an unexpected condition (e.g. an invalid argument was passed).</p>
+</li>
+<li><p>Besides <code>result</code>, a service can also be called with <code>call</code>, at the class or instance level.</p>
+</li>
+<li><p><code>result</code> always returns the full result object. <code>call</code> returns the result's data hash on <code>success</code>, <code>nil</code> on <code>failure</code>, and raises on <code>error</code>.</p>
+<pre><code class="language-ruby"><a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a><span class="token punctuation">.</span>call<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token comment"># =&gt; {user: {name: "John"}}</span>
+
+<a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a><span class="token punctuation">.</span>call<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">)</span>
+<span class="token comment"># =&gt; nil</span>
+
+<a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a><span class="token punctuation">.</span>call<span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token keyword">nil</span><span class="token punctuation">)</span>
+<span class="token comment"># raises ConvenientService::Result::Exceptions::ErrorResultIsCalled</span>
+
+<span class="token class-name"><a href="/comprehensive_docs/docs/examples/services.html#find-user" class="cs-code-link">FindUser</a></span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span><span class="token symbol">id</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>call
+<span class="token comment"># =&gt; {user: {name: "John"}}</span></code></pre></li>
 <li><p>The first style is a <a href="/comprehensive_docs/docs/the_what/what_is_a_regular_service.html">regular service</a>; the second is an <a href="/comprehensive_docs/docs/the_what/what_is_an_organizer_service.html">organizer service</a>.</p>
 </li>
 </ul>
@@ -161,10 +189,11 @@ result<span class="token punctuation">.</span>data<span class="token punctuation
 <li><a href="/comprehensive_docs/docs/the_what/what_is_a_regular_service.html">What is a regular service?</a></li>
 <li><a href="/comprehensive_docs/docs/the_what/what_is_an_organizer_service.html">What is an organizer service?</a></li>
 <li><a href="/comprehensive_docs/docs/the_what/what_is_a_result.html">What is a result?</a></li>
+<li><a href="/comprehensive_docs/docs/the_what/what_is_a_config.html">What is a config?</a></li>
 </ul>
 <h3 id="sources">Sources</h3>
 <ul>
-<li><a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/service/configs/aliases.rb">lib/convenient_service/service/configs/aliases.rb</a></li>
+<li><a href="https://github.com/marian13/convenient_service/blob/v0.24.0/lib/convenient_service/service/configs/standard.rb">lib/convenient_service/service/configs/standard.rb</a></li>
 </ul>
 </main></cs-react-island>
 </div>
