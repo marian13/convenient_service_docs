@@ -16,6 +16,19 @@
         ]
       },
       {
+        "title": "Best Practices",
+        "items": [
+          {
+            "title": "Use upper camel case for method steps",
+            "link": "/docs/best_practices/use_upper_camel_case_for_method_steps.html"
+          },
+          {
+            "title": "Name a step `:result` when it does the service's own job",
+            "link": "/docs/best_practices/name_a_step_result_when_it_does_the_services_own_job.html"
+          }
+        ]
+      },
+      {
         "title": "The What",
         "items": [
           {
@@ -66,6 +79,26 @@
               {
                 "title": "What is a method step?",
                 "link": "/docs/the_what/what_is_a_method_step.html"
+              },
+              {
+                "title": "What step input types are available?",
+                "link": "/docs/the_what/what_step_input_types_are_available.html"
+              },
+              {
+                "title": "What is a usual step input?",
+                "link": "/docs/the_what/what_is_a_usual_step_input.html"
+              },
+              {
+                "title": "What is a step alias input?",
+                "link": "/docs/the_what/what_is_a_step_alias_input.html"
+              },
+              {
+                "title": "What is a step raw input?",
+                "link": "/docs/the_what/what_is_a_step_raw_input.html"
+              },
+              {
+                "title": "What is a step proc input?",
+                "link": "/docs/the_what/what_is_a_step_proc_input.html"
               }
             ]
           },
