@@ -11,7 +11,8 @@
 
     attr_reader :raw_amount
 
-    step :AssertValidAmount
+    step :AssertValidAmount,
+      in: :raw_amount
 
     step :result,
       in: :raw_amount,
@@ -46,6 +47,7 @@
 - [What is a step?](/docs/the_what/what_is_a_step.html)
 - [What is a method step?](/docs/the_what/what_is_a_method_step.html)
 - [What is a service step?](/docs/the_what/what_is_a_service_step.html)
+- [Declare `in:`/`out:` explicitly on method steps](/docs/best_practices/declare_in_out_explicitly_on_method_steps.html)
 
 ### Sources
 
