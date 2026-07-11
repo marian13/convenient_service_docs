@@ -16,19 +16,6 @@
         ]
       },
       {
-        "title": "Best Practices",
-        "items": [
-          {
-            "title": "Use upper camel case for method steps",
-            "link": "/docs/best_practices/use_upper_camel_case_for_method_steps.html"
-          },
-          {
-            "title": "Name a step `:result` when it does the service's own job",
-            "link": "/docs/best_practices/name_a_step_result_when_it_does_the_services_own_job.html"
-          }
-        ]
-      },
-      {
         "title": "The What",
         "items": [
           {
@@ -79,6 +66,10 @@
               {
                 "title": "What is a method step?",
                 "link": "/docs/the_what/what_is_a_method_step.html"
+              },
+              {
+                "title": "What is method step loose call?",
+                "link": "/docs/the_what/what_is_method_step_loose_call.html"
               },
               {
                 "title": "What step input types are available?",
@@ -269,6 +260,42 @@
               {
                 "title": "Why do we need services?",
                 "link": "/docs/the_why/why_do_we_need_services.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Best Practices",
+        "items": [
+          {
+            "title": "",
+            "items": [
+              {
+                "title": "Use upper camel case for method steps",
+                "link": "/docs/best_practices/use_upper_camel_case_for_method_steps.html"
+              },
+              {
+                "title": "Name a step `:result` when it does the service's own job",
+                "link": "/docs/best_practices/name_a_step_result_when_it_does_the_services_own_job.html"
+              },
+              {
+                "title": "Declare `in:`/`out:` explicitly on method steps",
+                "link": "/docs/best_practices/declare_in_out_explicitly_on_method_steps.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Cheatsheets",
+        "items": [
+          {
+            "title": "",
+            "items": [
+              {
+                "title": "Method step loose call cheatsheet",
+                "link": "/docs/cheatsheets/method_step_loose_call_cheatsheet.html"
               }
             ]
           }
