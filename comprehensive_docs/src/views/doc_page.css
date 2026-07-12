@@ -95,3 +95,9 @@ cs-doc-reviewed {
     padding-top: 3rem;
   }
 }
+
+@media (min-width: 960px) {
+  .cs-doc {
+    padding-top: 0;
+  }
+}
