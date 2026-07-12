@@ -62,6 +62,10 @@ cs-doc-reviewed {
   cursor: pointer;
 }
 
+.cs-doc a {
+  overflow-wrap: break-word;
+}
+
 .cs-doc pre {
   overflow-x: auto;
   scrollbar-color: var(--color-border) transparent;
