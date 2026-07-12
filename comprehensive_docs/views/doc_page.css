@@ -84,3 +84,20 @@ cs-doc-reviewed {
   background: var(--color-border);
   border-radius: 0.375rem;
 }
+
+@media (max-width: 640px) {
+  .cs-doc ul,
+  .cs-doc ol {
+    padding-left: 0;
+  }
+
+  .cs-doc {
+    padding-top: 3rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .cs-doc {
+    padding-top: 0;
+  }
+}
